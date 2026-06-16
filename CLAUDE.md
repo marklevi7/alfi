@@ -4,7 +4,7 @@ Project memory for ALFI. Read this before any design/build work.
 
 ## How to talk to Mark
 
-Ultra-short. Plain words. No jargon. One line if possible. Y/N questions. No lectures.
+Near-military shortness. Facts, numbers, actionable advice only. No jargon, no lectures. Y/N questions.
 
 ## RULE #0 — Never invent
 
