@@ -6,6 +6,13 @@ Project memory for ALFI. Read this before any design/build work.
 
 Near-military shortness. Facts, numbers, actionable advice only. No jargon, no lectures. Y/N questions.
 
+## Workflow — every screen/change
+
+1. Build it.
+2. ALWAYS preview here (screenshot in chat).
+3. ALWAYS give a link (PR).
+4. ALWAYS number versions (v1, v2, v3...). State current version.
+
 ## RULE #0 — Never invent
 
 NEVER invent anything — names, values, components, APIs, content, data — unless explicitly asked.
