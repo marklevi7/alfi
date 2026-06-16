@@ -29,10 +29,9 @@ Read Mark's text exactly. Don't paraphrase or "improve" his copy. Word for word,
 
 1. Every request bumps version by 1 (footer tag `vN`). Increment after each change.
 2. Build, commit, push.
-3. Give ONE preview link, nothing else: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html`
-4. Triple-check the link works (open it, verify load) BEFORE sharing.
-5. One link per response. No explanation, no change list. He sees it when he opens it.
-6. Commit messages: `vN: short description`.
+3. PREVIEW HERE: screenshot the running app in chat. Always. Default = image in chat, NOT a link.
+4. Only give a githack link when Mark explicitly asks: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html` (triple-check it loads first).
+5. Commit messages: `vN: short description`.
 
 ## Branch rules
 
