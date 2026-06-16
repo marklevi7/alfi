@@ -57,6 +57,13 @@ export function App() {
           </Box>
         </Stack>
 
+        <Box
+          component="img"
+          src="alfi.png"
+          alt="Alfi"
+          sx={{ width: { xs: 120, md: 160 }, height: 'auto', mb: 3, alignSelf: 'flex-start' }}
+        />
+
         <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
           ברוכים השבים ל-ALFI
         </Typography>
@@ -133,7 +140,7 @@ export function App() {
           </Stack>
 
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
-            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v2
+            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v3
           </Typography>
         </Paper>
       </Grid>
