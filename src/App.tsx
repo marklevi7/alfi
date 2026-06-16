@@ -108,12 +108,12 @@ export function App() {
                   fullWidth
                   autoComplete="current-password"
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
+                    endAdornment: (
+                      <InputAdornment position="end">
                         <IconButton
                           aria-label={showPassword ? 'הסתר סיסמה' : 'הצג סיסמה'}
                           onClick={() => setShowPassword((s) => !s)}
-                          edge="start"
+                          edge="end"
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
@@ -149,7 +149,7 @@ export function App() {
                 color="text.secondary"
                 sx={{ display: 'block', mt: 5, textAlign: 'center' }}
               >
-                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v7
+                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v8
               </Typography>
             </Box>
           </Grid>
