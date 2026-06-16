@@ -64,7 +64,7 @@ export function App() {
           <Grid
             item
             xs={12}
-            md={5}
+            md={4}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -149,7 +149,7 @@ export function App() {
                 color="text.secondary"
                 sx={{ display: 'block', mt: 5, textAlign: 'center' }}
               >
-                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v8
+                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v9
               </Typography>
             </Box>
           </Grid>
@@ -158,7 +158,7 @@ export function App() {
           <Grid
             item
             xs={12}
-            md={7}
+            md={8}
             sx={{
               position: 'relative',
               overflow: 'hidden',
@@ -214,13 +214,14 @@ export function App() {
               </Box>
             </Stack>
 
-            {/* Big Alfi hero */}
+            {/* HUGE Alfi hero — fills panel height */}
             <Box
               sx={{
                 position: 'relative',
                 alignSelf: 'center',
-                width: { xs: 280, md: 440 },
-                height: { xs: 280, md: 440 },
+                width: '100%',
+                height: { xs: 420, md: '88vh' },
+                maxHeight: 960,
                 mb: 1,
                 display: 'flex',
                 alignItems: 'center',
@@ -231,7 +232,11 @@ export function App() {
                 aria-hidden
                 sx={{
                   position: 'absolute',
-                  inset: 0,
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: { xs: 360, md: 640 },
+                  height: { xs: 360, md: 640 },
                   borderRadius: '50%',
                   bgcolor: (t) => alpha(t.palette.common.white, 0.16),
                 }}
@@ -242,10 +247,11 @@ export function App() {
                 alt="Alfi"
                 sx={{
                   position: 'relative',
-                  width: '92%',
-                  height: '92%',
+                  height: '100%',
+                  width: 'auto',
+                  maxWidth: '100%',
                   objectFit: 'contain',
-                  filter: (t) => `drop-shadow(0 12px 24px ${alpha(t.palette.common.black, 0.25)})`,
+                  filter: (t) => `drop-shadow(0 16px 32px ${alpha(t.palette.common.black, 0.3)})`,
                 }}
               />
             </Box>
