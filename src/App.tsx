@@ -149,7 +149,7 @@ export function App() {
                 color="text.secondary"
                 sx={{ display: 'block', mt: 5, textAlign: 'center' }}
               >
-                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v6
+                פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v7
               </Typography>
             </Box>
           </Grid>
@@ -219,8 +219,8 @@ export function App() {
               sx={{
                 position: 'relative',
                 alignSelf: 'center',
-                width: { xs: 200, md: 260 },
-                height: { xs: 200, md: 260 },
+                width: { xs: 280, md: 440 },
+                height: { xs: 280, md: 440 },
                 mb: 1,
                 display: 'flex',
                 alignItems: 'center',
