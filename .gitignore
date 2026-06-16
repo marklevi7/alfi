@@ -1,6 +1,5 @@
 .local/
 node_modules/
-dist/
 preview-*.png
 shot.mjs
 *.tsbuildinfo
