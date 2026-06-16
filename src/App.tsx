@@ -133,7 +133,7 @@ export function App() {
           </Stack>
 
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
-            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v1
+            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v2
           </Typography>
         </Paper>
       </Grid>
