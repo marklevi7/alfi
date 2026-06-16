@@ -3,3 +3,5 @@ node_modules/
 preview-*.png
 shot.mjs
 *.tsbuildinfo
+preview-githack.png
+shot-url.mjs
