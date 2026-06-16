@@ -2,6 +2,11 @@
 
 Project memory for ALFI. Read this before any design/build work.
 
+## RULE #0 — Never invent
+
+NEVER invent anything — names, values, components, APIs, content, data — unless explicitly asked.
+Use what exists (MUI defaults, the design system, provided specs). When unsure, ask. Do not assume.
+
 ## CRITICAL RULE — Canonical MUI only (never violate)
 
 All UI is built with **canonical MUI v5.14**. No exceptions.
