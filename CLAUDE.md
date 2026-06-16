@@ -2,6 +2,10 @@
 
 Project memory for ALFI. Read this before any design/build work.
 
+## How to talk to Mark
+
+Ultra-short. Plain words. No jargon. One line if possible. Y/N questions. No lectures.
+
 ## RULE #0 — Never invent
 
 NEVER invent anything — names, values, components, APIs, content, data — unless explicitly asked.
