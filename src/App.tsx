@@ -33,57 +33,7 @@ export function App() {
 
   return (
     <Grid container component="main" sx={{ minHeight: '100vh' }}>
-      {/* Brand / welcome panel */}
-      <Grid
-        item
-        xs={12}
-        md={6}
-        sx={{
-          bgcolor: 'primary.main',
-          color: 'primary.contrastText',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          p: { xs: 4, md: 8 },
-        }}
-      >
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 4 }}>
-          <AutoAwesomeIcon />
-          <Box>
-            <Typography variant="subtitle2" sx={{ letterSpacing: 2 }}>
-              KNOW-PROBLEM
-            </Typography>
-            <Typography variant="caption">EDU-AI learning platform</Typography>
-          </Box>
-        </Stack>
-
-        <Box
-          component="img"
-          src="alfi.png"
-          alt="Alfi"
-          sx={{ width: { xs: 120, md: 160 }, height: 'auto', mb: 3, alignSelf: 'flex-start' }}
-        />
-
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-          ברוכים השבים ל-ALFI
-        </Typography>
-        <Typography variant="h6" component="p" sx={{ fontWeight: 400, mb: 3, opacity: 0.9 }}>
-          התחברו כדי להמשיך מהנקודה שבה הפסקתם, לעקוב אחר התקדמות התלמידים ולתרגל עם Alfi.
-        </Typography>
-
-        <List dense>
-          {features.map((f) => (
-            <ListItem key={f} disableGutters>
-              <ListItemIcon sx={{ color: 'inherit', minWidth: 36 }}>
-                <CheckCircleIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={f} />
-            </ListItem>
-          ))}
-        </List>
-      </Grid>
-
-      {/* Auth panel */}
+      {/* Auth panel — first in RTL so it renders on the right */}
       <Grid
         item
         xs={12}
@@ -140,9 +90,59 @@ export function App() {
           </Stack>
 
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
-            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v3
+            פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v4
           </Typography>
         </Paper>
+      </Grid>
+
+      {/* Brand / welcome panel */}
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          bgcolor: 'primary.main',
+          color: 'primary.contrastText',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          p: { xs: 4, md: 8 },
+        }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 4 }}>
+          <AutoAwesomeIcon />
+          <Box>
+            <Typography variant="subtitle2" sx={{ letterSpacing: 2 }}>
+              KNOW-PROBLEM
+            </Typography>
+            <Typography variant="caption">EDU-AI learning platform</Typography>
+          </Box>
+        </Stack>
+
+        <Box
+          component="img"
+          src="alfi.png"
+          alt="Alfi"
+          sx={{ width: { xs: 120, md: 160 }, height: 'auto', mb: 3, alignSelf: 'flex-start' }}
+        />
+
+        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+          ברוכים השבים ל-ALFI
+        </Typography>
+        <Typography variant="h6" component="p" sx={{ fontWeight: 400, mb: 3, opacity: 0.9 }}>
+          התחברו כדי להמשיך מהנקודה שבה הפסקתם, לעקוב אחר התקדמות התלמידים ולתרגל עם Alfi.
+        </Typography>
+
+        <List dense>
+          {features.map((f) => (
+            <ListItem key={f} disableGutters>
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 36 }}>
+                <CheckCircleIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary={f} />
+            </ListItem>
+          ))}
+        </List>
       </Grid>
     </Grid>
   );
