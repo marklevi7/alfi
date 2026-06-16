@@ -12,9 +12,10 @@ All UI is built with **canonical MUI v5.14**. No exceptions.
 - ❌ NO custom colors.
 - ❌ NO raw hex values (`#ababab`) anywhere in components.
 - ❌ NO magic numbers for color/spacing — reference theme tokens.
+- ❌ Do NOT invent a palette or tokens. MUI's default design system already defines everything.
 
-Brand colors (if any) are defined **once** in `theme.palette`, then referenced as tokens
-(`primary.main`, `secondary.main`, etc.) everywhere else. Never hardcode a color in a component.
+Use MUI's built-in design system as-is. Reference defaults as tokens (`primary.main`,
+`text.primary`, `spacing(2)`, `theme.palette.*`, etc.). Never hardcode, never invent.
 
 ## Project facts
 
