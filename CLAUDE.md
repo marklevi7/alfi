@@ -29,8 +29,8 @@ Read Mark's text exactly. Don't paraphrase or "improve" his copy. Word for word,
 
 1. Every request bumps version by 1 (footer tag `vN`). Increment after each change.
 2. Build, commit, push.
-3. PREVIEW HERE: screenshot the running app in chat. Always. Default = image in chat, NOT a link.
-4. Only give a githack link when Mark explicitly asks: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html` (triple-check it loads first).
+3. ALWAYS give a LIVE githack link, every time: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html`. Triple-check it loads (200 + renders) before sending. NO PNG screenshots in chat — Mark wants the live app link.
+4. One link per response. Nothing else.
 5. Commit messages: `vN: short description`.
 
 ## Branch rules
