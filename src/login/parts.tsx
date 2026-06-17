@@ -21,13 +21,14 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { useNav } from '../nav';
 
 export const COPY = {
   welcomeTitle: 'ברוכים השבים 👋',
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v13',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v14',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -91,6 +92,7 @@ export function FeatureList({
 export function AuthForm({ showTitle = true }: { showTitle?: boolean }) {
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const nav = useNav();
   return (
     <Box sx={{ width: '100%' }}>
       {showTitle && (
@@ -115,7 +117,14 @@ export function AuthForm({ showTitle = true }: { showTitle?: boolean }) {
         <Tab label="הרשמה" sx={{ fontWeight: 700 }} />
       </Tabs>
 
-      <Stack component="form" spacing={2.5}>
+      <Stack
+        component="form"
+        spacing={2.5}
+        onSubmit={(e) => {
+          e.preventDefault();
+          nav.go('dashboard');
+        }}
+      >
         <TextField label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email" />
         <TextField
           label="סיסמה"

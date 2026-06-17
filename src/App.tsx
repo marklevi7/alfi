@@ -9,8 +9,10 @@ import MenuItem from '@mui/material/MenuItem';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { VARIANTS } from './login/variants';
+import { Dashboard } from './dashboard/Dashboard';
+import { NavContext, type Screen } from './nav';
 
-export function App() {
+function LoginSwitcher() {
   const [i, setI] = useState(10);
   const prev = () => setI((v) => (v - 1 + VARIANTS.length) % VARIANTS.length);
   const next = () => setI((v) => (v + 1) % VARIANTS.length);
@@ -20,7 +22,7 @@ export function App() {
     <Box>
       <Current />
 
-      {/* Variant switcher */}
+      {/* Variant switcher — fades out when idle */}
       <Paper
         elevation={8}
         sx={{
@@ -46,7 +48,6 @@ export function App() {
           <IconButton onClick={prev} aria-label="פריסה קודמת" size="small">
             <ChevronRightIcon />
           </IconButton>
-
           <Select
             value={i}
             onChange={(e) => setI(Number(e.target.value))}
@@ -62,16 +63,23 @@ export function App() {
               </MenuItem>
             ))}
           </Select>
-
           <Typography variant="body2" color="text.secondary" sx={{ minWidth: 44, textAlign: 'center' }}>
             {i + 1}/{VARIANTS.length}
           </Typography>
-
           <IconButton onClick={next} aria-label="פריסה הבאה" size="small">
             <ChevronLeftIcon />
           </IconButton>
         </Stack>
       </Paper>
     </Box>
+  );
+}
+
+export function App() {
+  const [screen, setScreen] = useState<Screen>('login');
+  return (
+    <NavContext.Provider value={{ go: setScreen }}>
+      {screen === 'login' ? <LoginSwitcher /> : <Dashboard />}
+    </NavContext.Provider>
   );
 }
