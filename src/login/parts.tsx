@@ -27,7 +27,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v11',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v12',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -52,11 +52,11 @@ export function BrandMark({ sx }: { sx?: SxProps<Theme> }) {
   );
 }
 
-export function AlfiImg({ sx }: { sx?: SxProps<Theme> }) {
+export function AlfiImg({ sx, src = 'alfi.png' }: { sx?: SxProps<Theme>; src?: string }) {
   return (
     <Box
       component="img"
-      src="alfi.png"
+      src={src}
       alt="Alfi"
       sx={{
         objectFit: 'contain',

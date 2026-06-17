@@ -191,6 +191,53 @@ function V10() {
   );
 }
 
+/* ---- 3 takes on #5 (glass card on gradient, mirrored Alfi) ---- */
+
+/* 5A — Alfi full-height bottom-left, glass card right (ref) */
+function V5a() {
+  return (
+    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, background: gradientBrand }}>
+      <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '6%' }, bottom: 0, height: { md: '94%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
+      <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
+        <BrandMark sx={{ mb: 2, color: 'primary.main' }} />
+        <AuthForm />
+        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+      </Paper>
+    </Box>
+  );
+}
+
+/* 5B — Alfi huge with soft halo, narrower translucent card centered-right */
+function V5b() {
+  return (
+    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 10 }, background: gradientBrand }}>
+      <Box aria-hidden sx={{ position: 'absolute', insetInlineEnd: '8%', top: '50%', transform: 'translateY(-50%)', width: { md: 620 }, height: { md: 620 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.common.white, 0.14), display: { xs: 'none', md: 'block' } }} />
+      <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, top: '50%', transform: 'translateY(-50%)', height: { md: '84%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
+      <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 380, p: { xs: 3, sm: 4 }, borderRadius: 5, bgcolor: (t) => alpha(t.palette.background.paper, 0.88) }}>
+        <BrandMark sx={{ mb: 2, color: 'primary.main' }} />
+        <AuthForm />
+        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+      </Paper>
+    </Box>
+  );
+}
+
+/* 5C — Alfi bottom-left, wide card right with tagline + features */
+function V5c() {
+  return (
+    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 6 }, background: gradientBrand }}>
+      <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: 0, bottom: 0, height: { md: '88%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
+      <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 460, p: { xs: 3, sm: 5 }, mb: { md: 6 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.95) }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+          <BrandMark sx={{ color: 'primary.main' }} />
+        </Stack>
+        <AuthForm />
+        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+      </Paper>
+    </Box>
+  );
+}
+
 export const VARIANTS: { name: string; Comp: () => JSX.Element }[] = [
   { name: 'פיצול · אלפי ענק', Comp: V1 },
   { name: 'כרטיס במרכז', Comp: V2 },
@@ -202,6 +249,9 @@ export const VARIANTS: { name: string; Comp: () => JSX.Element }[] = [
   { name: 'מינימלי', Comp: V8 },
   { name: 'טור תכונות', Comp: V9 },
   { name: 'כותרת גרדיאנט', Comp: V10 },
+  { name: '5A · זכוכית קלאסי', Comp: V5a },
+  { name: '5B · הילה + אלפי ענק', Comp: V5b },
+  { name: '5C · כרטיס רחב', Comp: V5c },
 ];
 
 void COPY;
