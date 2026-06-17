@@ -2,3 +2,4 @@ dist
 node_modules
 shot.mjs
 .claude/skills
+shot-nav.mjs
