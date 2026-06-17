@@ -27,7 +27,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v12',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v13',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -39,13 +39,13 @@ export const COPY = {
 export function BrandMark({ sx }: { sx?: SxProps<Theme> }) {
   return (
     <Stack direction="row" spacing={1} alignItems="center" sx={sx}>
-      <AutoAwesomeIcon fontSize="small" />
+      <AutoAwesomeIcon />
       <Box>
-        <Typography variant="subtitle2" sx={{ letterSpacing: 3, fontWeight: 700 }}>
-          KNOW-PROBLEM
+        <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
+          אלפי
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.85 }}>
-          EDU-AI learning platform
+          הלמידה החכמה שמתאימה לכל תלמיד
         </Typography>
       </Box>
     </Stack>

@@ -11,7 +11,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { VARIANTS } from './login/variants';
 
 export function App() {
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(10);
   const prev = () => setI((v) => (v - 1 + VARIANTS.length) % VARIANTS.length);
   const next = () => setI((v) => (v + 1) % VARIANTS.length);
   const Current = VARIANTS[i].Comp;
@@ -32,6 +32,14 @@ export function App() {
           px: 1.5,
           py: 0.75,
           borderRadius: 999,
+          opacity: 0.12,
+          transition: (t) =>
+            t.transitions.create('opacity', { duration: 1200, easing: t.transitions.easing.easeInOut }),
+          '&:hover, &:focus-within': {
+            opacity: 1,
+            transition: (t) =>
+              t.transitions.create('opacity', { duration: 150, easing: t.transitions.easing.easeOut }),
+          },
         }}
       >
         <Stack direction="row" spacing={1} alignItems="center">
