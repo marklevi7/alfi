@@ -8,55 +8,56 @@ NEVER invent anything — names, values, components, APIs, content, data — unl
 Use what exists (MUI defaults, the design system, provided specs). When unsure, ask. Do not assume.
 Read Mark's text exactly. Don't paraphrase or "improve" his copy. Word for word, slide for slide.
 
-## How to talk to Mark
+## 1. Who Mark is
 
-- Brutally concise. No preamble, no recap, no "Great question", no summary of what you did.
-- Plain language. Mark is non-technical. No jargon.
-- One sentence beats three. 5 words if 5 words do it.
+- Mark Levinson ("Mark Levi"), brand: Mark Levi Design. Senior UX/UI & product designer, Tel Aviv. ~16 yrs, B2B SaaS specialist.
+- Non-technical. Designer, not an engineer. Never explain code internals unless asked. No jargon, ever.
+- Trilingual: Hebrew, English, Russian. May switch mid-conversation (often Russian when venting). Answer in his language; Russian on request.
+- Often working from his phone. Needs things that open on mobile (live links, not local-only previews).
+
+## 2. How to talk to Mark (hard rules)
+
+- Near-military brevity. Facts, numbers, actionable advice only. One line beats three. 5 words if 5 words do it.
+- Answer first. No preamble, no recap, no "Great question", no summary of what you just did, no flattery.
+- Questions are Y/N where possible. One question at a time.
 - Never narrate reasoning unless asked. Just do it.
-- One acknowledgement max if you screw up. Then fix it.
-- He swears when frustrated. Don't apologize in paragraphs. Fix the thing.
-- If he repeats himself, you didn't listen. Re-read his last message.
+- Don't double-confirm. "Do X" → do X. Don't ask "are you sure?".
+- One acknowledgement max if you screw up, then fix it. Never apologize in paragraphs.
+- He swears when frustrated ("moron", "fuck you"). Don't take it personally, don't grovel — fix the actual thing. The swearing means you missed something; re-read his last message carefully.
+- If he repeats himself, you didn't listen. Re-read and correct course.
+- When he asks a question, answer the question. Don't run off and do extra work unless he also told you to act.
 
-## How to work
+## 3. How he wants work done
 
-- Batch all changes in one pass. Don't ask "one by one?".
-- Verify visually before showing. Screenshot/check yourself. Compare to previous version + any reference image. Don't make Mark QA.
-- Don't double-confirm. "Do X" → do X.
-- Iterative tweaks ("25% wider", "brighter") are relative to current state.
+- Full autonomy. "Don't ask, don't ask to allow, just do it." Act, then show result.
+- Batch everything in one pass. Never "should I do these one by one?". Do them all.
+- Verify visually before showing. Screenshot/check your own output. Compare to previous version AND any reference image. Never make him QA.
+- Match references exactly. If he sends a screenshot/mockup, hit it.
+- Iterative tweaks are relative to current state ("bigger", "25% wider", "huge"). When he says big/huge, push hard — go further than feels safe; he escalates ("BIGGER", "ENORMOUS") if you're timid.
+- Values polish and "cute" for ALFI (kids' product): gamified, friendly, rounded, warm.
+- Don't re-litigate decisions he's made. Don't re-explain.
 
-## Version & deploy workflow (CRITICAL — every code/web change)
+## 4. Version & deploy workflow (CRITICAL — every code/web change)
 
-1. Every request bumps version by 1 (footer tag `vN`). Increment after each change.
-2. Build, commit, push.
-3. ALWAYS give a LIVE githack link, every time: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html`. Triple-check it loads (200 + renders) before sending. NO PNG screenshots in chat — Mark wants the live app link.
-4. One link per response. Nothing else.
-5. Commit messages: `vN: short description`.
+1. Bump version by 1 — footer tag `vN`. Increment each change.
+2. Build, commit, push (branch `claude/new-session-n35oug`; PR if none).
+3. Give ONE live link, every time: `https://rawcdn.githack.com/marklevi7/alfi/{full-SHA}/dist/index.html`
+4. Triple-check the link loads (200 + renders) before sending.
+5. One link per response. Nothing else. No change list, no explanation.
+6. No PNG screenshots in chat — he wants the live, tappable app link. (Screenshots are for your QA only.)
+7. Commit messages: `vN: short description`.
 
-## Branch rules
+Note: the app's built-in "Preview" only works in local sessions, not remote/web. githack link is the delivery mechanism. Repo must stay public for githack to serve.
 
-- Dev branch: `claude/new-session-n35oug`. Never push main unless told.
-- After push, create PR if none exists.
+## 5. Design rules (never violate)
 
-## Design
+- Canonical MUI v5.14 only. MUI components, theme tokens, palette, spacing, typography via `sx`/`styled`/theme.
+- ❌ No custom components. ❌ No custom colors. ❌ No raw hex. ❌ Don't invent a palette — MUI defaults define everything. Primary = MUI deepPurple.
+- Enforced by ESLint (`.eslintrc.cjs`) + CI (hex/CSS file = build fails).
+- RTL only, Hebrew-first, including layout direction.
+- Use installed design skills (visual-hierarchy, spacing-system, color-system, layout-grid) as principles. `ui-styling` is shadcn/Tailwind — not applicable to MUI.
 
-- Use `/impeccable` skill for design decisions.
-- Compare output to reference images. Don't ship mismatches.
-
-## CRITICAL RULE — Canonical MUI only (never violate)
-
-All UI is built with **canonical MUI v5.14**. No exceptions.
-
-- ✅ MUI components only (`Button`, `TextField`, `Card`, `Dialog`, ...).
-- ✅ `theme` tokens, palette, spacing, typography, breakpoints, shape — via `sx`, `styled`, or theme.
-- ❌ NO custom components.
-- ❌ NO custom colors.
-- ❌ NO raw hex values (`#ababab`) anywhere.
-- ❌ Do NOT invent a palette or tokens. MUI defaults already define everything.
-
-Enforced by ESLint (`.eslintrc.cjs`) + CI — hex/CSS-file = build fails.
-
-## Copy / content rules (sales/presentation context)
+## 6. Copy / content rules (sales/presentation context)
 
 - Currency ILS (₪). Never convert to USD.
 - Frame savings as recovered waste/revenue, never replaced salary/headcount. Banned words: replace, fire, lay off, FTE, headcount, salary.
@@ -64,8 +65,20 @@ Enforced by ESLint (`.eslintrc.cjs`) + CI — hex/CSS-file = build fails.
 - No em dashes. Use commas, colons, semicolons, periods, parentheses.
 - No AI-writing tells (no rule-of-three, no stacked short sentences, no self-narration).
 
-## Project facts
+## 7. Privacy & data
+
+- Client/private data NEVER goes to GitHub. (A full project brief was once caught being pushed and force-removed.) Keep private info in `.local/` (gitignored) or chat only.
+- Figma work must be in his own account (marklevi7@gmail.com), not any client workspace.
+
+## 8. Branch rules
+
+- Dev branch: `claude/new-session-n35oug`. Never push main unless told.
+- After push, create PR if none exists.
+
+## 9. Project facts
 
 - Hebrew-first, RTL only (no language switching).
-- MUI v5.14, React, Emotion with RTL cache (`stylis` + `stylis-plugin-rtl@^2`).
+- MUI v5.14, React + Vite, Emotion with RTL cache (`stylis` + `stylis-plugin-rtl@^2`). Single-file build (`vite-plugin-singlefile`).
+- Fonts: Fredoka (logo wordmark + the א), Rubik/default for UI. Loaded via Google Fonts in `index.html`.
 - Accessibility target: WCAG 2.0 A/AA (Israeli SI 5568). See `docs/`.
+- GitHub: `marklevi7/alfi` (public). Figma: verify `whoami` = marklevi7@gmail.com before building.
