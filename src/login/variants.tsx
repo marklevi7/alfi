@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { AuthForm, FeatureList, BrandMark, AlfiImg, Tagline, gradientBrand, COPY } from './parts';
+import { AuthForm, FeatureList, FeatureGrid, SectionLabel, Footer, BrandMark, AlfiImg, Tagline, gradientBrand, COPY } from './parts';
 
 /* 1 — Split: form right, ENORMOUS full-height Alfi left, features over gradient */
 function V1() {
@@ -89,8 +89,10 @@ function V5() {
       <AlfiImg sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '92%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, opacity: 0.96 }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
         <BrandMark variant="dark" sx={{ mb: 2 }} />
-        <AuthForm />
-        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+        <AuthForm showFooter={false} />
+        <SectionLabel>למה אלפי?</SectionLabel>
+        <FeatureGrid />
+        <Footer />
       </Paper>
     </Box>
   );
@@ -200,8 +202,10 @@ function V5a() {
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '6%' }, bottom: 0, height: { md: '94%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
         <BrandMark variant="dark" sx={{ mb: 2 }} />
-        <AuthForm />
-        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+        <AuthForm showFooter={false} />
+        <SectionLabel>למה אלפי?</SectionLabel>
+        <FeatureGrid />
+        <Footer />
       </Paper>
     </Box>
   );
@@ -215,8 +219,10 @@ function V5b() {
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, top: '50%', transform: 'translateY(-50%)', height: { md: '84%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 380, p: { xs: 3, sm: 4 }, borderRadius: 5, bgcolor: (t) => alpha(t.palette.background.paper, 0.88) }}>
         <BrandMark variant="dark" sx={{ mb: 2 }} />
-        <AuthForm />
-        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+        <AuthForm showFooter={false} />
+        <SectionLabel>למה אלפי?</SectionLabel>
+        <FeatureGrid />
+        <Footer />
       </Paper>
     </Box>
   );
@@ -231,8 +237,10 @@ function V5c() {
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
           <BrandMark variant="dark" />
         </Stack>
-        <AuthForm />
-        <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
+        <AuthForm showFooter={false} />
+        <SectionLabel>למה אלפי?</SectionLabel>
+        <FeatureGrid />
+        <Footer />
       </Paper>
     </Box>
   );

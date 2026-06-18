@@ -20,6 +20,13 @@ import ListItemText from '@mui/material/ListItemText';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
+import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
+import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
+import Grid from '@mui/material/Grid';
 import { useNav } from '../nav';
 import { Logo } from '../components/Logo';
 
@@ -28,7 +35,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v15',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v16',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -77,7 +84,71 @@ export function FeatureList({
   );
 }
 
-export function AuthForm({ showTitle = true }: { showTitle?: boolean }) {
+const featureCards = [
+  { icon: <AutoAwesomeRoundedIcon />, text: COPY.features[0] },
+  { icon: <BoltRoundedIcon />, text: COPY.features[1] },
+  { icon: <TrendingUpRoundedIcon />, text: COPY.features[2] },
+  { icon: <SchoolRoundedIcon />, text: COPY.features[3] },
+];
+
+/** Tidy 2×2 grid of cute feature tiles. */
+export function FeatureGrid() {
+  return (
+    <Grid container spacing={1.25}>
+      {featureCards.map((f) => (
+        <Grid item xs={6} key={f.text}>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{
+              height: '100%',
+              p: 1,
+              borderRadius: 2,
+              bgcolor: (t) => alpha(t.palette.primary.main, 0.06),
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                bgcolor: (t) => alpha(t.palette.primary.main, 0.15),
+                color: 'primary.main',
+                flexShrink: 0,
+              }}
+            >
+              {f.icon}
+            </Avatar>
+            <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: 1.25 }}>
+              {f.text}
+            </Typography>
+          </Stack>
+        </Grid>
+      ))}
+    </Grid>
+  );
+}
+
+/** Section break with a tiny centered label. */
+export function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <Divider sx={{ my: 2.5 }}>
+      <Typography variant="overline" color="text.secondary" sx={{ fontWeight: 700 }}>
+        {children}
+      </Typography>
+    </Divider>
+  );
+}
+
+export function Footer() {
+  return (
+    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3, textAlign: 'center' }}>
+      {COPY.footer}
+    </Typography>
+  );
+}
+
+export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: boolean; showFooter?: boolean }) {
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const nav = useNav();
@@ -148,9 +219,11 @@ export function AuthForm({ showTitle = true }: { showTitle?: boolean }) {
         </Button>
       </Stack>
 
-      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
-        {COPY.footer}
-      </Typography>
+      {showFooter && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
+          {COPY.footer}
+        </Typography>
+      )}
     </Box>
   );
 }
