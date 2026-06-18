@@ -88,7 +88,7 @@ function V5() {
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, background: gradientBrand }}>
       <AlfiImg sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '92%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, opacity: 0.96 }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
-        <BrandMark sx={{ mb: 2, color: 'primary.main' }} />
+        <BrandMark variant="dark" sx={{ mb: 2 }} />
         <AuthForm />
         <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
       </Paper>
@@ -199,7 +199,7 @@ function V5a() {
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, background: gradientBrand }}>
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '6%' }, bottom: 0, height: { md: '94%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
-        <BrandMark sx={{ mb: 2, color: 'primary.main' }} />
+        <BrandMark variant="dark" sx={{ mb: 2 }} />
         <AuthForm />
         <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
       </Paper>
@@ -214,7 +214,7 @@ function V5b() {
       <Box aria-hidden sx={{ position: 'absolute', insetInlineEnd: '8%', top: '50%', transform: 'translateY(-50%)', width: { md: 620 }, height: { md: 620 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.common.white, 0.14), display: { xs: 'none', md: 'block' } }} />
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, top: '50%', transform: 'translateY(-50%)', height: { md: '84%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 380, p: { xs: 3, sm: 4 }, borderRadius: 5, bgcolor: (t) => alpha(t.palette.background.paper, 0.88) }}>
-        <BrandMark sx={{ mb: 2, color: 'primary.main' }} />
+        <BrandMark variant="dark" sx={{ mb: 2 }} />
         <AuthForm />
         <Box sx={{ mt: 1 }}><FeatureList dense /></Box>
       </Paper>
@@ -229,7 +229,7 @@ function V5c() {
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: 0, bottom: 0, height: { md: '88%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 460, p: { xs: 3, sm: 5 }, mb: { md: 6 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.95) }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-          <BrandMark sx={{ color: 'primary.main' }} />
+          <BrandMark variant="dark" />
         </Stack>
         <AuthForm />
         <Box sx={{ mt: 1 }}><FeatureList dense /></Box>

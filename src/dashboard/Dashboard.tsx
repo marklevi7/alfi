@@ -31,6 +31,7 @@ import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useNav } from '../nav';
+import { Logo } from '../components/Logo';
 
 const nav = [
   { label: 'מסך ראשי', icon: <SchoolRoundedIcon /> },
@@ -60,34 +61,41 @@ const toneColor = (t: Theme, tone: Tone) =>
 export function Dashboard() {
   const navTo = useNav();
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Grid container sx={{ minHeight: '100vh' }}>
-        {/* Sidebar — first in RTL = right */}
-        <Grid item xs={12} md={3} lg={2.5}>
-          <Paper
-            square
-            elevation={0}
-            sx={{
-              height: '100%',
-              p: 2.5,
-              display: 'flex',
-              flexDirection: 'column',
-              borderInlineStart: (t) => `1px solid ${t.palette.divider}`,
-            }}
-          >
-            <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end" sx={{ mb: 4 }}>
-              <Box sx={{ textAlign: 'end' }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', lineHeight: 1 }}>
-                  Alfi
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  פלטפורמת למידה חכמה
-                </Typography>
-              </Box>
-              <Avatar sx={{ bgcolor: 'primary.main' }}>
-                <AutoAwesomeIcon fontSize="small" />
-              </Avatar>
-            </Stack>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: (t) => alpha(t.palette.primary.main, 0.06),
+        display: 'flex',
+        justifyContent: 'center',
+        p: { xs: 0, md: 4 },
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          width: '100%',
+          maxWidth: 1280,
+          borderRadius: { xs: 0, md: 4 },
+          overflow: 'hidden',
+        }}
+      >
+        <Grid container sx={{ minHeight: { md: 'calc(100vh - 64px)' } }}>
+          {/* Sidebar — first in RTL = right */}
+          <Grid item xs={12} md={3} lg={3}>
+            <Paper
+              square
+              elevation={0}
+              sx={{
+                height: '100%',
+                p: 2.5,
+                display: 'flex',
+                flexDirection: 'column',
+                borderInlineStart: (t) => `1px solid ${t.palette.divider}`,
+              }}
+            >
+            <Box sx={{ mb: 4 }}>
+              <Logo variant="dark" />
+            </Box>
 
             <List sx={{ flex: 1 }}>
               {nav.map((item, idx) => (
@@ -119,7 +127,7 @@ export function Dashboard() {
         </Grid>
 
         {/* Main */}
-        <Grid item xs={12} md={9} lg={9.5} sx={{ p: { xs: 2.5, md: 4 } }}>
+        <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 } }}>
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Chip
@@ -277,7 +285,8 @@ export function Dashboard() {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
+        </Grid>
+      </Paper>
     </Box>
   );
 }

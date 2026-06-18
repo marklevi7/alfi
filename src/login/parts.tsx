@@ -20,15 +20,15 @@ import ListItemText from '@mui/material/ListItemText';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useNav } from '../nav';
+import { Logo } from '../components/Logo';
 
 export const COPY = {
   welcomeTitle: 'ברוכים השבים 👋',
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v14',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v15',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -37,20 +37,8 @@ export const COPY = {
   ],
 };
 
-export function BrandMark({ sx }: { sx?: SxProps<Theme> }) {
-  return (
-    <Stack direction="row" spacing={1} alignItems="center" sx={sx}>
-      <AutoAwesomeIcon />
-      <Box>
-        <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
-          אלפי
-        </Typography>
-        <Typography variant="caption" sx={{ opacity: 0.85 }}>
-          הלמידה החכמה שמתאימה לכל תלמיד
-        </Typography>
-      </Box>
-    </Stack>
-  );
+export function BrandMark({ sx, variant = 'light' }: { sx?: SxProps<Theme>; variant?: 'light' | 'dark' }) {
+  return <Logo variant={variant} sx={sx} />;
 }
 
 export function AlfiImg({ sx, src = 'alfi.png' }: { sx?: SxProps<Theme>; src?: string }) {
