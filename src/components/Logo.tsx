@@ -10,7 +10,7 @@ type Props = {
   variant?: 'light' | 'dark';
   /** show the small tagline under the wordmark */
   tagline?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'xl';
   sx?: SxProps<Theme>;
 };
 
@@ -18,6 +18,7 @@ const sizes = {
   small: { circle: 40, alef: '1.4rem', word: '1.5rem', tag: 'caption' as const },
   medium: { circle: 56, alef: '2rem', word: '2.1rem', tag: 'caption' as const },
   large: { circle: 76, alef: '2.7rem', word: '2.9rem', tag: 'body2' as const },
+  xl: { circle: 104, alef: '3.6rem', word: '4rem', tag: 'body1' as const },
 };
 
 export function Logo({ variant = 'dark', tagline = true, size = 'medium', sx }: Props) {
