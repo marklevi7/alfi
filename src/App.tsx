@@ -18,11 +18,14 @@ function LoginSwitcher() {
   const next = () => setI((v) => (v + 1) % VARIANTS.length);
   const Current = VARIANTS[i].Comp;
 
+  const SHOW_SWITCHER = false; // hidden until Mark asks for it back
+
   return (
     <Box>
       <Current />
 
       {/* Variant switcher — fades out when idle */}
+      {SHOW_SWITCHER && (
       <Paper
         elevation={8}
         sx={{
@@ -71,6 +74,7 @@ function LoginSwitcher() {
           </IconButton>
         </Stack>
       </Paper>
+      )}
     </Box>
   );
 }
