@@ -164,15 +164,15 @@ export function Dashboard() {
                 sx={{ height: '100%', borderColor: (t) => alpha(t.palette.primary.main, 0.25), bgcolor: (t) => alpha(t.palette.primary.main, 0.06) }}
               >
                 <CardContent>
-                  <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ mb: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                      הציונים שלי
-                    </Typography>
+                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1 }}>
                     <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
                       <BarChartRoundedIcon />
                     </Avatar>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      הציונים שלי
+                    </Typography>
                   </Stack>
-                  <Typography color="text.secondary" sx={{ textAlign: 'end', mb: 2 }}>
+                  <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2 }}>
                     צפו בכל המבחנים והתרגולים שלכם, עם פידבק מפורט לכל שאלה.
                   </Typography>
                   <Link href="#" underline="hover" sx={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
@@ -190,22 +190,22 @@ export function Dashboard() {
               >
                 <CardContent>
                   <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.info.main, 0.15), color: 'info.main' }}>
+                        <LightbulbRoundedIcon />
+                      </Avatar>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        תובנת AI שלך
+                      </Typography>
+                    </Stack>
                     <Tooltip title="רענון">
                       <IconButton size="small" aria-label="רענון תובנה">
                         <RefreshRoundedIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        תובנת AI שלך
-                      </Typography>
-                      <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.info.main, 0.15), color: 'info.main' }}>
-                        <LightbulbRoundedIcon />
-                      </Avatar>
-                    </Stack>
                   </Stack>
-                  <Box sx={{ borderInlineEnd: (t) => `4px solid ${alpha(t.palette.info.main, 0.5)}`, pe: 2, ps: 0 }}>
-                    <Typography color="text.secondary" sx={{ textAlign: 'end' }}>
+                  <Box sx={{ borderInlineStart: (t) => `4px solid ${alpha(t.palette.info.main, 0.5)}`, ps: 2, pe: 0 }}>
+                    <Typography color="text.secondary" sx={{ textAlign: 'start' }}>
                       אין הערכה על התלמיד ברגע זה. לאחר ביצוע התרגיל או המבחן הראשון תתבצע ההערכה.
                     </Typography>
                   </Box>

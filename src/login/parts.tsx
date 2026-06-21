@@ -53,7 +53,7 @@ export function BrandMark({
   variant?: 'light' | 'dark';
   size?: 'small' | 'medium' | 'large' | 'xl';
 }) {
-  return <Logo variant={variant} size={size} sx={sx} />;
+  return <Logo variant={variant} size={size} tagline={false} sx={sx} />;
 }
 
 export function AlfiImg({ sx, src = 'alfi.png' }: { sx?: SxProps<Theme>; src?: string }) {
