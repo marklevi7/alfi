@@ -14,14 +14,16 @@ import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
+import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
+import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
@@ -35,9 +37,9 @@ import { useNav } from '../nav';
 import { Logo } from '../components/Logo';
 
 const nav = [
-  { label: 'מסך ראשי', icon: <SchoolRoundedIcon /> },
-  { label: 'תרגולים ומבחנים מהמורה', icon: <AssignmentRoundedIcon /> },
-  { label: 'היסטוריה', icon: <DescriptionRoundedIcon /> },
+  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon /> },
+  { label: 'תרגולים ומבחנים מהמורה', short: 'תרגולים', icon: <MenuBookTwoToneIcon /> },
+  { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon /> },
 ];
 
 const stats = [
@@ -82,7 +84,7 @@ export function Dashboard() {
       >
         <Grid container sx={{ minHeight: { md: 'calc(100vh - 64px)' } }}>
           {/* Sidebar — first in RTL = right */}
-          <Grid item xs={12} md={3} lg={3}>
+          <Grid item md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
             <Paper
               square
               elevation={0}
@@ -92,58 +94,50 @@ export function Dashboard() {
                 display: 'flex',
                 flexDirection: 'column',
                 borderInlineStart: `1px solid ${t.palette.divider}`,
-                [t.breakpoints.down('md')]: {
-                  height: 'auto',
-                  borderInlineStart: 'none',
-                  borderBottom: `1px solid ${t.palette.divider}`,
-                },
               })}
             >
-            <Box sx={{ mb: 4 }}>
-              <Logo variant="dark" />
-            </Box>
+              <Box sx={{ mb: 4 }}>
+                <Logo variant="dark" />
+              </Box>
 
-            <List
-              sx={{
-                flex: { md: 1 },
-                display: { xs: 'flex', md: 'block' },
-                flexDirection: { xs: 'row' },
-                gap: { xs: 1, md: 0 },
-                overflowX: { xs: 'auto', md: 'visible' },
-                py: { xs: 0.5, md: 1 },
-              }}
-            >
-              {nav.map((item, idx) => (
-                <ListItemButton
-                  key={item.label}
-                  selected={idx === 0}
-                  sx={{
-                    borderRadius: 2,
-                    mb: { md: 0.5 },
-                    flexShrink: 0,
-                    '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
-                    '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
-                    '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
-                  }}
-                >
-                  <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', noWrap: true }} />
-                  <ListItemIcon sx={{ minWidth: 0, ms: 1 }}>{item.icon}</ListItemIcon>
-                </ListItemButton>
-              ))}
-            </List>
+              <List sx={{ flex: 1 }}>
+                {nav.map((item, idx) => (
+                  <ListItemButton
+                    key={item.label}
+                    selected={idx === 0}
+                    sx={{
+                      borderRadius: 2,
+                      mb: 0.5,
+                      '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
+                      '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
+                      '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
+                    }}
+                  >
+                    <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
+                    <ListItemIcon sx={{ minWidth: 0, ms: 1 }}>{item.icon}</ListItemIcon>
+                  </ListItemButton>
+                ))}
+              </List>
 
-            <Divider sx={{ my: 1, display: { xs: 'none', md: 'block' } }} />
-            <ListItemButton onClick={() => navTo.go('login')} sx={{ borderRadius: 2, flexShrink: 0, mt: { xs: 1, md: 0 } }}>
-              <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
-              <ListItemIcon sx={{ minWidth: 0 }}>
-                <LogoutRoundedIcon />
-              </ListItemIcon>
-            </ListItemButton>
-          </Paper>
-        </Grid>
+              <Divider sx={{ my: 1 }} />
+              <ListItemButton onClick={() => navTo.go('login')} sx={{ borderRadius: 2 }}>
+                <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
+                <ListItemIcon sx={{ minWidth: 0 }}>
+                  <LogoutTwoToneIcon />
+                </ListItemIcon>
+              </ListItemButton>
+            </Paper>
+          </Grid>
 
         {/* Main */}
         <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 }, display: 'flex', flexDirection: 'column' }}>
+          {/* Mobile top bar: logo + logout (sidebar is hidden on mobile) */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: { xs: 'flex', md: 'none' }, mb: 2 }}>
+            <Logo variant="dark" size="small" />
+            <IconButton onClick={() => navTo.go('login')} aria-label="התנתקות">
+              <LogoutTwoToneIcon />
+            </IconButton>
+          </Stack>
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Box sx={{ textAlign: 'start' }}>
@@ -299,8 +293,22 @@ export function Dashboard() {
               </Grid>
             </CardContent>
           </Card>
+          {/* Spacer so content clears the fixed mobile bottom nav */}
+          <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
         </Grid>
         </Grid>
+      </Paper>
+
+      {/* Mobile bottom navigation */}
+      <Paper
+        elevation={8}
+        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: 0, bottom: 0, zIndex: (t) => t.zIndex.appBar, borderRadius: 0 }}
+      >
+        <BottomNavigation showLabels value={0}>
+          {nav.map((item) => (
+            <BottomNavigationAction key={item.label} label={item.short} icon={item.icon} />
+          ))}
+        </BottomNavigation>
       </Paper>
     </Box>
   );
