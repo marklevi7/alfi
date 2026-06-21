@@ -1,0 +1,88 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.11.0
+2 info using node@v24.14.1
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmrc
+5 silly config load:file:/Users/marklevinson/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm install @mui/x-charts-pro
+8 verbose argv "install" "@mui/x-charts-pro" "--cache" "/Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache"
+9 verbose logfile logs-max:10 dir:/Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache/_logs/2026-06-21T08_20_26_661Z-
+10 verbose logfile /Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache/_logs/2026-06-21T08_20_26_661Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly fetch manifest @mui/x-charts-pro@*
+15 silly packumentCache full:https://registry.npmjs.org/@mui%2fx-charts-pro cache-miss
+16 verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+17 http fetch GET 200 https://registry.npmjs.org/@mui%2fx-charts-pro 944ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/@mui%2fx-charts-pro set size:undefined disposed:false
+19 silly fetch manifest @emotion/react@^11.11.1
+20 silly packumentCache full:https://registry.npmjs.org/@emotion%2freact cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/@emotion%2freact 132ms (cache miss)
+22 silly packumentCache full:https://registry.npmjs.org/@emotion%2freact set size:undefined disposed:false
+23 silly fetch manifest react@^18.2.0
+24 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+25 http fetch GET 200 https://registry.npmjs.org/react 487ms (cache miss)
+26 silly packumentCache full:https://registry.npmjs.org/react set size:undefined disposed:false
+27 silly fetch manifest @emotion/styled@^11.11.0
+28 silly packumentCache full:https://registry.npmjs.org/@emotion%2fstyled cache-miss
+29 http fetch GET 200 https://registry.npmjs.org/@emotion%2fstyled 133ms (cache miss)
+30 silly packumentCache full:https://registry.npmjs.org/@emotion%2fstyled set size:undefined disposed:false
+31 silly fetch manifest @mui/material@5.14.0
+32 silly packumentCache full:https://registry.npmjs.org/@mui%2fmaterial cache-miss
+33 http fetch GET 200 https://registry.npmjs.org/@mui%2fmaterial 202ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/@mui%2fmaterial set size:undefined disposed:false
+35 silly fetch manifest @mui/material@^7.3.0 || ^9.0.0
+36 silly packumentCache full:https://registry.npmjs.org/@mui%2fmaterial cache-miss
+37 http cache https://registry.npmjs.org/@mui%2fmaterial 7ms (cache hit)
+38 silly packumentCache full:https://registry.npmjs.org/@mui%2fmaterial set size:1289866 disposed:false
+39 silly fetch manifest @types/react@^18.2.0
+40 silly packumentCache full:https://registry.npmjs.org/@types%2freact cache-miss
+41 http fetch GET 200 https://registry.npmjs.org/@types%2freact 194ms (cache miss)
+42 silly packumentCache full:https://registry.npmjs.org/@types%2freact set size:undefined disposed:false
+43 silly fetch manifest react-dom@^18.2.0
+44 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+45 http fetch GET 200 https://registry.npmjs.org/react-dom 334ms (cache miss)
+46 silly packumentCache full:https://registry.npmjs.org/react-dom set size:undefined disposed:false
+47 verbose stack Error: unable to resolve dependency tree
+47 verbose stack     at #failPeerConflict (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:1415:25)
+47 verbose stack     at #loadPeerSet (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:1381:33)
+47 verbose stack     at async #buildDepStep (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:917:11)
+47 verbose stack     at async Arborist.buildIdealTree (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/build-ideal-tree.js:170:7)
+47 verbose stack     at async Promise.all (index 1)
+47 verbose stack     at async Arborist.reify (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:110:5)
+47 verbose stack     at async Install.exec (/usr/local/lib/node_modules/npm/lib/commands/install.js:152:5)
+47 verbose stack     at async Npm.exec (/usr/local/lib/node_modules/npm/lib/npm.js:209:9)
+47 verbose stack     at async module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:67:5)
+48 error code ERESOLVE
+49 error ERESOLVE unable to resolve dependency tree
+50 error
+51 error While resolving: alfi@0.0.0
+51 error Found: @mui/material@5.14.0
+51 error node_modules/@mui/material
+51 error   @mui/material@"5.14.0" from the root project
+51 error
+51 error Could not resolve dependency:
+51 error peer @mui/material@"^7.3.0 || ^9.0.0" from @mui/x-charts-pro@9.6.0
+51 error node_modules/@mui/x-charts-pro
+51 error   @mui/x-charts-pro@"*" from the root project
+51 error
+51 error Fix the upstream dependency conflict, or retry
+51 error this command with --force or --legacy-peer-deps
+51 error to accept an incorrect (and potentially broken) dependency resolution.
+52 error
+52 error
+52 error For a full report see:
+52 error /Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache/_logs/2026-06-21T08_20_26_661Z-eresolve-report.txt
+53 silly unfinished npm timer reify 1782030026914
+54 silly unfinished npm timer reify:loadTrees 1782030026916
+55 silly unfinished npm timer idealTree:buildDeps 1782030026982
+56 silly unfinished npm timer idealTree:#root 1782030026982
+57 verbose cwd /Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app
+58 verbose os Darwin 25.5.0
+59 verbose node v24.14.1
+60 verbose npm  v11.11.0
+61 verbose exit 1
+62 verbose code 1
+63 error A complete log of this run can be found in: /Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache/_logs/2026-06-21T08_20_26_661Z-debug-0.log

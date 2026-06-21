@@ -80,7 +80,7 @@ function LoginSwitcher() {
 }
 
 export function App() {
-  const [screen, setScreen] = useState<Screen>('login');
+  const [screen, setScreen] = useState<Screen>('dashboard');
   return (
     <NavContext.Provider value={{ go: setScreen }}>
       {screen === 'login' ? <LoginSwitcher /> : <Dashboard />}
