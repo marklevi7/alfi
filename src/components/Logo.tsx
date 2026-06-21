@@ -22,7 +22,7 @@ const heights = {
 
 // Official Alfi logo. Two-tone via CSS vars so it stays theme-bound (no hex
 // in source): --alfi-p = structural mark, --alfi-g = glyph inside the circle.
-export function Logo({ variant = 'dark', tagline = true, size = 'medium', sx }: Props) {
+export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }: Props) {
   const isLight = variant === 'light';
   const s = heights[size];
   return (
