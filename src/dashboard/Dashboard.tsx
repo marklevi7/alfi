@@ -219,11 +219,9 @@ export function Dashboard() {
                       </IconButton>
                     </Tooltip>
                   </Stack>
-                  <Box sx={{ borderInlineStart: (t) => `4px solid ${alpha(t.palette.info.main, 0.5)}`, ps: 2, pe: 0 }}>
-                    <Typography color="text.secondary" sx={{ textAlign: 'start' }}>
-                      אין הערכה על התלמיד ברגע זה. לאחר ביצוע התרגיל או המבחן הראשון תתבצע ההערכה.
-                    </Typography>
-                  </Box>
+                  <Typography color="text.secondary" sx={{ textAlign: 'start' }}>
+                    אין הערכה על התלמיד ברגע זה. לאחר ביצוע התרגיל או המבחן הראשון תתבצע ההערכה.
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
