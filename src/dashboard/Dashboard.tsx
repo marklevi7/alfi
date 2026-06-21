@@ -106,8 +106,8 @@ export function Dashboard() {
             <List
               sx={{
                 flex: { md: 1 },
-                display: 'flex',
-                flexDirection: { xs: 'row', md: 'column' },
+                display: { xs: 'flex', md: 'block' },
+                flexDirection: { xs: 'row' },
                 gap: { xs: 1, md: 0 },
                 overflowX: { xs: 'auto', md: 'visible' },
                 py: { xs: 0.5, md: 1 },
