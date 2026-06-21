@@ -143,7 +143,7 @@ export function Dashboard() {
         </Grid>
 
         {/* Main */}
-        <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 } }}>
+        <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 }, display: 'flex', flexDirection: 'column' }}>
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Box sx={{ textAlign: 'start' }}>
@@ -264,7 +264,7 @@ export function Dashboard() {
           </Grid>
 
           {/* Mastery map */}
-          <Card variant="outlined">
+          <Card variant="outlined" sx={{ flex: 1 }}>
             <CardContent>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
                 <Tooltip title="הסבר מבוסס AI">
