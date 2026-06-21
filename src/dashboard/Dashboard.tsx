@@ -148,7 +148,7 @@ export function Dashboard() {
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Box sx={{ textAlign: 'start' }}>
               <Typography variant="h4" component="h1" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
-                שלום, student! 👋
+                שלום, מארק! 👋
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 בואו נמשיך להתקדם היום
