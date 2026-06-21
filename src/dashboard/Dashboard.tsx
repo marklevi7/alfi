@@ -37,7 +37,7 @@ import { Logo } from '../components/Logo';
 const nav = [
   { label: 'מסך ראשי', icon: <SchoolRoundedIcon /> },
   { label: 'תרגולים ומבחנים מהמורה', icon: <AssignmentRoundedIcon /> },
-  { label: 'הציונים שלי', icon: <DescriptionRoundedIcon /> },
+  { label: 'היסטוריה', icon: <DescriptionRoundedIcon /> },
 ];
 
 const stats = [
@@ -86,39 +86,54 @@ export function Dashboard() {
             <Paper
               square
               elevation={0}
-              sx={{
+              sx={(t) => ({
                 height: '100%',
                 p: 2.5,
                 display: 'flex',
                 flexDirection: 'column',
-                borderInlineStart: (t) => `1px solid ${t.palette.divider}`,
-              }}
+                borderInlineStart: `1px solid ${t.palette.divider}`,
+                [t.breakpoints.down('md')]: {
+                  height: 'auto',
+                  borderInlineStart: 'none',
+                  borderBottom: `1px solid ${t.palette.divider}`,
+                },
+              })}
             >
             <Box sx={{ mb: 4 }}>
               <Logo variant="dark" />
             </Box>
 
-            <List sx={{ flex: 1 }}>
+            <List
+              sx={{
+                flex: { md: 1 },
+                display: 'flex',
+                flexDirection: { xs: 'row', md: 'column' },
+                gap: { xs: 1, md: 0 },
+                overflowX: { xs: 'auto', md: 'visible' },
+                py: { xs: 0.5, md: 1 },
+              }}
+            >
               {nav.map((item, idx) => (
                 <ListItemButton
                   key={item.label}
                   selected={idx === 0}
                   sx={{
                     borderRadius: 2,
-                    mb: 0.5,
+                    mb: { md: 0.5 },
+                    flexShrink: 0,
                     '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
                     '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
                     '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
                   }}
                 >
-                  <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
+                  <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', noWrap: true }} />
                   <ListItemIcon sx={{ minWidth: 0, ms: 1 }}>{item.icon}</ListItemIcon>
                 </ListItemButton>
               ))}
             </List>
 
-            <Divider sx={{ my: 1 }} />
-            <ListItemButton onClick={() => navTo.go('login')} sx={{ borderRadius: 2 }}>
+            <Divider sx={{ my: 1, display: { xs: 'none', md: 'block' } }} />
+            <ListItemButton onClick={() => navTo.go('login')} sx={{ borderRadius: 2, flexShrink: 0, mt: { xs: 1, md: 0 } }}>
               <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
               <ListItemIcon sx={{ minWidth: 0 }}>
                 <LogoutRoundedIcon />
@@ -132,7 +147,7 @@ export function Dashboard() {
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Box sx={{ textAlign: 'start' }}>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
                 שלום, student! 👋
               </Typography>
               <Typography variant="body1" color="text.secondary">
@@ -169,7 +184,7 @@ export function Dashboard() {
                       <BarChartRoundedIcon />
                     </Avatar>
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                      הציונים שלי
+                      היסטוריה
                     </Typography>
                   </Stack>
                   <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2 }}>
