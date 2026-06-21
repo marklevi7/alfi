@@ -30,6 +30,7 @@ import LightbulbRoundedIcon from '@mui/icons-material/LightbulbRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav } from '../nav';
 import { Logo } from '../components/Logo';
 
@@ -74,7 +75,7 @@ export function Dashboard() {
         elevation={3}
         sx={{
           width: '100%',
-          maxWidth: 1280,
+          maxWidth: 1200,
           borderRadius: { xs: 0, md: 4 },
           overflow: 'hidden',
         }}
@@ -175,7 +176,8 @@ export function Dashboard() {
                     צפו בכל המבחנים והתרגולים שלכם, עם פידבק מפורט לכל שאלה.
                   </Typography>
                   <Link href="#" underline="hover" sx={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-                    ← לחץ לצפייה
+                    לחץ לצפייה
+                    <ArrowForwardRoundedIcon fontSize="small" className="dir-icon" />
                   </Link>
                 </CardContent>
               </Card>

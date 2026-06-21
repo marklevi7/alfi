@@ -7,4 +7,20 @@ export const theme = createTheme({
   palette: {
     primary: deepPurple,
   },
+  components: {
+    // RTL at the design-system level. Layout/spacing already flip via
+    // stylis-plugin-rtl + logical props. Directional glyphs (arrows, chevrons)
+    // do NOT auto-mirror, so author them in LTR-forward orientation and add
+    // `className="dir-icon"` — the DS flips them in RTL. Screens never hand-roll
+    // an arrow direction.
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          ...(theme.direction === 'rtl' && {
+            '&.dir-icon': { transform: 'scaleX(-1)' },
+          }),
+        }),
+      },
+    },
+  },
 });
