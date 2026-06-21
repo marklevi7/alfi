@@ -131,21 +131,15 @@ export function Dashboard() {
         <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 } }}>
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
-            <Chip
-              icon={<LocalFireDepartmentRoundedIcon />}
-              label="1 ימים רצוף"
-              variant="outlined"
-              sx={{ fontWeight: 600 }}
-            />
-            <Stack direction="row" spacing={1.5} alignItems="flex-start">
-              <Box sx={{ textAlign: 'end' }}>
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
-                  שלום, student! 👋
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  בואו נמשיך להתקדם היום
-                </Typography>
-              </Box>
+            <Box sx={{ textAlign: 'start' }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
+                שלום, student! 👋
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                בואו נמשיך להתקדם היום
+              </Typography>
+            </Box>
+            <Stack direction="row" spacing={1.5} alignItems="center">
               <Tooltip title="התראות">
                 <IconButton aria-label="התראות">
                   <Badge color="error" variant="dot">
@@ -153,6 +147,12 @@ export function Dashboard() {
                   </Badge>
                 </IconButton>
               </Tooltip>
+              <Chip
+                icon={<LocalFireDepartmentRoundedIcon />}
+                label="1 ימים רצוף"
+                variant="outlined"
+                sx={{ fontWeight: 600 }}
+              />
             </Stack>
           </Stack>
 
