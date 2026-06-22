@@ -167,11 +167,11 @@ export function Dashboard() {
           {/* Header */}
           <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
             <Box sx={{ textAlign: 'start' }}>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2.125rem' }, textWrap: 'balance' }}>
                 שלום, מארק! 👋
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                בואו נמשיך להתקדם היום
+                בוא נמשיך להתקדם היום
               </Typography>
             </Box>
             <Stack direction="row" spacing={1.5} alignItems="center">
@@ -186,23 +186,25 @@ export function Dashboard() {
           </Stack>
 
           {/* Two feature cards */}
-          <Grid container spacing={2.5} sx={{ mb: 2.5 }}>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} md={6}>
               <Card
                 variant="outlined"
                 sx={{ height: '100%', borderColor: (t) => alpha(t.palette.primary.main, 0.25), bgcolor: (t) => alpha(t.palette.primary.main, 0.06) }}
               >
                 <CardContent>
-                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1 }}>
-                    <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
-                      <BarChartRoundedIcon />
-                    </Avatar>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                      היסטוריה
-                    </Typography>
+                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
+                        <BarChartRoundedIcon />
+                      </Avatar>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        היסטוריה
+                      </Typography>
+                    </Stack>
                   </Stack>
-                  <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2 }}>
-                    צפו בכל המבחנים והתרגולים שלכם, עם פידבק מפורט לכל שאלה.
+                  <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2, textWrap: 'pretty' }}>
+                    ראה את כל המבחנים והתרגולים שלך, עם פידבק מפורט לכל שאלה.
                   </Typography>
                   <Link href="#" underline="hover" sx={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
                     לחץ לצפייה
@@ -233,7 +235,7 @@ export function Dashboard() {
                       </IconButton>
                     </Tooltip>
                   </Stack>
-                  <Typography color="text.secondary" sx={{ textAlign: 'start' }}>
+                  <Typography color="text.secondary" sx={{ textAlign: 'start', textWrap: 'pretty' }}>
                     אין הערכה על התלמיד ברגע זה. לאחר ביצוע התרגיל או המבחן הראשון תתבצע ההערכה.
                   </Typography>
                 </CardContent>
@@ -242,7 +244,7 @@ export function Dashboard() {
           </Grid>
 
           {/* Stat cards */}
-          <Grid container spacing={2.5} sx={{ mb: 2.5 }}>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
             {stats.map((s) => (
               <Grid item xs={12} sm={4} key={s.label}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
