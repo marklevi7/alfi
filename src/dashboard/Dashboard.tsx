@@ -116,21 +116,38 @@ export function Dashboard() {
                     selected={idx === 0}
                     sx={{
                       borderRadius: 2,
-                      mb: 0.5,
+                      mb: 1,
+                      py: 1.25,
                       '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
                       '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 0, me: 1.5 }}>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
+                    <ListItemIcon sx={{ minWidth: 0, me: 2 }}>{item.icon}</ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        fontWeight: 600,
+                        textAlign: 'start',
+                        sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+                      }}
+                    />
                   </ListItemButton>
                 ))}
               </List>
 
-              <Divider sx={{ my: 1 }} />
-              <ListItemButton onClick={() => navTo.go('login')} sx={{ borderRadius: 2 }}>
-                <ListItemIcon sx={{ minWidth: 0, me: 1.5 }}>
+              <Divider sx={{ mb: 2 }} />
+              <ListItemButton
+                onClick={() => navTo.go('login')}
+                sx={{
+                  borderRadius: 2,
+                  py: 1.25,
+                  color: 'text.secondary',
+                  '&:hover': { bgcolor: (t) => alpha(t.palette.error.main, 0.08), color: 'error.main',
+                    '& .MuiListItemIcon-root': { color: 'error.main' } },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, me: 2, color: 'inherit' }}>
                   <LogoutTwoToneIcon />
                 </ListItemIcon>
                 <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
