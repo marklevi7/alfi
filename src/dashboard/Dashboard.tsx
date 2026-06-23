@@ -28,6 +28,7 @@ import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartm
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import LightbulbRoundedIcon from '@mui/icons-material/LightbulbRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
@@ -210,7 +211,7 @@ export function Dashboard() {
             {/* Feature cards — asymmetric 3:2 */}
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '3fr 2fr' }, gap: 2, alignItems: 'stretch' }}>
 
-              {/* History — richer, primary — first in DOM = rightmost in RTL */}
+              {/* Next task CTA — first in DOM = rightmost in RTL */}
               <Card variant="outlined" sx={{
                 borderColor: (t) => alpha(t.palette.primary.main, 0.25),
                 bgcolor: (t) => alpha(t.palette.primary.main, 0.05),
@@ -218,12 +219,12 @@ export function Dashboard() {
                 <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                   <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
                     <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
-                      <BarChartRoundedIcon />
+                      <PlayCircleRoundedIcon />
                     </Avatar>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>היסטוריה</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>המשימה הבאה שלך</Typography>
                   </Stack>
                   <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty' }}>
-                    ראה את כל הבוחנים והתרגולים שלך, עם פידבק מפורט לכל שאלה.
+                    יש לך 8 משימות חדשות מהמורה. בוא נתחיל עם האלגברה!
                   </Typography>
                   <Button
                     variant="contained"
@@ -231,7 +232,7 @@ export function Dashboard() {
                     endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
                     sx={{ alignSelf: 'flex-start', fontWeight: 700 }}
                   >
-                    לצפייה בהיסטוריה
+                    בוא נתרגל!
                   </Button>
                 </CardContent>
               </Card>
