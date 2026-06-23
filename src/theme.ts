@@ -9,7 +9,7 @@ export const theme = createTheme({
     success: teal,
   },
   shape: {
-    borderRadius: 5,
+    borderRadius: 8,
   },
   components: {
     // RTL at the design-system level. Layout/spacing already flip via
