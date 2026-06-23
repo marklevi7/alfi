@@ -122,7 +122,7 @@ export function Dashboard() {
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 0, me: 7 }}>{item.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 48 }}>{item.icon}</ListItemIcon>
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
