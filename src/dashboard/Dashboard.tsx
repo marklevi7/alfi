@@ -28,8 +28,7 @@ import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartm
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
-import LightbulbRoundedIcon from '@mui/icons-material/LightbulbRounded';
-import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
+import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav } from '../nav';
@@ -220,28 +219,32 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              {/* AI Insight — compact, info — second in DOM = leftmost in RTL */}
+              {/* Math average card — second in DOM = leftmost in RTL */}
               <Card variant="outlined" sx={{
-                borderColor: (t) => alpha(t.palette.info.main, 0.25),
-                bgcolor: (t) => alpha(t.palette.info.main, 0.05),
+                borderColor: (t) => alpha(t.palette.success.main, 0.25),
+                bgcolor: (t) => alpha(t.palette.success.main, 0.04),
               }}>
                 <CardContent sx={{ p: 3 }}>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.info.main, 0.15), color: 'info.main' }}>
-                        <LightbulbRoundedIcon />
-                      </Avatar>
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>תובנת AI שלך</Typography>
-                    </Stack>
-                    <Tooltip title="רענון">
-                      <IconButton size="small" aria-label="רענון תובנה">
-                        <RefreshRoundedIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+                    <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.success.main, 0.15), color: 'success.dark' }}>
+                      <TrendingUpRoundedIcon />
+                    </Avatar>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>הציון שלי במתמטיקה</Typography>
                   </Stack>
-                  <Typography color="text.secondary" sx={{ textAlign: 'start', textWrap: 'pretty' }}>
-                    אין הערכה על התלמיד ברגע זה. לאחר ביצוע התרגיל או המבחן הראשון תתבצע ההערכה.
-                  </Typography>
+                  <Stack direction="row" alignItems="flex-end" spacing={1} sx={{ mb: 1 }}>
+                    <Typography variant="h3" sx={{ fontWeight: 900, lineHeight: 1, color: 'success.dark' }}>
+                      78
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      מתוך 100
+                    </Typography>
+                  </Stack>
+                  <LinearProgress
+                    variant="determinate"
+                    value={78}
+                    color="success"
+                    sx={{ height: 6, borderRadius: 3 }}
+                  />
                 </CardContent>
               </Card>
             </Box>

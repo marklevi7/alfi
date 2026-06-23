@@ -7,6 +7,9 @@ export const theme = createTheme({
   palette: {
     primary: deepPurple,
   },
+  shape: {
+    borderRadius: 5,
+  },
   components: {
     // RTL at the design-system level. Layout/spacing already flip via
     // stylis-plugin-rtl + logical props. Directional glyphs (arrows, chevrons)
