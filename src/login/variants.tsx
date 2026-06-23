@@ -86,15 +86,21 @@ function V4() {
 /* 5 — Full gradient, big Alfi watermark on side, translucent glass card */
 function V5() {
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, background: gradientBrand }}>
-      <AlfiImg sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '92%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, opacity: 0.96 }} />
-      <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
-        <BrandMark variant="dark" size="xl" sx={{ mb: 3 }} />
-        <AuthForm showTitle={false} showFooter={false} />
-        <SectionLabel>למה אלפי?</SectionLabel>
-        <FeatureGrid />
-        <Footer />
-      </Paper>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'row', alignItems: 'stretch', background: gradientBrand, overflow: 'hidden' }}>
+      {/* Form column — first child = RIGHT in RTL row */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: { xs: 2, md: 6 }, width: { xs: '100%', md: 520 }, flexShrink: 0 }}>
+        <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
+          <BrandMark variant="dark" size="xl" sx={{ mb: 3 }} />
+          <AuthForm showTitle={false} showFooter={false} />
+          <SectionLabel>למה אלפי?</SectionLabel>
+          <FeatureGrid />
+          <Footer />
+        </Paper>
+      </Box>
+      {/* Robot column — second child = LEFT in RTL row */}
+      <Box sx={{ flex: 1, position: 'relative', display: { xs: 'none', md: 'block' }, overflow: 'hidden' }}>
+        <AlfiImg sx={{ position: 'absolute', bottom: 0, left: 0, height: '92%', width: 'auto', maxWidth: '100%', opacity: 0.96 }} />
+      </Box>
     </Box>
   );
 }

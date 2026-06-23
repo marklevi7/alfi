@@ -1,4 +1,4 @@
-import { alpha } from '@mui/material/styles';
+import { alpha, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -13,7 +13,6 @@ import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import LinearProgress from '@mui/material/LinearProgress';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import List from '@mui/material/List';
@@ -33,6 +32,15 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav } from '../nav';
 import { Logo } from '../components/Logo';
+import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
+
+const ctaShimmer = keyframes`
+  0%   { transform: translateX(200%); opacity: 0; }
+  5%   { opacity: 1; }
+  35%  { transform: translateX(-200%); opacity: 1; }
+  36%  { opacity: 0; }
+  100% { transform: translateX(-200%); opacity: 0; }
+`;
 
 const nav = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon /> },
@@ -41,8 +49,8 @@ const nav = [
 ];
 
 const stats = [
-  { label: 'רצף תרגול', value: '3', total: 5, sub: '3 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
-  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 משימות', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
+  { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'primary' as const },
+  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 תרגילים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
   { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 
@@ -59,9 +67,9 @@ const heatmapData: { topic: string; values: (number | null)[] }[] = [
 
 function masteryColor(t: Theme, v: number | null): string {
   if (v === null) return alpha(t.palette.text.disabled, 0.08);
-  if (v >= 80) return alpha(t.palette.success.main, 0.88);
-  if (v >= 55) return alpha(t.palette.warning.main, 0.82);
-  return alpha(t.palette.error.main, 0.82);
+  if (v >= 80) return alpha(t.palette.success.light, 0.9);
+  if (v >= 55) return alpha(t.palette.warning.light, 0.9);
+  return alpha(t.palette.error.light, 0.9);
 }
 
 function rowAvg(values: (number | null)[]): number | null {
@@ -74,7 +82,7 @@ export function Dashboard() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: '90vh',
         bgcolor: (t) => alpha(t.palette.primary.main, 0.06),
         display: 'flex',
         justifyContent: 'center',
@@ -90,13 +98,14 @@ export function Dashboard() {
           overflow: 'hidden',
         }}
       >
-        <Grid container sx={{ minHeight: { md: 'calc(100vh - 64px)' } }}>
+        <Grid container sx={{ minHeight: { md: 'calc(90vh - 64px)' } }}>
           {/* Sidebar — first in RTL = right */}
           <Grid item md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
             <Paper
               square
               elevation={0}
               sx={(t) => ({
+                height: '100%',
                 p: 2.5,
                 display: 'flex',
                 flexDirection: 'column',
@@ -121,7 +130,7 @@ export function Dashboard() {
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 48 }}>{item.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
@@ -134,22 +143,30 @@ export function Dashboard() {
                 ))}
               </List>
 
-              <Divider sx={{ mb: 1 }} />
-              <ListItemButton
-                onClick={() => navTo.go('login')}
-                sx={{
-                  borderRadius: 2,
-                  py: 0.75,
-                  color: 'text.secondary',
-                  '&:hover': { bgcolor: (t) => alpha(t.palette.error.main, 0.08), color: 'error.main',
-                    '& .MuiListItemIcon-root': { color: 'error.main' } },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 0, me: 3, color: 'inherit' }}>
-                  <LogoutTwoToneIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', variant: 'body2' }} />
-              </ListItemButton>
+              <Box sx={{ mt: 'auto', flexShrink: 0 }}>
+                <Box
+                  component="img"
+                  src={robotImg}
+                  alt="אלפי"
+                  sx={{ width: 'calc(100% + 40px)', mx: -2.5, maxHeight: 576, objectFit: 'contain', display: 'block' }}
+                />
+                <List sx={{ p: 0 }}>
+                  <ListItemButton
+                    onClick={() => navTo.go('login')}
+                    sx={{
+                      borderRadius: 2,
+                      mb: 1,
+                      py: 1.25,
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 36 }}><LogoutTwoToneIcon /></ListItemIcon>
+                    <ListItemText
+                      primary="התנתקות"
+                      primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }}
+                    />
+                  </ListItemButton>
+                </List>
+              </Box>
             </Paper>
           </Grid>
 
@@ -193,24 +210,43 @@ export function Dashboard() {
 
               {/* Next task CTA — first in DOM = rightmost in RTL */}
               <Card variant="outlined" sx={{
-                borderColor: (t) => alpha(t.palette.primary.main, 0.25),
-                bgcolor: (t) => alpha(t.palette.primary.main, 0.05),
+                borderColor: 'divider',
               }}>
                 <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                   <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
                     <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
                       <AssignmentTwoToneIcon />
                     </Avatar>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>המשימה הבאה שלך</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>התרגיל הבא שלך</Typography>
                   </Stack>
                   <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty' }}>
-                    יש לך 8 משימות חדשות מהמורה. בוא נתחיל עם אלגברה!
+                    יש לך 8 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
                   </Typography>
                   <Button
                     variant="contained"
                     color="primary"
                     endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-                    sx={{ alignSelf: 'flex-start', fontWeight: 700 }}
+                    sx={{
+                      alignSelf: 'flex-start',
+                      fontWeight: 700,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      transition: (t) => t.transitions.create(['transform', 'box-shadow'], {
+                        duration: t.transitions.duration.short,
+                        easing: t.transitions.easing.easeOut,
+                      }),
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(105deg, transparent 10%, rgba(255,255,255,0.92) 50%, transparent 90%)',
+                        animation: `${ctaShimmer} 2s ease-in-out infinite`,
+                        pointerEvents: 'none',
+                      },
+                      '&:hover': { transform: 'scale(1.05)', boxShadow: (t) => t.shadows[6] },
+                      '&:active': { transform: 'scale(0.97)', boxShadow: (t) => t.shadows[2] },
+                      '@media (prefers-reduced-motion: reduce)': { '&::after': { animation: 'none' } },
+                    }}
                   >
                     בוא נתרגל!
                   </Button>
@@ -219,30 +255,35 @@ export function Dashboard() {
 
               {/* Math average card — second in DOM = leftmost in RTL */}
               <Card variant="outlined" sx={{
-                borderColor: (t) => alpha(t.palette.success.main, 0.25),
-                bgcolor: (t) => alpha(t.palette.success.main, 0.04),
+                borderColor: 'divider',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  inset: 0,
+                  background: (t) => `linear-gradient(105deg, transparent 10%, ${alpha(t.palette.primary.light, 0.22)} 50%, transparent 90%)`,
+                  animation: `${ctaShimmer} 2.6s ease-in-out infinite`,
+                  pointerEvents: 'none',
+                  zIndex: 1,
+                },
+                '@media (prefers-reduced-motion: reduce)': { '&::after': { animation: 'none' } },
               }}>
-                <CardContent sx={{ p: 3 }}>
-                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
-                    <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.success.main, 0.15), color: 'success.dark' }}>
-                      <TrendingUpRoundedIcon />
+                <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.success.main, 0.12), color: 'success.dark', width: 36, height: 36 }}>
+                      <TrendingUpRoundedIcon fontSize="small" />
                     </Avatar>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>הציון שלי במתמטיקה</Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.secondary' }}>ציון ממוצע</Typography>
                   </Stack>
-                  <Stack direction="row" alignItems="flex-end" spacing={1} sx={{ mb: 1 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 900, lineHeight: 1, color: 'success.dark' }}>
+                  <Box sx={{ mt: 1.5 }}>
+                    <Typography sx={{ fontWeight: 200, lineHeight: 1, color: 'text.primary', fontSize: '4.5rem', letterSpacing: '-0.02em' }}>
                       78
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ color: 'text.disabled', mt: 0.5 }}>
                       מתוך 100
                     </Typography>
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    value={78}
-                    color="success"
-                    sx={{ height: 6, borderRadius: 3 }}
-                  />
+                  </Box>
                 </CardContent>
               </Card>
             </Box>
@@ -252,7 +293,6 @@ export function Dashboard() {
               <CardContent sx={{ py: 2.5, px: 0, '&:last-child': { pb: 2.5 } }}>
                 <Stack direction="row" divider={<Divider orientation="vertical" flexItem />}>
                   {stats.map((s) => {
-                    const pal = (t: Theme) => s.tone === 'primary' ? t.palette.primary : t.palette[s.tone as 'warning' | 'success'];
                     return (
                       <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 2 }}>
                         <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 0.75 }}>
@@ -260,7 +300,7 @@ export function Dashboard() {
                             color: `${s.tone}.main`,
                             display: 'flex', alignItems: 'center',
                             '& svg': { fontSize: '1.1rem' },
-                            ...(s.tone === 'warning' && {
+                            ...(s.label === 'רצף תרגול' && {
                               '@keyframes flamePulse': {
                                 '0%, 100%': { transform: 'scale(1)' },
                                 '50%': { transform: 'scale(1.2)' },
@@ -275,31 +315,21 @@ export function Dashboard() {
                             {s.label}
                           </Typography>
                         </Stack>
-                        <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1, color: (t) => pal(t).dark, mb: 0.25 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1, color: 'text.primary', mb: 0.25 }}>
                           {s.value}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
-                        {s.tone === 'warning' && s.total > 0 && (
+                        {s.total > 0 && (
                           <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 1 }}>
                             {Array.from({ length: s.total }).map((_, i) => (
                               <Box key={i} sx={{
                                 width: 10, height: 10, borderRadius: '50%',
                                 bgcolor: i < Number(s.value)
-                                  ? 'warning.main'
-                                  : (t) => alpha(t.palette.warning.main, 0.15),
+                                  ? `${s.tone}.main`
+                                  : 'grey.300',
                               }} />
                             ))}
                           </Stack>
-                        )}
-                        {s.tone === 'success' && s.total > 0 && (
-                          <Box sx={{ mt: 1.5, px: 0.5 }}>
-                            <LinearProgress
-                              variant="determinate"
-                              value={(Number(s.value) / s.total) * 100}
-                              color="success"
-                              sx={{ height: 8, borderRadius: 4 }}
-                            />
-                          </Box>
                         )}
                       </Box>
                     );
