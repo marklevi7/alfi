@@ -47,7 +47,7 @@ const stats = [
 ];
 
 // Heatmap data: rows = topics, cols = skill levels, value 0–100 (null = not started)
-const SKILL_COLS = ['בסיסי', 'קל', 'בינוני', 'קשה', 'מאתגר'];
+const SKILL_COLS = ['קל מאוד', 'קל', 'בינוני', 'קשה', 'קשה מאוד'];
 const heatmapData: { topic: string; values: (number | null)[] }[] = [
   { topic: 'אלגברה',            values: [90, 85, 78, 60, 42] },
   { topic: 'גיאומטריה אנליטית', values: [55, 40, 22, null, null] },
@@ -340,16 +340,10 @@ export function Dashboard() {
                     gap: 0.75, mb: 1, alignItems: 'flex-end',
                   }}>
                     <Box />
-                    {SKILL_COLS.map((col, i) => (
+                    {SKILL_COLS.map((col) => (
                       <Typography key={col} variant="caption" sx={{
-                        textAlign: 'center', fontWeight: 700, fontSize: '0.65rem',
-                        color: (t) => ([
-                          t.palette.success.dark,
-                          t.palette.success.main,
-                          t.palette.warning.dark,
-                          t.palette.error.main,
-                          t.palette.error.dark,
-                        ] as string[])[i],
+                        textAlign: 'center', fontWeight: 600, fontSize: '0.65rem',
+                        color: 'text.secondary',
                       }}>
                         {col}
                       </Typography>
