@@ -27,7 +27,7 @@ import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
-import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
+import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -49,12 +49,12 @@ const stats = [
 // Heatmap data: rows = topics, cols = skill levels, value 0–100 (null = not started)
 const SKILL_COLS = ['בסיסי', 'קל', 'בינוני', 'קשה', 'מאתגר'];
 const heatmapData: { topic: string; values: (number | null)[] }[] = [
-  { topic: 'חקירת פונקציות', values: [72, 65, 48, 30, null] },
-  { topic: 'אלגברה',         values: [90, 85, 78, 60, 42] },
+  { topic: 'אלגברה',            values: [90, 85, 78, 60, 42] },
   { topic: 'גיאומטריה אנליטית', values: [55, 40, 22, null, null] },
-  { topic: 'טריגונומטריה',   values: [null, null, null, null, null] },
-  { topic: 'הסתברות',        values: [null, null, null, null, null] },
-  { topic: 'סדרות',          values: [88, 80, 70, 55, null] },
+  { topic: 'הסתברות',           values: [null, null, null, null, null] },
+  { topic: 'חקירת פונקציות',    values: [72, 65, 48, 30, null] },
+  { topic: 'טריגונומטריה',      values: [null, null, null, null, null] },
+  { topic: 'סדרות',             values: [88, 80, 70, 55, null] },
 ];
 
 function masteryColor(t: Theme, v: number | null): string {
@@ -201,7 +201,7 @@ export function Dashboard() {
                 <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                   <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
                     <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
-                      <PlayCircleRoundedIcon />
+                      <AssignmentTwoToneIcon />
                     </Avatar>
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>המשימה הבאה שלך</Typography>
                   </Stack>
@@ -299,15 +299,8 @@ export function Dashboard() {
                               variant="determinate"
                               value={(Number(s.value) / s.total) * 100}
                               color="success"
-                              sx={{ height: 8, borderRadius: 4, mb: 0.75 }}
+                              sx={{ height: 8, borderRadius: 4 }}
                             />
-                            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                              <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem' }}>0</Typography>
-                              <Typography variant="caption" sx={{ fontWeight: 800, fontSize: '0.7rem', color: 'success.dark' }}>
-                                {s.value}/{s.total} ⭐
-                              </Typography>
-                              <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem' }}>{s.total}</Typography>
-                            </Stack>
                           </Box>
                         )}
                       </Box>
