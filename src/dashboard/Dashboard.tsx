@@ -8,12 +8,12 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import LinearProgress from '@mui/material/LinearProgress';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import List from '@mui/material/List';
@@ -43,7 +43,7 @@ const nav = [
 
 const stats = [
   { label: 'רצף תרגול', value: '3', total: 5, sub: '3 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
-  { label: 'תרגולים השבוע', value: '12', total: 20, sub: '12 מתוך 20 משימות', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
+  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 משימות', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
   { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 
@@ -177,22 +177,6 @@ export function Dashboard() {
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   שלום, מארק! 👋
                 </Typography>
-                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                  <Chip
-                    icon={<LocalFireDepartmentRoundedIcon />}
-                    label="3 ימים רצופים"
-                    size="small"
-                    color="warning"
-                    sx={{ fontWeight: 700 }}
-                  />
-                  <Chip
-                    icon={<TaskAltRoundedIcon />}
-                    label="12 תרגולים השבוע"
-                    size="small"
-                    color="success"
-                    sx={{ fontWeight: 700 }}
-                  />
-                </Stack>
               </Box>
               <Tooltip title="התראות">
                 <IconButton aria-label="התראות">
@@ -294,21 +278,34 @@ export function Dashboard() {
                           {s.value}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
-                        {s.total > 0 && (
-                          <Stack direction="row" spacing={0.4} justifyContent="center" flexWrap="wrap" sx={{ mt: 1, gap: 0.4 }}>
-                            {Array.from({ length: s.total }).map((_, i) => {
-                              const filled = i < Number(s.value);
-                              const dotColor = s.tone === 'warning' ? 'warning' : 'success';
-                              return (
-                                <Box key={i} sx={{
-                                  width: 10, height: 10, borderRadius: '50%',
-                                  bgcolor: filled
-                                    ? `${dotColor}.main`
-                                    : (t) => alpha(t.palette[dotColor as 'warning' | 'success'].main, 0.15),
-                                }} />
-                              );
-                            })}
+                        {s.tone === 'warning' && s.total > 0 && (
+                          <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 1 }}>
+                            {Array.from({ length: s.total }).map((_, i) => (
+                              <Box key={i} sx={{
+                                width: 10, height: 10, borderRadius: '50%',
+                                bgcolor: i < Number(s.value)
+                                  ? 'warning.main'
+                                  : (t) => alpha(t.palette.warning.main, 0.15),
+                              }} />
+                            ))}
                           </Stack>
+                        )}
+                        {s.tone === 'success' && s.total > 0 && (
+                          <Box sx={{ mt: 1.5, px: 0.5 }}>
+                            <LinearProgress
+                              variant="determinate"
+                              value={(Number(s.value) / s.total) * 100}
+                              color="success"
+                              sx={{ height: 8, borderRadius: 4, mb: 0.75 }}
+                            />
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                              <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem' }}>0</Typography>
+                              <Typography variant="caption" sx={{ fontWeight: 800, fontSize: '0.7rem', color: 'success.dark' }}>
+                                {s.value}/{s.total} ⭐
+                              </Typography>
+                              <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.6rem' }}>{s.total}</Typography>
+                            </Stack>
+                          </Box>
                         )}
                       </Box>
                     );
