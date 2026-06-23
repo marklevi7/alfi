@@ -223,7 +223,7 @@ export function Dashboard() {
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>היסטוריה</Typography>
                   </Stack>
                   <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty' }}>
-                    ראה את כל המבחנים והתרגולים שלך, עם פידבק מפורט לכל שאלה.
+                    ראה את כל הבוחנים והתרגולים שלך, עם פידבק מפורט לכל שאלה.
                   </Typography>
                   <Button
                     variant="contained"
