@@ -42,9 +42,9 @@ const nav = [
 ];
 
 const stats = [
-  { label: 'רצף תרגול', value: '3', sub: '3 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
-  { label: 'תרגולים השבוע', value: '12', sub: 'משימות שהושלמו', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
-  { label: 'בוחנים השבוע', value: '2', sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
+  { label: 'רצף תרגול', value: '3', total: 5, sub: '3 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
+  { label: 'תרגולים השבוע', value: '12', total: 20, sub: '12 מתוך 20 משימות', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
+  { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 
 // Heatmap data: rows = topics, cols = skill levels, value 0–100 (null = not started)
@@ -180,7 +180,7 @@ export function Dashboard() {
                 <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                   <Chip
                     icon={<LocalFireDepartmentRoundedIcon />}
-                    label="5 ימים רצופים"
+                    label="3 ימים רצופים"
                     size="small"
                     color="warning"
                     sx={{ fontWeight: 700 }}
@@ -294,19 +294,20 @@ export function Dashboard() {
                           {s.value}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
-                        {s.tone === 'warning' && (
-                          <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 1 }}>
-                            {['א','ב','ג','ד','ה'].map((day, i) => (
-                              <Box key={day} sx={{
-                                width: 20, height: 20, borderRadius: '50%',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                bgcolor: i < Number(s.value) ? 'warning.main' : (t) => alpha(t.palette.warning.main, 0.12),
-                                color: i < Number(s.value) ? 'warning.contrastText' : 'text.disabled',
-                                fontSize: '0.5rem', fontWeight: 800,
-                              }}>
-                                {day}
-                              </Box>
-                            ))}
+                        {s.total > 0 && (
+                          <Stack direction="row" spacing={0.4} justifyContent="center" flexWrap="wrap" sx={{ mt: 1, gap: 0.4 }}>
+                            {Array.from({ length: s.total }).map((_, i) => {
+                              const filled = i < Number(s.value);
+                              const dotColor = s.tone === 'warning' ? 'warning' : 'success';
+                              return (
+                                <Box key={i} sx={{
+                                  width: 10, height: 10, borderRadius: '50%',
+                                  bgcolor: filled
+                                    ? `${dotColor}.main`
+                                    : (t) => alpha(t.palette[dotColor as 'warning' | 'success'].main, 0.15),
+                                }} />
+                              );
+                            })}
                           </Stack>
                         )}
                       </Box>
