@@ -27,7 +27,6 @@ import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
-import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
 import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import LightbulbRoundedIcon from '@mui/icons-material/LightbulbRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
