@@ -7,7 +7,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
@@ -36,14 +37,14 @@ import { Logo } from '../components/Logo';
 
 const nav = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon /> },
-  { label: 'תרגולים ומבחנים מהמורה', short: 'תרגולים', icon: <MenuBookTwoToneIcon /> },
+  { label: 'תרגולים ובוחנים מהמורה', short: 'תרגולים', icon: <MenuBookTwoToneIcon /> },
   { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon /> },
 ];
 
 const stats = [
-  { label: 'רצף תרגול', value: '1', sub: 'ימים רצופים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
-  { label: 'תרגילים השבוע', value: '0', sub: 'משימות שהושלמו', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
-  { label: 'ציון ממוצע', value: '—', sub: 'אין עדיין ציונים', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
+  { label: 'רצף תרגול', value: '3', sub: '3 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'warning' as const },
+  { label: 'תרגולים השבוע', value: '12', sub: 'משימות שהושלמו', icon: <TaskAltRoundedIcon />, tone: 'success' as const },
+  { label: 'בוחנים השבוע', value: '2', sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 
 // Heatmap data: rows = topics, cols = skill levels, value 0–100 (null = not started)
@@ -58,16 +59,15 @@ const heatmapData: { topic: string; values: (number | null)[] }[] = [
 ];
 
 function masteryColor(t: Theme, v: number | null): string {
-  if (v === null) return alpha(t.palette.text.disabled, 0.12);
-  if (v >= 80) return alpha(t.palette.success.main, 0.7);
-  if (v >= 55) return alpha(t.palette.warning.main, 0.6);
-  return alpha(t.palette.error.main, 0.55);
+  if (v === null) return alpha(t.palette.text.disabled, 0.08);
+  if (v >= 80) return alpha(t.palette.success.main, 0.88);
+  if (v >= 55) return alpha(t.palette.warning.main, 0.82);
+  return alpha(t.palette.error.main, 0.82);
 }
-function masteryTextColor(t: Theme, v: number | null): string {
-  if (v === null) return t.palette.text.disabled;
-  if (v >= 80) return t.palette.success.dark;
-  if (v >= 55) return t.palette.warning.dark;
-  return t.palette.error.dark;
+
+function rowAvg(values: (number | null)[]): number | null {
+  const nonNull = values.filter((v): v is number => v !== null);
+  return nonNull.length ? Math.round(nonNull.reduce((a, b) => a + b, 0) / nonNull.length) : null;
 }
 
 export function Dashboard() {
@@ -123,7 +123,7 @@ export function Dashboard() {
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 0, me: 2 }}>{item.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 0, me: 4 }}>{item.icon}</ListItemIcon>
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
@@ -136,45 +136,64 @@ export function Dashboard() {
                 ))}
               </List>
 
-              <Divider sx={{ mb: 2 }} />
+              <Divider sx={{ mb: 1 }} />
               <ListItemButton
                 onClick={() => navTo.go('login')}
                 sx={{
                   borderRadius: 2,
-                  py: 1.25,
+                  py: 0.75,
                   color: 'text.secondary',
                   '&:hover': { bgcolor: (t) => alpha(t.palette.error.main, 0.08), color: 'error.main',
                     '& .MuiListItemIcon-root': { color: 'error.main' } },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 0, me: 2, color: 'inherit' }}>
-                  <LogoutTwoToneIcon />
+                <ListItemIcon sx={{ minWidth: 0, me: 3, color: 'inherit' }}>
+                  <LogoutTwoToneIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start' }} />
+                <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', variant: 'body2' }} />
               </ListItemButton>
             </Paper>
           </Grid>
 
         {/* Main */}
-        <Grid item xs={12} md={9} lg={9} sx={{ p: { xs: 2.5, md: 4 }, display: 'flex', flexDirection: 'column' }}>
-          {/* Mobile top bar: logo + logout (sidebar is hidden on mobile) */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: { xs: 'flex', md: 'none' }, mb: 2 }}>
+        <Grid item xs={12} md={9} lg={9} sx={{ display: 'flex', flexDirection: 'column' }}>
+          {/* Mobile top bar */}
+          <Stack direction="row" justifyContent="space-between" alignItems="center"
+            sx={{ display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
             <Logo variant="dark" size="small" />
             <IconButton onClick={() => navTo.go('login')} aria-label="התנתקות">
               <LogoutTwoToneIcon />
             </IconButton>
           </Stack>
-          {/* Header */}
-          <Stack direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ mb: 3 }}>
-            <Box sx={{ textAlign: 'start' }}>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2.125rem' }, textWrap: 'balance' }}>
-                שלום, מארק! 👋
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                בוא נמשיך להתקדם היום
-              </Typography>
-            </Box>
-            <Stack direction="row" spacing={1.5} alignItems="center">
+
+          {/* Header strip */}
+          <Box sx={{
+            px: { xs: 2.5, md: 4 }, py: { xs: 2, md: 3 },
+            borderBottom: 1, borderColor: 'divider',
+          }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Box>
+                <Typography variant="h4" component="h1"
+                  sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
+                  שלום, מארק! 👋
+                </Typography>
+                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                  <Chip
+                    icon={<LocalFireDepartmentRoundedIcon />}
+                    label="5 ימים רצופים"
+                    size="small"
+                    color="warning"
+                    sx={{ fontWeight: 700 }}
+                  />
+                  <Chip
+                    icon={<TaskAltRoundedIcon />}
+                    label="12 תרגולים השבוע"
+                    size="small"
+                    color="success"
+                    sx={{ fontWeight: 700 }}
+                  />
+                </Stack>
+              </Box>
               <Tooltip title="התראות">
                 <IconButton aria-label="התראות">
                   <Badge color="error" variant="dot">
@@ -183,51 +202,52 @@ export function Dashboard() {
                 </IconButton>
               </Tooltip>
             </Stack>
-          </Stack>
+          </Box>
 
-          {/* Two feature cards */}
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={12} md={6}>
-              <Card
-                variant="outlined"
-                sx={{ height: '100%', borderColor: (t) => alpha(t.palette.primary.main, 0.25), bgcolor: (t) => alpha(t.palette.primary.main, 0.06) }}
-              >
-                <CardContent>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
-                        <BarChartRoundedIcon />
-                      </Avatar>
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        היסטוריה
-                      </Typography>
-                    </Stack>
+          {/* Scrollable content */}
+          <Box sx={{ p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+
+            {/* Feature cards — asymmetric 3:2 */}
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '3fr 2fr' }, gap: 2, alignItems: 'stretch' }}>
+
+              {/* History — richer, primary — first in DOM = rightmost in RTL */}
+              <Card variant="outlined" sx={{
+                borderColor: (t) => alpha(t.palette.primary.main, 0.25),
+                bgcolor: (t) => alpha(t.palette.primary.main, 0.05),
+              }}>
+                <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
+                    <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.15), color: 'primary.main' }}>
+                      <BarChartRoundedIcon />
+                    </Avatar>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>היסטוריה</Typography>
                   </Stack>
-                  <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2, textWrap: 'pretty' }}>
+                  <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty' }}>
                     ראה את כל המבחנים והתרגולים שלך, עם פידבק מפורט לכל שאלה.
                   </Typography>
-                  <Link href="#" underline="hover" sx={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-                    לחץ לצפייה
-                    <ArrowForwardRoundedIcon fontSize="small" className="dir-icon" />
-                  </Link>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
+                    sx={{ alignSelf: 'flex-start', fontWeight: 700 }}
+                  >
+                    לצפייה בהיסטוריה
+                  </Button>
                 </CardContent>
               </Card>
-            </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Card
-                variant="outlined"
-                sx={{ height: '100%', borderColor: (t) => alpha(t.palette.info.main, 0.25), bgcolor: (t) => alpha(t.palette.info.main, 0.06) }}
-              >
-                <CardContent>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
+              {/* AI Insight — compact, info — second in DOM = leftmost in RTL */}
+              <Card variant="outlined" sx={{
+                borderColor: (t) => alpha(t.palette.info.main, 0.25),
+                bgcolor: (t) => alpha(t.palette.info.main, 0.05),
+              }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
                     <Stack direction="row" spacing={1.5} alignItems="center">
                       <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.info.main, 0.15), color: 'info.main' }}>
                         <LightbulbRoundedIcon />
                       </Avatar>
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        תובנת AI שלך
-                      </Typography>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>תובנת AI שלך</Typography>
                     </Stack>
                     <Tooltip title="רענון">
                       <IconButton size="small" aria-label="רענון תובנה">
@@ -240,116 +260,157 @@ export function Dashboard() {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
-          </Grid>
+            </Box>
 
-          {/* Stat cards */}
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            {stats.map((s) => (
-              <Grid item xs={12} sm={4} key={s.label}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%">
-                      <Box>
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'start' }}>
-                          {s.label}
-                        </Typography>
-                        <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.1, textAlign: 'start' }}>
+            {/* Stats — ONE card, 3 columns with vertical dividers */}
+            <Card variant="outlined">
+              <CardContent sx={{ py: 2.5, px: 0, '&:last-child': { pb: 2.5 } }}>
+                <Stack direction="row" divider={<Divider orientation="vertical" flexItem />}>
+                  {stats.map((s) => {
+                    const pal = (t: Theme) => s.tone === 'primary' ? t.palette.primary : t.palette[s.tone as 'warning' | 'success'];
+                    return (
+                      <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 2 }}>
+                        <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 0.75 }}>
+                          <Box sx={{
+                            color: `${s.tone}.main`,
+                            display: 'flex', alignItems: 'center',
+                            '& svg': { fontSize: '1.1rem' },
+                            ...(s.tone === 'warning' && {
+                              '@keyframes flamePulse': {
+                                '0%, 100%': { transform: 'scale(1)' },
+                                '50%': { transform: 'scale(1.2)' },
+                              },
+                              animation: 'flamePulse 1.8s ease-in-out infinite',
+                              '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+                            }),
+                          }}>
+                            {s.icon}
+                          </Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>
+                            {s.label}
+                          </Typography>
+                        </Stack>
+                        <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1, color: (t) => pal(t).dark, mb: 0.25 }}>
                           {s.value}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'start', display: 'block' }}>
-                          {s.sub}
-                        </Typography>
+                        <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
+                        {s.tone === 'warning' && (
+                          <Stack direction="row" spacing={0.5} justifyContent="center" sx={{ mt: 1 }}>
+                            {['א','ב','ג','ד','ה'].map((day, i) => (
+                              <Box key={day} sx={{
+                                width: 20, height: 20, borderRadius: '50%',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                bgcolor: i < Number(s.value) ? 'warning.main' : (t) => alpha(t.palette.warning.main, 0.12),
+                                color: i < Number(s.value) ? 'warning.contrastText' : 'text.disabled',
+                                fontSize: '0.5rem', fontWeight: 800,
+                              }}>
+                                {day}
+                              </Box>
+                            ))}
+                          </Stack>
+                        )}
                       </Box>
-                      <Avatar
-                        variant="rounded"
-                        sx={{
-                          bgcolor: (t) => alpha((s.tone === 'primary' ? t.palette.primary : t.palette[s.tone]).main, 0.15),
-                          color: `${s.tone}.main`,
-                        }}
-                      >
-                        {s.icon}
-                      </Avatar>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                    );
+                  })}
+                </Stack>
+              </CardContent>
+            </Card>
 
           {/* Mastery heatmap */}
           <Card variant="outlined" sx={{ flex: 1 }}>
-            <CardContent>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, textAlign: 'start' }}>
-                  מפת השליטה בנושאים · מתמטיקה
-                </Typography>
+            <Stack direction="row" alignItems="center" justifyContent="space-between"
+              flexWrap="wrap" gap={1.5} sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>מפת שליטה · מתמטיקה</Typography>
+              <Stack direction="row" spacing={2} alignItems="center">
+                {([
+                  { label: 'שליטה גבוהה', color: 'success' as const },
+                  { label: 'בתהליך', color: 'warning' as const },
+                  { label: 'דורש חזרה', color: 'error' as const },
+                ] as const).map((l) => (
+                  <Stack key={l.label} direction="row" spacing={0.75} alignItems="center">
+                    <Box sx={{ width: 10, height: 10, borderRadius: 0.5,
+                      bgcolor: (t) => alpha(t.palette[l.color].main, 0.85) }} />
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>{l.label}</Typography>
+                  </Stack>
+                ))}
               </Stack>
+            </Stack>
 
-              {/* Heatmap grid */}
+            <CardContent sx={{ p: 2.5 }}>
               <Box sx={{ overflowX: 'auto' }}>
-                <Box sx={{ minWidth: 320 }}>
+                <Box sx={{ minWidth: 360 }}>
                   {/* Column headers */}
-                  <Box sx={{ display: 'grid', gridTemplateColumns: '120px repeat(5, 1fr)', gap: 0.5, mb: 0.5 }}>
+                  <Box sx={{
+                    display: 'grid',
+                    gridTemplateColumns: (t) => `${t.spacing(18)} repeat(5, 1fr)`,
+                    gap: 0.75, mb: 1, alignItems: 'flex-end',
+                  }}>
                     <Box />
-                    {SKILL_COLS.map((col) => (
-                      <Typography key={col} variant="caption" color="text.secondary"
-                        sx={{ textAlign: 'center', fontWeight: 600, px: 0.5 }}>
+                    {SKILL_COLS.map((col, i) => (
+                      <Typography key={col} variant="caption" sx={{
+                        textAlign: 'center', fontWeight: 700, fontSize: '0.65rem',
+                        color: (t) => ([
+                          t.palette.success.dark,
+                          t.palette.success.main,
+                          t.palette.warning.dark,
+                          t.palette.error.main,
+                          t.palette.error.dark,
+                        ] as string[])[i],
+                      }}>
                         {col}
                       </Typography>
                     ))}
                   </Box>
 
                   {/* Rows */}
-                  {heatmapData.map((row) => (
-                    <Box key={row.topic}
-                      sx={{ display: 'grid', gridTemplateColumns: '120px repeat(5, 1fr)', gap: 0.5, mb: 0.5 }}>
-                      <Typography variant="caption" color="text.secondary"
-                        sx={{ display: 'flex', alignItems: 'center', fontWeight: 600, pe: 1, textAlign: 'start' }}>
-                        {row.topic}
-                      </Typography>
-                      {row.values.map((v, ci) => (
-                        <Box key={ci} sx={{
-                          height: 40,
-                          borderRadius: 1.5,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          bgcolor: (t) => masteryColor(t, v),
-                          border: (t) => `1px solid ${alpha(v === null ? t.palette.divider : masteryTextColor(t, v), 0.2)}`,
-                          fontWeight: 700,
-                          fontSize: '0.72rem',
-                          color: (t) => masteryTextColor(t, v),
-                          transition: 'transform 0.15s',
-                          cursor: v !== null ? 'pointer' : 'default',
-                          '&:hover': v !== null ? { transform: 'scale(1.06)' } : {},
+                  {heatmapData.map((row) => {
+                    const avg = rowAvg(row.values);
+                    const hasData = row.values.some(v => v !== null);
+                    return (
+                      <Box key={row.topic} sx={{
+                        display: 'grid',
+                        gridTemplateColumns: (t) => `${t.spacing(18)} repeat(5, 1fr)`,
+                        gap: 0.75, mb: 0.75, alignItems: 'center',
+                      }}>
+                        {/* Topic label */}
+                        <Typography variant="caption" sx={{
+                          fontWeight: 700, pe: 1, textAlign: 'start',
+                          color: avg === null ? 'text.disabled' : 'text.primary',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                         }}>
-                          {v !== null ? `${v}%` : ''}
-                        </Box>
-                      ))}
-                    </Box>
-                  ))}
+                          {row.topic}
+                        </Typography>
 
-                  {/* Legend */}
-                  <Stack direction="row" spacing={2} justifyContent="flex-start" sx={{ mt: 1.5 }}>
-                    {[
-                      { label: 'שליטה גבוהה', color: 'success' as const },
-                      { label: 'בתהליך', color: 'warning' as const },
-                      { label: 'דורש חזרה', color: 'error' as const },
-                    ].map((l) => (
-                      <Stack key={l.label} direction="row" spacing={0.5} alignItems="center">
-                        <Box sx={{ width: 12, height: 12, borderRadius: 0.5,
-                          bgcolor: (t) => alpha(t.palette[l.color].main, 0.65) }} />
-                        <Typography variant="caption" color="text.secondary">{l.label}</Typography>
-                      </Stack>
-                    ))}
-                  </Stack>
+                        {/* Cells — color only, no numbers */}
+                        {hasData ? row.values.map((v, ci) => (
+                          <Box key={ci} sx={{
+                            height: 44, borderRadius: 1.5,
+                            bgcolor: (t) => masteryColor(t, v),
+                            transition: 'transform 0.15s ease-out',
+                            cursor: v !== null ? 'pointer' : 'default',
+                            '&:hover': v !== null ? { transform: 'scale(1.07)' } : {},
+                          }} />
+                        )) : (
+                          <Box sx={{
+                            gridColumn: 'span 5', height: 44, borderRadius: 1.5,
+                            border: 1, borderStyle: 'dashed', borderColor: 'divider',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <Typography variant="caption" color="text.disabled" sx={{ fontWeight: 600 }}>
+                              טרם לומד
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    );
+                  })}
                 </Box>
               </Box>
             </CardContent>
           </Card>
-          {/* Spacer so content clears the fixed mobile bottom nav */}
-          <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
+            {/* Spacer so content clears the fixed mobile bottom nav */}
+            <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
+          </Box>{/* end scrollable content */}
         </Grid>
         </Grid>
       </Paper>
