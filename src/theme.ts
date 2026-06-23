@@ -1,11 +1,12 @@
 import { createTheme } from '@mui/material/styles';
-import { deepPurple } from '@mui/material/colors';
+import { deepPurple, teal } from '@mui/material/colors';
 
 // Canonical MUI theme, RTL. Primary uses MUI's built-in deepPurple palette.
 export const theme = createTheme({
   direction: 'rtl',
   palette: {
     primary: deepPurple,
+    success: teal,
   },
   shape: {
     borderRadius: 5,

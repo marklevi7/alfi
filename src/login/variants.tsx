@@ -1,4 +1,5 @@
 import { alpha } from '@mui/material/styles';
+import { indigo } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -198,9 +199,9 @@ function V10() {
 /* 5A — Alfi full-height bottom-left, glass card right (ref) */
 function V5a() {
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, background: gradientBrand }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
       <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '6%' }, bottom: 0, height: { md: '94%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
-      <Paper elevation={12} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: (t) => alpha(t.palette.background.paper, 0.94) }}>
+      <Paper elevation={4} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: 'background.paper' }}>
         <BrandMark variant="dark" size="xl" sx={{ mb: 3 }} />
         <AuthForm showTitle={false} showFooter={false} />
         <SectionLabel>למה אלפי?</SectionLabel>

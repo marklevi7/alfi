@@ -97,7 +97,6 @@ export function Dashboard() {
               square
               elevation={0}
               sx={(t) => ({
-                height: '100%',
                 p: 2.5,
                 display: 'flex',
                 flexDirection: 'column',
@@ -105,10 +104,10 @@ export function Dashboard() {
               })}
             >
               <Box sx={{ mb: 4 }}>
-                <Logo variant="dark" />
+                <Logo variant="dark" size="large" />
               </Box>
 
-              <List sx={{ flex: 1 }}>
+              <List>
                 {nav.map((item, idx) => (
                   <ListItemButton
                     key={item.label}
@@ -168,7 +167,6 @@ export function Dashboard() {
           {/* Header strip */}
           <Box sx={{
             px: { xs: 2.5, md: 4 }, py: { xs: 2, md: 3 },
-            borderBottom: 1, borderColor: 'divider',
           }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Box>
@@ -206,7 +204,7 @@ export function Dashboard() {
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>המשימה הבאה שלך</Typography>
                   </Stack>
                   <Typography color="text.secondary" sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty' }}>
-                    יש לך 8 משימות חדשות מהמורה. בוא נתחיל עם האלגברה!
+                    יש לך 8 משימות חדשות מהמורה. בוא נתחיל עם אלגברה!
                   </Typography>
                   <Button
                     variant="contained"

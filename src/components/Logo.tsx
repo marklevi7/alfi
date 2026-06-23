@@ -16,7 +16,7 @@ type Props = {
 const heights = {
   small: { h: 28, tag: 'caption' as const },
   medium: { h: 38, tag: 'caption' as const },
-  large: { h: 52, tag: 'body2' as const },
+  large: { h: 62, tag: 'body2' as const },
   xl: { h: 72, tag: 'body1' as const },
 };
 
