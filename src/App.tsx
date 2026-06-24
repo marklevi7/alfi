@@ -10,6 +10,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { VARIANTS } from './login/variants';
 import { Dashboard } from './dashboard/Dashboard';
+import { Analytics } from './dashboard/Analytics';
+import { Practice } from './dashboard/Practice';
+import { History } from './dashboard/History';
 import { NavContext, type Screen } from './nav';
 
 function LoginSwitcher() {
@@ -83,7 +86,11 @@ export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
   return (
     <NavContext.Provider value={{ go: setScreen }}>
-      {screen === 'login' ? <LoginSwitcher /> : <Dashboard />}
+      {screen === 'login' ? <LoginSwitcher />
+        : screen === 'analytics' ? <Analytics />
+        : screen === 'practice' ? <Practice />
+        : screen === 'history' ? <History />
+        : <Dashboard />}
     </NavContext.Provider>
   );
 }
