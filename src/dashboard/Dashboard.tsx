@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { alpha, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
@@ -30,6 +33,8 @@ import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
 import { useNav } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -79,6 +84,7 @@ function rowAvg(values: (number | null)[]): number | null {
 
 export function Dashboard() {
   const navTo = useNav();
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
     <Box
       sx={{
@@ -143,29 +149,13 @@ export function Dashboard() {
                 ))}
               </List>
 
-              <Box sx={{ mt: 'auto', flexShrink: 0 }}>
+              <Box sx={{ mt: 'auto', flexShrink: 0, pb: 3 }}>
                 <Box
                   component="img"
                   src={robotImg}
                   alt="אלפי"
                   sx={{ width: 'calc(100% + 40px)', mx: -2.5, maxHeight: 576, objectFit: 'contain', display: 'block' }}
                 />
-                <List sx={{ p: 0 }}>
-                  <ListItemButton
-                    onClick={() => navTo.go('login')}
-                    sx={{
-                      borderRadius: 2,
-                      mb: 1,
-                      py: 1.25,
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 36 }}><LogoutTwoToneIcon /></ListItemIcon>
-                    <ListItemText
-                      primary="התנתקות"
-                      primaryTypographyProps={{ fontWeight: 600, textAlign: 'start', sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }}
-                    />
-                  </ListItemButton>
-                </List>
               </Box>
             </Paper>
           </Grid>
@@ -176,29 +166,51 @@ export function Dashboard() {
           <Stack direction="row" justifyContent="space-between" alignItems="center"
             sx={{ display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
             <Logo variant="dark" size="small" />
-            <IconButton onClick={() => navTo.go('login')} aria-label="התנתקות">
-              <LogoutTwoToneIcon />
+            <IconButton aria-label="תפריט" onClick={(e) => setMenuAnchor(e.currentTarget)}>
+              <MenuRoundedIcon />
             </IconButton>
           </Stack>
 
           {/* Header strip */}
           <Box sx={{
-            px: { xs: 2.5, md: 4 }, py: { xs: 2, md: 3 },
+            px: { xs: 2.5, md: 4 }, py: { xs: 1.5, md: 2 },
+            display: 'flex', alignItems: 'center',
           }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
               <Box>
                 <Typography variant="h4" component="h1"
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   שלום, מארק! 👋
                 </Typography>
               </Box>
-              <Tooltip title="התראות">
-                <IconButton aria-label="התראות">
-                  <Badge color="error" variant="dot">
-                    <NotificationsRoundedIcon />
-                  </Badge>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Tooltip title="התראות">
+                  <IconButton aria-label="התראות">
+                    <Badge color="error" variant="dot">
+                      <NotificationsRoundedIcon />
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
+                <IconButton aria-label="תפריט" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={(e) => setMenuAnchor(e.currentTarget)}>
+                  <MenuRoundedIcon />
                 </IconButton>
-              </Tooltip>
+                <Menu
+                  anchorEl={menuAnchor}
+                  open={Boolean(menuAnchor)}
+                  onClose={() => setMenuAnchor(null)}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                >
+                  <MenuItem onClick={() => setMenuAnchor(null)}>
+                    <ListItemIcon><SettingsTwoToneIcon fontSize="small" /></ListItemIcon>
+                    <ListItemText primary="הגדרות" primaryTypographyProps={{ fontWeight: 600 }} />
+                  </MenuItem>
+                  <MenuItem onClick={() => { setMenuAnchor(null); navTo.go('login'); }}>
+                    <ListItemIcon><LogoutTwoToneIcon fontSize="small" /></ListItemIcon>
+                    <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600 }} />
+                  </MenuItem>
+                </Menu>
+              </Stack>
             </Stack>
           </Box>
 
@@ -211,6 +223,7 @@ export function Dashboard() {
               {/* Next task CTA — first in DOM = rightmost in RTL */}
               <Card variant="outlined" sx={{
                 borderColor: 'divider',
+                borderRadius: 2,
               }}>
                 <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                   <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
@@ -256,6 +269,7 @@ export function Dashboard() {
               {/* Math average card — second in DOM = leftmost in RTL */}
               <Card variant="outlined" sx={{
                 borderColor: 'divider',
+                borderRadius: 2,
                 position: 'relative',
                 overflow: 'hidden',
                 '&::after': {
@@ -274,10 +288,10 @@ export function Dashboard() {
                     <Avatar variant="rounded" sx={{ bgcolor: (t) => alpha(t.palette.success.main, 0.12), color: 'success.dark', width: 36, height: 36 }}>
                       <TrendingUpRoundedIcon fontSize="small" />
                     </Avatar>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.secondary' }}>ציון ממוצע</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>ציון ממוצע</Typography>
                   </Stack>
                   <Box sx={{ mt: 1.5 }}>
-                    <Typography sx={{ fontWeight: 200, lineHeight: 1, color: 'text.primary', fontSize: '4.5rem', letterSpacing: '-0.02em' }}>
+                    <Typography sx={{ fontWeight: 500, lineHeight: 1, color: 'text.primary', fontSize: '4.5rem', letterSpacing: '-0.02em' }}>
                       78
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.disabled', mt: 0.5 }}>
@@ -289,7 +303,7 @@ export function Dashboard() {
             </Box>
 
             {/* Stats — ONE card, 3 columns with vertical dividers */}
-            <Card variant="outlined">
+            <Card variant="outlined" sx={{ borderRadius: 2 }}>
               <CardContent sx={{ py: 2.5, px: 0, '&:last-child': { pb: 2.5 } }}>
                 <Stack direction="row" divider={<Divider orientation="vertical" flexItem />}>
                   {stats.map((s) => {
@@ -339,7 +353,7 @@ export function Dashboard() {
             </Card>
 
           {/* Mastery heatmap */}
-          <Card variant="outlined" sx={{ flex: 1 }}>
+          <Card variant="outlined" sx={{ flex: 1, borderRadius: 2 }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between"
               flexWrap="wrap" gap={1.5} sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider' }}>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>מפת שליטה · מתמטיקה</Typography>
