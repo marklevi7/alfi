@@ -38,13 +38,13 @@ export const NAV = [
   { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
 ];
 
-export function Shell({ active, title, children, hideSidebarRobot = false }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '90vh' }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string }) {
   const navTo = useNav();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
     <Box
       sx={{
-        minHeight: '90vh',
+        minHeight: minH,
         bgcolor: (t) => alpha(t.palette.primary.main, 0.06),
         display: 'flex',
         justifyContent: 'center',
@@ -55,7 +55,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false }: { a
         elevation={3}
         sx={{ width: '100%', maxWidth: 1200, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
       >
-        <Grid container sx={{ minHeight: { md: 'calc(90vh - 64px)' } }}>
+        <Grid container sx={{ minHeight: { md: `calc(${minH} - 64px)` } }}>
           {/* Sidebar — first in RTL = right */}
           <Grid item md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
             <Paper
