@@ -14,6 +14,7 @@ import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell } from './Shell';
+import faceImg from './assets/magnific_43LDWx09Aa.png';
 
 const ctaShimmer = keyframes`
   0%   { transform: translateX(200%); opacity: 0; }
@@ -31,16 +32,54 @@ const stats = [
 
 export function Dashboard() {
   return (
-    <Shell active="dashboard" title="שלום, מארק! 👋" hideSidebarRobot>
-      {/* Big ALFI face — fills the top, pushes the boxes to the bottom */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: 220, md: 320 } }}>
+    <Shell active="dashboard" title="" hideSidebarRobot>
+      {/* Big ALFI face — fills the top, sits BEHIND the boxes below */}
+      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: 280, md: 420 }, mb: { xs: -9, md: -16 }, position: 'relative', zIndex: 0 }}>
+        {/* ALFI speech bubble */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: { xs: 8, md: 40 },
+            insetInlineStart: { xs: '6%', md: '14%' },
+            zIndex: 2,
+            bgcolor: 'background.paper',
+            border: 1,
+            borderColor: 'divider',
+            boxShadow: (t) => t.shadows[3],
+            borderRadius: 3,
+            px: { xs: 2, md: 3 },
+            py: { xs: 1, md: 1.5 },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -12,
+              insetInlineEnd: 28,
+              borderWidth: '13px 13px 0 13px',
+              borderStyle: 'solid',
+              borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              bottom: -14,
+              insetInlineEnd: 27,
+              borderWidth: '14px 14px 0 14px',
+              borderStyle: 'solid',
+              borderColor: (t) => `${t.palette.divider} transparent transparent transparent`,
+            },
+          }}
+        >
+          <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.25rem', md: '1.75rem' }, textWrap: 'balance', whiteSpace: 'nowrap' }}>
+            שלום, מארק! 👋
+          </Typography>
+        </Box>
         <Box
           component="img"
-          src="alfi-mirror.png"
+          src={faceImg}
           alt="אלפי"
           sx={{
-            maxHeight: { xs: 320, md: 520 },
-            maxWidth: '100%',
+            maxHeight: { xs: 440, md: 760 },
+            maxWidth: '120%',
             objectFit: 'contain',
             display: 'block',
             filter: (t) => `drop-shadow(0 24px 32px ${alpha(t.palette.common.black, 0.28)})`,
@@ -49,7 +88,7 @@ export function Dashboard() {
       </Box>
 
       {/* Feature cards — asymmetric 3:2 */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '3fr 2fr' }, gap: 2, alignItems: 'stretch' }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '3fr 2fr' }, gap: 2, alignItems: 'stretch', position: 'relative', zIndex: 1 }}>
 
         {/* Next task CTA — first in DOM = rightmost in RTL */}
         <Card variant="outlined" sx={{ borderColor: 'divider', borderRadius: 2, boxShadow: (t) => t.shadows[3] }}>
