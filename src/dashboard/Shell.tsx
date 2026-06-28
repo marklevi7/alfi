@@ -38,7 +38,7 @@ export const NAV = [
   { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
 ];
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '90vh' }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '90vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
   const navTo = useNav();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
@@ -164,10 +164,13 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
 
             {/* Scrollable content */}
-            <Box sx={{ p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {children}
-              {/* Spacer so content clears the fixed mobile bottom nav */}
-              <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
+            <Box sx={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              {bgLayer}
+              <Box sx={{ position: 'relative', zIndex: 1, p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {children}
+                {/* Spacer so content clears the fixed mobile bottom nav */}
+                <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
+              </Box>
             </Box>
           </Grid>
         </Grid>
