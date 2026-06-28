@@ -303,3 +303,8 @@
 6:34:24 PM [vite] hmr update /src/login/parts.tsx
 6:34:38 PM [vite] page reload dist/index.html
 6:34:38 PM [vite] page reload dist/index.html
+1:20:19 AM [vite] hmr update /src/dashboard/Dashboard.tsx
+1:20:32 AM [vite] hmr update /src/dashboard/Dashboard.tsx
+1:20:39 AM [vite] hmr update /src/login/parts.tsx
+1:21:08 AM [vite] page reload dist/index.html
+1:21:09 AM [vite] page reload dist/index.html

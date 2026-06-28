@@ -25,6 +25,7 @@ import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
+import { deepPurple, blue, teal, orange } from '@mui/material/colors';
 import { useNav, type Screen } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -32,10 +33,10 @@ import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png
 export { robotImg };
 
 export const NAV = [
-  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const },
-  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const },
-  { label: 'הציונים שלי', short: 'הציונים שלי', icon: <AssessmentTwoToneIcon />, screen: 'analytics' as const },
-  { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
+  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const, hue: deepPurple },
+  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const, hue: orange },
+  { label: 'הציונים שלי', short: 'הציונים שלי', icon: <AssessmentTwoToneIcon />, screen: 'analytics' as const, hue: teal },
+  { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon />, screen: 'history' as const, hue: blue },
 ];
 
 export function Shell({ active, title, children, hideSidebarRobot = false, minH = '90vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
@@ -80,12 +81,15 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     selected={item.screen === active}
                     onClick={() => item.screen && navTo.go(item.screen)}
                     sx={{
-                      borderRadius: 2,
+                      borderRadius: 3,
                       mb: 1,
                       py: 1.25,
-                      '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText' },
-                      '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
-                      '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.contrastText' },
+                      bgcolor: alpha(item.hue[500], 0.1),
+                      '& .MuiListItemIcon-root': { color: item.hue[600] },
+                      '&:hover': { bgcolor: alpha(item.hue[500], 0.2) },
+                      '&.Mui-selected': { bgcolor: item.hue[500], color: 'common.white', boxShadow: `0 8px 18px ${alpha(item.hue[500], 0.45)}` },
+                      '&.Mui-selected:hover': { bgcolor: item.hue[600] },
+                      '&.Mui-selected .MuiListItemIcon-root': { color: 'common.white' },
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>

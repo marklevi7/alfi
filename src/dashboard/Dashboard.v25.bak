@@ -29,42 +29,34 @@ const floaty = keyframes`
 // Rainbow mesh-blob background (MUI palette colors only)
 function BlobBackground() {
   const blobs = [
-    { c: deepPurple[400], top: '-10%', left: '-8%', size: 360 },
-    { c: blue[400], top: '0%', left: '50%', size: 300 },
-    { c: cyan[400], top: '34%', left: '80%', size: 320 },
-    { c: teal[400], top: '58%', left: '-6%', size: 300 },
-    { c: green[400], top: '72%', left: '38%', size: 280 },
-    { c: amber[400], top: '4%', left: '22%', size: 260 },
-    { c: orange[400], top: '68%', left: '74%', size: 280 },
-    { c: pink[400], top: '30%', left: '28%', size: 300 },
-  ];
-  const confetti = [
-    { c: amber[500], top: '14%', left: '12%', s: 14, r: '3px' },
-    { c: pink[400], top: '22%', left: '64%', s: 12, r: '50%' },
-    { c: cyan[400], top: '46%', left: '88%', s: 16, r: '4px' },
-    { c: green[500], top: '64%', left: '20%', s: 12, r: '50%' },
-    { c: orange[500], top: '78%', left: '56%', s: 15, r: '3px' },
-    { c: deepPurple[400], top: '40%', left: '8%', s: 13, r: '50%' },
-    { c: blue[500], top: '10%', left: '44%', s: 11, r: '3px' },
-    { c: teal[400], top: '84%', left: '82%', s: 14, r: '50%' },
+    { c: deepPurple[300], top: '-8%', left: '-6%', size: 320 },
+    { c: blue[300], top: '4%', left: '52%', size: 260 },
+    { c: cyan[300], top: '38%', left: '78%', size: 300 },
+    { c: teal[300], top: '60%', left: '-4%', size: 280 },
+    { c: green[300], top: '72%', left: '40%', size: 240 },
+    { c: amber[300], top: '8%', left: '24%', size: 220 },
+    { c: orange[300], top: '70%', left: '74%', size: 240 },
+    { c: pink[300], top: '34%', left: '30%', size: 260 },
   ];
   return (
     <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
       {blobs.map((b, i) => (
-        <Box key={i} sx={{
-          position: 'absolute', top: b.top, left: b.left, width: b.size, height: b.size,
-          borderRadius: '50%', bgcolor: alpha(b.c, 0.7), filter: 'blur(40px)',
-        }} />
+        <Box
+          key={i}
+          sx={{
+            position: 'absolute',
+            top: b.top,
+            left: b.left,
+            width: b.size,
+            height: b.size,
+            borderRadius: '50%',
+            bgcolor: alpha(b.c, 0.5),
+            filter: 'blur(38px)',
+          }}
+        />
       ))}
-      {/* light wash to keep text legible without killing the color */}
-      <Box sx={{ position: 'absolute', inset: 0, bgcolor: (t) => alpha(t.palette.background.paper, 0.14) }} />
-      {confetti.map((c, i) => (
-        <Box key={`c${i}`} sx={{
-          position: 'absolute', top: c.top, left: c.left, width: c.s, height: c.s,
-          bgcolor: c.c, borderRadius: c.r, transform: 'rotate(20deg)', opacity: 0.85,
-          boxShadow: (t) => `0 2px 6px ${alpha(t.palette.common.black, 0.18)}`,
-        }} />
-      ))}
+      {/* soft white wash so foreground stays readable */}
+      <Box sx={{ position: 'absolute', inset: 0, bgcolor: (t) => alpha(t.palette.background.paper, 0.28) }} />
     </Box>
   );
 }
@@ -129,19 +121,11 @@ export function Dashboard() {
             שלום, מארק! 👋
           </Typography>
         </Box>
-        {/* colorful glow halo behind ALFI */}
-        <Box sx={{
-          position: 'absolute', zIndex: 0,
-          width: { xs: 320, md: 520 }, height: { xs: 320, md: 520 }, borderRadius: '50%',
-          background: `radial-gradient(circle, ${alpha(cyan[300], 0.55)} 0%, ${alpha(deepPurple[300], 0.35)} 45%, transparent 70%)`,
-          filter: 'blur(20px)',
-        }} />
         <Box
           component="img"
           src={faceImg}
           alt="אלפי"
           sx={{
-            position: 'relative',
             maxHeight: { xs: 440, md: 760 },
             maxWidth: '120%',
             objectFit: 'contain',
