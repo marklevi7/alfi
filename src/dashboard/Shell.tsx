@@ -119,10 +119,12 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           </Grid>
 
           {/* Main */}
-          <Grid item xs={12} md={9} lg={9} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+            {/* Full-bleed background layer (covers header + content, no hard edges) */}
+            {bgLayer}
             {/* Mobile top bar */}
             <Stack direction="row" justifyContent="space-between" alignItems="center"
-              sx={{ display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+              sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
               <Logo variant="dark" size="small" />
               <IconButton aria-label="תפריט" onClick={(e) => setMenuAnchor(e.currentTarget)}>
                 <MenuRoundedIcon />
@@ -130,7 +132,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Stack>
 
             {/* Header strip */}
-            <Box sx={{ px: { xs: 2.5, md: 4 }, py: { xs: 1.5, md: 2 }, display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 4 }, py: { xs: 1.5, md: 2 }, display: 'flex', alignItems: 'center' }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 <Typography variant="h4" component="h1"
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
@@ -168,9 +170,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
 
             {/* Scrollable content */}
-            <Box sx={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
-              {bgLayer}
-              <Box sx={{ position: 'relative', zIndex: 1, p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
                 {children}
                 {/* Spacer so content clears the fixed mobile bottom nav */}
                 <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
