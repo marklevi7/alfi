@@ -6,10 +6,10 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { VARIANTS } from './login/variants';
-import { Dashboard } from './dashboard/Dashboard';
+import { VersionBar, DASH_VERSIONS } from './dashboard/MainScreen';
 import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
@@ -52,7 +52,7 @@ function LoginSwitcher() {
       >
         <Stack direction="row" spacing={1} alignItems="center">
           <IconButton onClick={prev} aria-label="פריסה קודמת" size="small">
-            <ChevronRightIcon />
+            <ChevronRightRoundedIcon />
           </IconButton>
           <Select
             value={i}
@@ -73,7 +73,7 @@ function LoginSwitcher() {
             {i + 1}/{VARIANTS.length}
           </Typography>
           <IconButton onClick={next} aria-label="פריסה הבאה" size="small">
-            <ChevronLeftIcon />
+            <ChevronLeftRoundedIcon />
           </IconButton>
         </Stack>
       </Paper>
@@ -84,13 +84,16 @@ function LoginSwitcher() {
 
 export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
+  const [ver, setVer] = useState(DASH_VERSIONS.length - 1);
+  const DashVariant = DASH_VERSIONS[ver].Comp;
   return (
     <NavContext.Provider value={{ go: setScreen }}>
+      {screen !== 'login' && <VersionBar value={ver} onChange={setVer} />}
       {screen === 'login' ? <LoginSwitcher />
         : screen === 'analytics' ? <Analytics />
         : screen === 'practice' ? <Practice />
         : screen === 'history' ? <History />
-        : <Dashboard />}
+        : <DashVariant />}
     </NavContext.Provider>
   );
 }

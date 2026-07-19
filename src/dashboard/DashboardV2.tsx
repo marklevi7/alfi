@@ -2,11 +2,16 @@ import { alpha, keyframes, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { deepPurple, blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
+import Avatar from '@mui/material/Avatar';
+import { deepPurple, blue, cyan, teal, green, amber, orange, pink, red, common } from '@mui/material/colors';
+import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell } from './Shell';
+import faceImg from './assets/magnific_43LDWx09Aa.png';
 
 const ctaShimmer = keyframes`
   0%   { transform: translateX(200%); opacity: 0; }
@@ -21,62 +26,37 @@ const floaty = keyframes`
   50%      { transform: translateY(-10px); }
 `;
 
-const floatSign = keyframes`
-  0%   { transform: translateY(0) rotate(0deg); }
-  50%  { transform: translateY(-18px) rotate(8deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-`;
-
-const twinkle = keyframes`
-  0%, 100% { opacity: 0.35; transform: scale(0.85); }
-  50%      { opacity: 1; transform: scale(1.12); }
-`;
-
-// Glowing math symbols flying around ALFI (MUI palette colors only).
-// Positions live ONLY in side/bottom bands — never over the center face zone.
-const SIGN_CHARS = ['+', '−', '×', '÷', '=', 'π', '√', '%', '∞', 'Σ', '≈', '≠'];
-const SIGN_COLORS = [deepPurple[400], blue[400], cyan[500], pink[400], amber[500], deepPurple[300], blue[300], pink[300]];
-// Signs orbit ALFI on an elliptical ribbon (two radii) — the face/bubble
-// zone at the top-center is skipped so nothing ever covers his face.
-function buildOrbit(): [number, number][] {
-  const cx = 48, cy = 53, N = 22;
-  const pts: [number, number][] = [];
-  for (let i = 0; i < N; i++) {
-    const ang = (i / N) * Math.PI * 2;
-    const band = i % 2 === 0 ? 1 : 0.72; // outer / inner ring → ribbon
-    const left = cx + Math.cos(ang) * 44 * band;
-    const top = cy - Math.sin(ang) * 42 * band;
-    // skip the top-center face + speech-bubble window
-    if (top < 44 && left > 30 && left < 66) continue;
-    pts.push([Math.round(top), Math.round(left)]);
-  }
-  return pts;
-}
-const SIGN_POS = buildOrbit();
-
-function MathSigns() {
+// Rainbow mesh-blob background (MUI palette colors only)
+function BlobBackground() {
+  const blobs = [
+    { c: deepPurple[300], top: '-8%', left: '-6%', size: 320 },
+    { c: blue[300], top: '4%', left: '52%', size: 260 },
+    { c: cyan[300], top: '38%', left: '78%', size: 300 },
+    { c: teal[300], top: '60%', left: '-4%', size: 280 },
+    { c: green[300], top: '72%', left: '40%', size: 240 },
+    { c: amber[300], top: '8%', left: '24%', size: 220 },
+    { c: orange[300], top: '70%', left: '74%', size: 240 },
+    { c: pink[300], top: '34%', left: '30%', size: 260 },
+  ];
   return (
-    <Box sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
-      {SIGN_POS.map(([top, left], i) => {
-        const c = SIGN_COLORS[i % SIGN_COLORS.length];
-        const size = 30 + (i % 3) * 5;
-        const dur = 4 + (i % 4) * 0.7;
-        const delay = (i % 7) * 0.3;
-        return (
-          <Box
-            key={i}
-            sx={{
-              position: 'absolute', top: `${top}%`, left: `${left}%`,
-              fontWeight: 900, fontSize: size, lineHeight: 1, color: c,
-              textShadow: `0 0 14px ${alpha(c, 0.85)}, 0 0 28px ${alpha(c, 0.5)}`,
-              animation: `${floatSign} ${dur}s ease-in-out ${delay}s infinite, ${twinkle} ${dur * 0.8}s ease-in-out ${delay}s infinite`,
-              '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
-            }}
-          >
-            {SIGN_CHARS[i % SIGN_CHARS.length]}
-          </Box>
-        );
-      })}
+    <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
+      {blobs.map((b, i) => (
+        <Box
+          key={i}
+          sx={{
+            position: 'absolute',
+            top: b.top,
+            left: b.left,
+            width: b.size,
+            height: b.size,
+            borderRadius: '50%',
+            bgcolor: alpha(b.c, 0.5),
+            filter: 'blur(38px)',
+          }}
+        />
+      ))}
+      {/* soft white wash so foreground stays readable */}
+      <Box sx={{ position: 'absolute', inset: 0, bgcolor: (t) => alpha(t.palette.background.paper, 0.28) }} />
     </Box>
   );
 }
@@ -112,12 +92,12 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function Dashboard() {
+export function DashboardV2() {
   const theme = useTheme();
   return (
-    <Shell active="dashboard" title="" hideSidebarRobot>
+    <Shell active="dashboard" title="" hideSidebarRobot bgLayer={<BlobBackground />}>
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: '-150px', mb: { xs: -16, md: -40 }, position: 'relative', zIndex: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: { xs: 280, md: 420 }, mb: { xs: -9, md: -16 }, position: 'relative', zIndex: 0 }}>
         {/* ALFI speech bubble */}
         <Box
           sx={{
@@ -130,8 +110,6 @@ export function Dashboard() {
             borderRadius: 3,
             px: { xs: 2, md: 3 },
             py: { xs: 1, md: 1.5 },
-            animation: `${floaty} 3s ease-in-out infinite`,
-            '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
             '&::after': {
               content: '""', position: 'absolute', bottom: -12, insetInlineEnd: 28,
               borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
@@ -143,37 +121,34 @@ export function Dashboard() {
             שלום, מארק! 👋
           </Typography>
         </Box>
-        <MathSigns />
-        {/* colorful glow halo behind ALFI */}
-        <Box sx={{
-          position: 'absolute', zIndex: 0,
-          width: { xs: 320, md: 520 }, height: { xs: 320, md: 520 }, borderRadius: '50%',
-          background: `radial-gradient(circle, ${alpha(cyan[300], 0.55)} 0%, ${alpha(deepPurple[300], 0.35)} 45%, transparent 70%)`,
-          filter: 'blur(20px)',
-        }} />
         <Box
           component="img"
-          src="alfi%20full%20body%201.png"
+          src={faceImg}
           alt="אלפי"
           sx={{
-            position: 'relative',
-            top: '-50px',
-            maxHeight: { xs: 480, md: 860 },
-            maxWidth: '100%',
+            maxHeight: { xs: 440, md: 760 },
+            maxWidth: '120%',
             objectFit: 'contain',
             display: 'block',
+            animation: `${floaty} 5s ease-in-out infinite`,
+            '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
             filter: (t) => `drop-shadow(0 24px 40px ${alpha(t.palette.primary.dark, 0.35)})`,
           }}
         />
       </Box>
 
       {/* Boxes — colorful, overlapping ALFI's hands */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: '-50px', zIndex: 1 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', zIndex: 1 }}>
 
         {/* Score gauge card */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>הציון הממוצע שלי</Typography>
+            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+              <Avatar variant="rounded" sx={{ bgcolor: alpha(teal[500], 0.16), color: teal[800], width: 34, height: 34 }}>
+                <AutoAwesomeRoundedIcon fontSize="small" />
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: 800 }}>הציון הממוצע שלי</Typography>
+            </Stack>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
               <ScoreGauge value={78} />
             </Box>
@@ -190,7 +165,12 @@ export function Dashboard() {
           background: `linear-gradient(135deg, ${deepPurple[500]} 0%, ${blue[500]} 55%, ${cyan[500]} 100%)`,
         }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגיל הבא שלי</Typography>
+            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
+              <Avatar variant="rounded" sx={{ bgcolor: alpha(common.white, 0.22), color: common.white }}>
+                <AssignmentTwoToneIcon />
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: 800 }}>התרגיל הבא שלי</Typography>
+            </Stack>
             <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', opacity: 0.95 }}>
               יש לי 8 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
             </Typography>

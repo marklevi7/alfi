@@ -42,7 +42,7 @@ function rowAvg(values: (number | null)[]): number | null {
 
 export function Analytics() {
   return (
-    <Shell active="analytics" title="תרגולים ובוחנים מהמורה">
+    <Shell active="history" title="היסטוריה">
       {/* Stats — ONE card, 3 columns with vertical dividers */}
       <Card variant="outlined" sx={{ borderRadius: 2 }}>
         <CardContent sx={{ py: 2.5, px: 0, '&:last-child': { pb: 2.5 } }}>

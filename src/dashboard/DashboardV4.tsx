@@ -112,12 +112,12 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function Dashboard() {
+export function DashboardV4() {
   const theme = useTheme();
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: '-150px', mb: { xs: -16, md: -40 }, position: 'relative', zIndex: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: '-74px', mb: { xs: -16, md: -40 }, position: 'relative', zIndex: 0 }}>
         {/* ALFI speech bubble */}
         <Box
           sx={{
@@ -157,7 +157,6 @@ export function Dashboard() {
           alt="אלפי"
           sx={{
             position: 'relative',
-            top: '-50px',
             maxHeight: { xs: 480, md: 860 },
             maxWidth: '100%',
             objectFit: 'contain',
@@ -168,7 +167,7 @@ export function Dashboard() {
       </Box>
 
       {/* Boxes — colorful, overlapping ALFI's hands */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: '-50px', zIndex: 1 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', zIndex: 1 }}>
 
         {/* Score gauge card */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>

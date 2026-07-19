@@ -112,7 +112,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function Dashboard() {
+export function DashboardV5() {
   const theme = useTheme();
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>

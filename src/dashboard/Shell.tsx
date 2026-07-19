@@ -17,15 +17,13 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
-import AssessmentTwoToneIcon from '@mui/icons-material/AssessmentTwoTone';
-import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
-import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
-import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
-import { deepPurple, blue, teal, orange } from '@mui/material/colors';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useNav, type Screen } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -33,13 +31,12 @@ import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png
 export { robotImg };
 
 export const NAV = [
-  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const, hue: deepPurple },
-  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const, hue: orange },
-  { label: 'הציונים שלי', short: 'הציונים שלי', icon: <AssessmentTwoToneIcon />, screen: 'analytics' as const, hue: teal },
-  { label: 'היסטוריה', short: 'היסטוריה', icon: <HistoryTwoToneIcon />, screen: 'history' as const, hue: blue },
+  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeRoundedIcon />, screen: 'dashboard' as const },
+  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentRoundedIcon />, screen: 'practice' as const },
+  { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryRoundedIcon />, screen: 'history' as const },
 ];
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '90vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '95vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
   const navTo = useNav();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
@@ -54,9 +51,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
     >
       <Paper
         elevation={3}
-        sx={{ width: '100%', maxWidth: 1200, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
+        sx={{ width: '100%', maxWidth: 1200, height: { xs: 'auto', md: `calc(${minH} - 64px)` }, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
       >
-        <Grid container sx={{ minHeight: { md: `calc(${minH} - 64px)` } }}>
+        <Grid container sx={{ height: '100%' }}>
           {/* Sidebar — first in RTL = right */}
           <Grid item md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
             <Paper
@@ -81,22 +78,27 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     selected={item.screen === active}
                     onClick={() => item.screen && navTo.go(item.screen)}
                     sx={{
-                      borderRadius: 3,
-                      mb: 1,
-                      py: 1.25,
-                      bgcolor: alpha(item.hue[500], 0.1),
-                      '& .MuiListItemIcon-root': { color: item.hue[600] },
-                      '&:hover': { bgcolor: alpha(item.hue[500], 0.2) },
-                      '&.Mui-selected': { bgcolor: item.hue[500], color: 'common.white', boxShadow: `0 8px 18px ${alpha(item.hue[500], 0.45)}` },
-                      '&.Mui-selected:hover': { bgcolor: item.hue[600] },
-                      '&.Mui-selected .MuiListItemIcon-root': { color: 'common.white' },
+                      borderRadius: 4,
+                      mb: 1.5,
+                      py: 2,
+                      px: 2.5,
+                      bgcolor: 'transparent',
+                      transition: (t) => t.transitions.create(['background-color', 'transform']),
+                      '& .MuiListItemIcon-root': { color: 'text.disabled' },
+                      '& .MuiSvgIcon-root': { fontSize: 30 },
+                      '&:hover': { bgcolor: (t) => alpha(t.palette.text.primary, 0.04), transform: 'scale(1.02)' },
+                      '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.dark' },
+                      '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
+                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 800 },
+                      '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 36 }}>{item.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ minWidth: 46 }}>{item.icon}</ListItemIcon>
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
-                        fontWeight: 600,
+                        fontWeight: 700,
+                        fontSize: '1.25rem',
                         textAlign: 'start',
                         sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
                       }}
@@ -119,7 +121,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           </Grid>
 
           {/* Main */}
-          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: { md: '100%' } }}>
             {/* Full-bleed background layer (covers header + content, no hard edges) */}
             {bgLayer}
             {/* Mobile top bar */}
@@ -132,7 +134,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Stack>
 
             {/* Header strip */}
-            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 4 }, py: { xs: 1.5, md: 2 }, display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 4, md: 7 }, pt: { xs: 5, md: 7 }, pb: { xs: 2, md: 3 }, display: 'flex', alignItems: 'center' }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 <Typography variant="h4" component="h1"
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
@@ -157,11 +159,11 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                   >
                     <MenuItem onClick={() => setMenuAnchor(null)}>
-                      <ListItemIcon><SettingsTwoToneIcon fontSize="small" /></ListItemIcon>
+                      <ListItemIcon><SettingsRoundedIcon fontSize="small" /></ListItemIcon>
                       <ListItemText primary="הגדרות" primaryTypographyProps={{ fontWeight: 600 }} />
                     </MenuItem>
                     <MenuItem onClick={() => { setMenuAnchor(null); navTo.go('login'); }}>
-                      <ListItemIcon><LogoutTwoToneIcon fontSize="small" /></ListItemIcon>
+                      <ListItemIcon><LogoutRoundedIcon className="dir-icon" fontSize="small" /></ListItemIcon>
                       <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600 }} />
                     </MenuItem>
                   </Menu>
@@ -170,8 +172,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
 
             {/* Scrollable content */}
-            <Box sx={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ p: { xs: 2.5, md: 4 }, flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ px: { xs: 2.5, md: 4 }, pb: { xs: 2.5, md: 3 }, pt: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {children}
                 {/* Spacer so content clears the fixed mobile bottom nav */}
                 <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
