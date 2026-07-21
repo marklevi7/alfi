@@ -9,7 +9,6 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -98,7 +97,6 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
         }
         subheader={
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.75 }}>
-            <Chip size="small" variant="outlined" label={t.kind} sx={{ fontWeight: 600, color: `${kind}.dark`, borderColor: `${kind}.main` }} />
             <Typography sx={META}>{t.topic}</Typography>
           </Stack>
         }

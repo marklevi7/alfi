@@ -194,13 +194,18 @@ export function AuthForm({ showTitle = true, showFooter = true, showFeatures = f
           nav.go('dashboard');
         }}
       >
+        {/* signup asks for a name; login doesn't */}
+        {tab === 1 && (
+          <TextField label="שם מלא" placeholder="הזינו שם מלא" fullWidth autoComplete="name" />
+        )}
         <TextField label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email" />
         <TextField
           label="סיסמה"
           type={showPassword ? 'text' : 'password'}
-          placeholder="הזינו סיסמה"
+          placeholder={tab === 0 ? 'הזינו סיסמה' : 'בחרו סיסמה'}
           fullWidth
-          autoComplete="current-password"
+          autoComplete={tab === 0 ? 'current-password' : 'new-password'}
+          helperText={tab === 1 ? 'לפחות 8 תווים' : undefined}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -215,22 +220,35 @@ export function AuthForm({ showTitle = true, showFooter = true, showFeatures = f
             ),
           }}
         />
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        {tab === 0 ? (
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <FormControlLabel
+              control={<Checkbox size="small" defaultChecked />}
+              label={<Typography variant="body2">זכור אותי</Typography>}
+            />
+            <Link href="#" variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
+              שכחת את הסיסמה?
+            </Link>
+          </Stack>
+        ) : (
           <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label={<Typography variant="body2">זכור אותי</Typography>}
+            control={<Checkbox size="small" />}
+            label={
+              <Typography variant="body2">
+                קראתי ואני מסכים ל<Link href="#" underline="hover" sx={{ fontWeight: 600 }}>תנאי השימוש</Link>
+              </Typography>
+            }
           />
-          <Link href="#" variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
-            שכחת את הסיסמה?
-          </Link>
-        </Stack>
+        )}
         <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700, borderRadius: 2 }}>
           {tab === 0 ? 'התחברות' : 'הרשמה'}
         </Button>
 
         {/* alternative identity methods (not yet supported — planned for students) */}
         <Divider sx={{ my: 0.5 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>או המשך עם</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+            {tab === 0 ? 'או המשך עם' : 'או הירשמו עם'}
+          </Typography>
         </Divider>
         <Button variant="outlined" size="large" fullWidth startIcon={<AccountBalanceRoundedIcon />} sx={{ py: 1.1, fontWeight: 700, borderRadius: 2 }}>
           משרד החינוך
