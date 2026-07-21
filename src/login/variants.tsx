@@ -206,12 +206,10 @@ function V10() {
 function V5a() {
   return (
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
-      <AlfiImg src="alfi-mirror.png" sx={{ position: 'absolute', insetInlineEnd: { md: '6%' }, bottom: 0, height: { md: '94%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
+      <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' } }} />
       <Paper elevation={4} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: 'background.paper' }}>
         <BrandMark variant="dark" size="xl" sx={{ mb: 3 }} />
-        <AuthForm showTitle={false} showFooter={false} />
-        <SectionLabel>למה אלפי?</SectionLabel>
-        <FeatureGrid />
+        <AuthForm showTitle={false} showFooter={false} showFeatures />
         <Footer />
       </Paper>
     </Box>

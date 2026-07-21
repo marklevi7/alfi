@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { blue, green } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -45,9 +45,9 @@ const TASKS: Task[] = [
 const RANK: Record<Status, number> = { inProgress: 0, new: 1, done: 2 };
 
 // Canonical MUI palette roles per kind / status.
-const KIND: Record<Kind, 'primary' | 'info'> = { תרגול: 'primary', בוחן: 'info' };
+const KIND: Record<Kind, 'primary'> = { תרגול: 'primary', בוחן: 'primary' };
 // One shared style for all the small meta text in a card (date, topic, count).
-const META = { fontSize: '0.8rem', fontWeight: 600, color: 'text.secondary' } as const;
+const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as const;
 
 function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
   const kind = KIND[t.kind];
@@ -90,8 +90,8 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
             {/* only NEW gets the notification dot; in-progress reads from the bar below */}
             {t.status === 'new' && (
               <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: blue[500], flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: blue[800] }}>חדש</Typography>
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main', flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'primary.dark' }}>חדש</Typography>
               </Stack>
             )}
           </Stack>
@@ -99,7 +99,7 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
         subheader={
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.75 }}>
             <Chip size="small" variant="outlined" label={t.kind} sx={{ fontWeight: 600, color: `${kind}.dark`, borderColor: `${kind}.main` }} />
-            <Typography sx={META}>{t.topic} · {t.unit}</Typography>
+            <Typography sx={META}>{t.topic}</Typography>
           </Stack>
         }
       />
@@ -110,7 +110,7 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
             variant="determinate"
             value={pct}
             color={kind}
-            sx={{ flex: 1, height: 8, borderRadius: 4, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }) }}
+            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }) }}
           />
           <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
             {t.solved}/{t.total} שאלות

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -14,6 +15,7 @@ import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
 import { NavContext, type Screen } from './nav';
+import { theme, greenTheme } from './theme';
 
 function LoginSwitcher() {
   const [i, setI] = useState(10);
@@ -86,14 +88,18 @@ export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
   const [ver, setVer] = useState(DASH_VERSIONS.length - 1);
   const DashVariant = DASH_VERSIONS[ver].Comp;
+  // The selected version themes the WHOLE app: v6 = green, everything else = purple.
+  const activeTheme = DASH_VERSIONS[ver].label === 'v6' ? greenTheme : theme;
   return (
     <NavContext.Provider value={{ go: setScreen }}>
-      {screen !== 'login' && <VersionBar value={ver} onChange={setVer} />}
-      {screen === 'login' ? <LoginSwitcher />
-        : screen === 'analytics' ? <Analytics />
-        : screen === 'practice' ? <Practice />
-        : screen === 'history' ? <History />
-        : <DashVariant />}
+      <ThemeProvider theme={activeTheme}>
+        {screen !== 'login' && <VersionBar value={ver} onChange={setVer} />}
+        {screen === 'login' ? <LoginSwitcher />
+          : screen === 'analytics' ? <Analytics />
+          : screen === 'practice' ? <Practice />
+          : screen === 'history' ? <History />
+          : <DashVariant />}
+      </ThemeProvider>
     </NavContext.Provider>
   );
 }

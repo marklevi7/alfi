@@ -29,7 +29,7 @@ const floaty = keyframes`
 // Rainbow mesh-blob background (MUI palette colors only)
 function BlobBackground() {
   const blobs = [
-    { c: deepPurple[300], top: '-8%', left: '-6%', size: 320 },
+    { c: green[300], top: '-8%', left: '-6%', size: 320 },
     { c: blue[300], top: '4%', left: '52%', size: 260 },
     { c: cyan[300], top: '38%', left: '78%', size: 300 },
     { c: teal[300], top: '60%', left: '-4%', size: 280 },

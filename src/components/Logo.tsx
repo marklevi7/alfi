@@ -1,8 +1,8 @@
+import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { deepPurple, purple } from '@mui/material/colors';
 
 type Props = {
   /** light marks for dark/gradient backgrounds, dark for light backgrounds */
@@ -24,6 +24,7 @@ const heights = {
 // Official Alfi wordmark. Single-tone via a CSS var so it stays theme-bound
 // (no hex in source): --alfi-p = the mark color (primary, or white on dark).
 export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }: Props) {
+  const theme = useTheme();
   const isLight = variant === 'light';
   const s = heights[size];
   const fill = isLight ? 'var(--alfi-p)' : 'url(#alfiGrad)';
@@ -43,9 +44,9 @@ export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }:
       >
         <defs>
           <linearGradient id="alfiGrad" gradientUnits="userSpaceOnUse" x1="4" y1="10" x2="236" y2="97">
-            <stop offset="0%" stopColor={deepPurple[700]} />
-            <stop offset="55%" stopColor={deepPurple[400]} />
-            <stop offset="100%" stopColor={purple[400]} />
+            <stop offset="0%" stopColor={theme.palette.primary.dark} />
+            <stop offset="55%" stopColor={theme.palette.primary.main} />
+            <stop offset="100%" stopColor={theme.palette.primary.light} />
           </linearGradient>
         </defs>
         <path d="M228.752 94.3103C226.271 96.1297 224.204 97.0394 222.55 97.0394C220.978 97.1221 219.655 96.6672 218.58 95.6749C217.505 94.6825 216.471 93.6074 215.479 92.4496L170.202 38.4893C169.044 37.1661 168.093 35.8016 167.349 34.3958C166.687 32.9899 166.604 31.5013 167.101 29.9301C167.597 28.3588 169.127 26.6635 171.69 24.8441C174.171 22.9421 176.197 22.0324 177.769 22.1151C179.34 22.1151 180.663 22.6527 181.738 23.7277C182.896 24.8028 184.054 26.0433 185.211 27.4491L230.489 81.2854C231.564 82.5259 232.391 83.8077 232.969 85.1309C233.631 86.3713 233.672 87.7772 233.094 89.3485C232.597 90.837 231.15 92.491 228.752 94.3103ZM169.83 95.7989C166.853 95.0546 164.826 94.0623 163.751 92.8218C162.759 91.5813 162.304 90.1755 162.387 88.6042C162.552 86.9502 162.842 85.3376 163.255 83.7664L176.032 40.9702L191.786 48.7852L181.242 88.9763C180.828 90.6303 180.291 92.1188 179.629 93.442C179.05 94.7652 177.975 95.6749 176.404 96.171C174.916 96.6672 172.724 96.5432 169.83 95.7989ZM213.246 73.4705L205.679 63.9189L215.107 30.0541C215.686 28.4002 216.306 26.9529 216.967 25.7125C217.712 24.3893 218.828 23.521 220.317 23.1075C221.888 22.6113 224.162 22.8181 227.139 23.7277C230.034 24.5547 231.936 25.6298 232.845 26.9529C233.755 28.1934 234.127 29.5993 233.962 31.1705C233.796 32.7418 233.424 34.3958 232.845 36.1324L226.395 59.5772C225.733 61.3966 224.824 63.0092 223.666 64.4151C222.591 65.7382 221.185 67.0614 219.448 68.3846C217.712 69.7077 215.644 71.403 213.246 73.4705Z" fill={fill} />

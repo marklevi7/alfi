@@ -11,6 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ButtonBase from '@mui/material/ButtonBase';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+import QuizRoundedIcon from '@mui/icons-material/QuizRounded';
 import { alpha } from '@mui/material/styles';
 import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red } from '@mui/material/colors';
@@ -190,10 +192,12 @@ export function History() {
                 )}
               </Stack>
               <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" sx={{ mt: 1, rowGap: 0.5 }}>
-                <Box sx={{ px: 0.75, py: 0.15, borderRadius: 1, bgcolor: (t) => alpha(t.palette.primary.main, 0.1), color: 'primary.dark', fontSize: '0.72rem', fontWeight: 700 }}>{it.kind}</Box>
-                <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>{it.topic} · {it.unit}</Typography>
+                <Box sx={{ color: 'primary.main', display: 'flex', '& svg': { fontSize: 18 } }}>
+                  {it.kind === 'בוחן' ? <QuizRoundedIcon /> : <AssignmentRoundedIcon />}
+                </Box>
+                <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>{it.topic}</Typography>
               </Stack>
-              <Typography sx={{ color: 'text.disabled', fontSize: '0.72rem', fontWeight: 600, mt: 0.75 }}>{it.when}</Typography>
+              <Typography sx={{ color: 'text.disabled', fontSize: '0.72rem', mt: 0.75 }}>{it.when}</Typography>
             </ButtonBase>
           );
         })}

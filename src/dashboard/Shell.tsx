@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
+import { green } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,9 +9,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import List from '@mui/material/List';
@@ -21,7 +20,6 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useNav, type Screen } from '../nav';
@@ -38,6 +36,9 @@ export const NAV = [
 
 export function Shell({ active, title, children, hideSidebarRobot = false, minH = '95vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
   const navTo = useNav();
+  const theme = useTheme();
+  // green (v6) theme → use the green robot; purple (v5) → the purple one.
+  const sidebarRobot = theme.palette.primary.main === green[700] ? 'alfi-green-body.png' : robotImg;
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   return (
     <Box
@@ -111,7 +112,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                 <Box sx={{ mt: 'auto', flexShrink: 0, pb: 3 }}>
                   <Box
                     component="img"
-                    src={robotImg}
+                    src={sidebarRobot}
                     alt="אלפי"
                     sx={{ width: 'calc(100% + 40px)', mx: -2.5, maxHeight: 576, objectFit: 'contain', display: 'block' }}
                   />
@@ -141,13 +142,6 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                   {title}
                 </Typography>
                 <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Tooltip title="התראות">
-                    <IconButton aria-label="התראות">
-                      <Badge color="error" variant="dot">
-                        <NotificationsRoundedIcon />
-                      </Badge>
-                    </IconButton>
-                  </Tooltip>
                   <IconButton aria-label="תפריט" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={(e) => setMenuAnchor(e.currentTarget)}>
                     <MenuRoundedIcon />
                   </IconButton>

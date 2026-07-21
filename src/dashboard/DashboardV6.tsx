@@ -4,9 +4,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { deepPurple, blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
+import { blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell } from './Shell';
+
+// v6 = green main screen. App themes the whole app green when v6 is selected;
+// these local green literals just match that on the decorative bits.
 
 const floaty = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -27,7 +30,7 @@ const twinkle = keyframes`
 // Glowing math symbols flying around ALFI (MUI palette colors only).
 // Positions live ONLY in side/bottom bands — never over the center face zone.
 const SIGN_CHARS = ['+', '−', '×', '÷', '=', 'π', '√', '%', '∞', 'Σ', '≈', '≠'];
-const SIGN_COLORS = [deepPurple[400], blue[400], cyan[500], pink[400], amber[500], deepPurple[300], blue[300], pink[300]];
+const SIGN_COLORS = [green[400], blue[400], cyan[500], pink[400], amber[500], green[300], blue[300], pink[300]];
 // Signs orbit ALFI on an elliptical ribbon (two radii) — the face/bubble
 // zone at the top-center is skipped so nothing ever covers his face.
 function buildOrbit(): [number, number][] {
@@ -84,15 +87,15 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
     <Box sx={{ position: 'relative', width: '100%', maxWidth: 220, mx: 'auto' }}>
       <Box component="svg" viewBox="0 0 200 120" sx={{ width: '100%', display: 'block', overflow: 'visible' }}>
         <defs>
-          <linearGradient id="alfiGauge" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="alfiGaugeV6" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor={red[400]} />
             <stop offset="50%" stopColor={amber[400]} />
             <stop offset="100%" stopColor={green[500]} />
           </linearGradient>
         </defs>
-        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke={alpha(deepPurple[900], 0.08)} strokeWidth={18} strokeLinecap="round" />
-        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGauge)" strokeWidth={18} strokeLinecap="round" />
-        <circle cx={mx} cy={my} r={11} fill={common.white} stroke={deepPurple[500]} strokeWidth={5} />
+        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke={alpha(green[900], 0.08)} strokeWidth={18} strokeLinecap="round" />
+        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV6)" strokeWidth={18} strokeLinecap="round" />
+        <circle cx={mx} cy={my} r={11} fill={common.white} stroke={green[500]} strokeWidth={5} />
       </Box>
       <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>
         <Typography sx={{ fontWeight: 900, fontSize: '3rem', lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
@@ -104,7 +107,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function DashboardV5() {
+export function DashboardV6() {
   const theme = useTheme();
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>
@@ -140,12 +143,12 @@ export function DashboardV5() {
         <Box sx={{
           position: 'absolute', zIndex: 0,
           width: { xs: 320, md: 520 }, height: { xs: 320, md: 520 }, borderRadius: '50%',
-          background: `radial-gradient(circle, ${alpha(cyan[300], 0.55)} 0%, ${alpha(deepPurple[300], 0.35)} 45%, transparent 70%)`,
+          background: `radial-gradient(circle, ${alpha(cyan[300], 0.55)} 0%, ${alpha(green[300], 0.35)} 45%, transparent 70%)`,
           filter: 'blur(20px)',
         }} />
         <Box
           component="img"
-          src="alfi%20full%20body%201.png"
+          src="alfi-green.png"
           alt="אלפי"
           sx={{
             position: 'relative',
@@ -155,7 +158,7 @@ export function DashboardV5() {
             maxWidth: '100%',
             objectFit: 'contain',
             display: 'block',
-            filter: (t) => `drop-shadow(0 24px 40px ${alpha(t.palette.primary.dark, 0.35)})`,
+            filter: `drop-shadow(0 24px 40px ${alpha(green[700], 0.35)})`,
           }}
         />
       </Box>
