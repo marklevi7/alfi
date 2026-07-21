@@ -48,7 +48,7 @@ const SIGN_POS = buildOrbit();
 
 function MathSigns() {
   return (
-    <Box sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
       {SIGN_POS.map(([top, left], i) => {
         const c = SIGN_COLORS[i % SIGN_COLORS.length];
         const size = 30 + (i % 3) * 5;

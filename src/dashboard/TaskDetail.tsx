@@ -37,7 +37,8 @@ import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import { Shell } from './Shell';
 
-export type SolveTask = { id: number; title: string; total: number; from: string; to: string };
+// to = deadline; null means the teacher set no deadline (open-ended practice).
+export type SolveTask = { id: number; title: string; total: number; from: string; to: string | null };
 
 /* ---------- tiny math renderer (no external lib) ---------- */
 function Frac({ n, d }: { n: ReactNode; d: ReactNode }) {
@@ -464,7 +465,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
       <Box>
         <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title} <Typography component="span" color="text.secondary" sx={{ fontWeight: 700 }}>#{task.id}</Typography></Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · עד {task.to}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'ללא תאריך יעד'}</Typography>
       </Box>
 
       <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2, md: 2.5 }, bgcolor: (t) => alpha(t.palette.primary.main, 0.07) }}>

@@ -15,33 +15,35 @@ import LinearProgress from '@mui/material/LinearProgress';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import QuizRoundedIcon from '@mui/icons-material/QuizRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import { KindIcon, type Kind } from './KindIcon';
 import { Shell } from './Shell';
 import { TaskDetail } from './TaskDetail';
 
-type Status = 'new' | 'inProgress' | 'done';
-type Kind = 'תרגול' | 'בוחן';
+// expired = deadline passed with questions left; still practiceable, no longer graded.
+type Status = 'new' | 'inProgress' | 'expired' | 'done';
 // grade = the teacher's mark on a graded, done בוחן (תרגול is never scored).
-type Task = { id: number; title: string; kind: Kind; topic: string; unit: string; total: number; solved: number; status: Status; from: string; to: string; grade?: number };
+// to = deadline; null means the teacher set no deadline (open-ended practice).
+type Task = { id: number; title: string; kind: Kind; topic: string; subTopic: string; unit: string; total: number; solved: number; status: Status; from: string; to: string | null; grade?: number };
 
 // Most-urgent first. Placeholder data (mirrors the teacher-sent tasks).
 const TASKS: Task[] = [
-  { id: 448, title: 'חקירת פונקציה — מנה עם שורש', kind: 'תרגול', topic: 'חקירת פונקציות', unit: '5 יח"ל', total: 5, solved: 2, status: 'inProgress', from: '10 ביוני 2026', to: '29 ביוני 2026' },
-  { id: 449, title: 'בוחן באלגברה', kind: 'בוחן', topic: 'אלגברה', unit: '5 יח"ל', total: 8, solved: 0, status: 'new', from: '12 ביוני 2026', to: '30 ביוני 2026' },
-  { id: 450, title: 'תרגול טריגונומטריה', kind: 'תרגול', topic: 'טריגונומטריה', unit: '4 יח"ל', total: 6, solved: 0, status: 'new', from: '11 ביוני 2026', to: '28 ביוני 2026' },
-  { id: 454, title: 'תרגול נגזרות', kind: 'תרגול', topic: 'חשבון דיפרנציאלי', unit: '5 יח"ל', total: 7, solved: 3, status: 'inProgress', from: '9 ביוני 2026', to: '27 ביוני 2026' },
-  { id: 456, title: 'תרגול וקטורים במרחב', kind: 'תרגול', topic: 'וקטורים', unit: '5 יח"ל', total: 4, solved: 0, status: 'new', from: '13 ביוני 2026', to: '1 ביולי 2026' },
-  { id: 451, title: 'תרגול הסתברות', kind: 'תרגול', topic: 'הסתברות', unit: '4 יח"ל', total: 4, solved: 4, status: 'done', from: '2 ביוני 2026', to: '20 ביוני 2026' },
-  { id: 452, title: 'בוחן בסדרות', kind: 'בוחן', topic: 'סדרות', unit: '5 יח"ל', total: 5, solved: 5, status: 'done', from: '28 במאי 2026', to: '15 ביוני 2026', grade: 91 },
-  { id: 453, title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', total: 6, solved: 6, status: 'done', from: '24 במאי 2026', to: '10 ביוני 2026', grade: 88 },
-  { id: 455, title: 'בוחן בטריגונומטריה', kind: 'בוחן', topic: 'טריגונומטריה', unit: '4 יח"ל', total: 5, solved: 5, status: 'done', from: '20 במאי 2026', to: '5 ביוני 2026', grade: 76 },
-  { id: 457, title: 'בוחן בחקירת פונקציות', kind: 'בוחן', topic: 'חקירת פונקציות', unit: '5 יח"ל', total: 8, solved: 8, status: 'done', from: '15 במאי 2026', to: '2 ביוני 2026', grade: 94 },
+  { id: 448, title: 'חקירת פונקציה — מנה עם שורש', kind: 'תרגול', topic: 'חקירת פונקציות', subTopic: 'נגזרות', unit: '5 יח"ל', total: 5, solved: 2, status: 'inProgress', from: '10 ביוני 2026', to: '29 ביוני 2026' },
+  { id: 449, title: 'בוחן באלגברה', kind: 'בוחן', topic: 'אלגברה', subTopic: 'משוואות ריבועיות', unit: '5 יח"ל', total: 8, solved: 0, status: 'new', from: '12 ביוני 2026', to: '30 ביוני 2026' },
+  { id: 458, title: 'תרגול חופשי — שברים אלגבריים', kind: 'תרגול', topic: 'אלגברה', subTopic: 'שברים אלגבריים', unit: '5 יח"ל', total: 6, solved: 0, status: 'new', from: '14 ביוני 2026', to: null },
+  { id: 450, title: 'תרגול טריגונומטריה', kind: 'תרגול', topic: 'טריגונומטריה', subTopic: 'זהויות טריגונומטריות', unit: '4 יח"ל', total: 6, solved: 0, status: 'new', from: '11 ביוני 2026', to: '28 ביוני 2026' },
+  { id: 459, title: 'בוחן בהסתברות', kind: 'בוחן', topic: 'הסתברות', subTopic: 'עץ הסתברות', unit: '5 יח"ל', total: 5, solved: 2, status: 'expired', from: '1 ביוני 2026', to: '18 ביוני 2026' },
+  { id: 454, title: 'תרגול נגזרות', kind: 'תרגול', topic: 'חשבון דיפרנציאלי', subTopic: 'כללי גזירה', unit: '5 יח"ל', total: 7, solved: 3, status: 'inProgress', from: '9 ביוני 2026', to: '27 ביוני 2026' },
+  { id: 456, title: 'תרגול וקטורים במרחב', kind: 'תרגול', topic: 'וקטורים', subTopic: 'מכפלה סקלרית', unit: '5 יח"ל', total: 4, solved: 0, status: 'new', from: '13 ביוני 2026', to: '1 ביולי 2026' },
+  { id: 451, title: 'תרגול הסתברות', kind: 'תרגול', topic: 'הסתברות', subTopic: 'הסתברות מותנית', unit: '4 יח"ל', total: 4, solved: 4, status: 'done', from: '2 ביוני 2026', to: '20 ביוני 2026' },
+  { id: 452, title: 'בוחן בסדרות', kind: 'בוחן', topic: 'סדרות', subTopic: 'סדרה חשבונית', unit: '5 יח"ל', total: 5, solved: 5, status: 'done', from: '28 במאי 2026', to: '15 ביוני 2026', grade: 91 },
+  { id: 453, title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', topic: 'גיאומטריה אנליטית', subTopic: 'הישר והמעגל', unit: '5 יח"ל', total: 6, solved: 6, status: 'done', from: '24 במאי 2026', to: '10 ביוני 2026', grade: 88 },
+  { id: 455, title: 'בוחן בטריגונומטריה', kind: 'בוחן', topic: 'טריגונומטריה', subTopic: 'משוואות טריגונומטריות', unit: '4 יח"ל', total: 5, solved: 5, status: 'done', from: '20 במאי 2026', to: '5 ביוני 2026', grade: 76 },
+  { id: 457, title: 'בוחן בחקירת פונקציות', kind: 'בוחן', topic: 'חקירת פונקציות', subTopic: 'אסימפטוטות', unit: '5 יח"ל', total: 8, solved: 8, status: 'done', from: '15 במאי 2026', to: '2 ביוני 2026', grade: 94 },
 ];
 
 // new & inProgress on top, done sinks to the bottom.
-const RANK: Record<Status, number> = { inProgress: 0, new: 1, done: 2 };
+const RANK: Record<Status, number> = { inProgress: 0, new: 1, expired: 2, done: 3 };
 
 // Canonical MUI palette roles per kind / status.
 const KIND: Record<Kind, 'primary'> = { תרגול: 'primary', בוחן: 'primary' };
@@ -51,7 +53,11 @@ const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as
 function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
   const kind = KIND[t.kind];
   const pct = t.total ? Math.round((t.solved / t.total) * 100) : 0;
-  const cta = t.status === 'done' ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';
+  const cta =
+    t.status === 'done' ? 'צפה בסיכום'
+    : t.status === 'expired' ? 'תרגול ללא ציון'
+    : t.status === 'inProgress' ? 'המשך תרגול'
+    : 'בוא נתרגל!';
   return (
     <Card
       variant="outlined"
@@ -72,15 +78,18 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
               <Typography sx={{ fontWeight: 900, fontSize: '1.1rem', lineHeight: 1, color: green[800] }}>{t.grade}</Typography>
               <Typography sx={{ fontSize: '0.55rem', fontWeight: 700, color: green[700] }}>ציון</Typography>
             </Box>
-          ) : (
-            <Avatar variant="rounded" sx={{ bgcolor: (th) => alpha(t.status === 'done' ? green[600] : th.palette[kind].main, 0.14), color: t.status === 'done' ? green[700] : `${kind}.main`, width: 36, height: 36, '& svg': { fontSize: 20 } }}>
-              {t.status === 'done' ? <CheckRoundedIcon /> : t.kind === 'בוחן' ? <QuizRoundedIcon /> : <AssignmentRoundedIcon />}
+          ) : t.status === 'done' ? (
+            <Avatar variant="rounded" sx={{ bgcolor: alpha(green[600], 0.14), color: green[700], width: 36, height: 36, '& svg': { fontSize: 20 } }}>
+              <CheckRoundedIcon />
             </Avatar>
+          ) : (
+            <KindIcon kind={t.kind} />
           )
         }
         action={
-          <Typography sx={{ ...META, display: 'block', mt: 1.25, mr: 1, whiteSpace: 'nowrap' }}>
-            עד {t.to}
+          // no deadline = open-ended; say so plainly instead of leaving a gap
+          <Typography sx={{ ...META, display: 'block', mt: 1.25, mr: 1, whiteSpace: 'nowrap', ...(t.to === null && { color: 'text.disabled' }), ...(t.status === 'expired' && { color: 'error.dark', fontWeight: 700 }) }}>
+            {t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'ללא תאריך יעד'}
           </Typography>
         }
         title={
@@ -93,11 +102,18 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'primary.dark' }}>חדש</Typography>
               </Stack>
             )}
+            {/* expired reads as a state, not an alarm: same dot pattern, error color */}
+            {t.status === 'expired' && (
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'error.dark' }}>פג תוקף</Typography>
+              </Stack>
+            )}
           </Stack>
         }
         subheader={
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.75 }}>
-            <Typography sx={META}>{t.topic}</Typography>
+            <Typography sx={META}>{t.topic} · {t.subTopic}</Typography>
           </Stack>
         }
       />
@@ -108,19 +124,25 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
             variant="determinate"
             value={pct}
             color={kind}
-            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }) }}
+            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.500' } }) }}
           />
           <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
             {t.solved}/{t.total} שאלות
           </Typography>
         </Stack>
+        {/* say what expiring actually cost the student, and what's still open */}
+        {t.status === 'expired' && (
+          <Typography sx={{ ...META, mt: 1 }}>
+            המועד להגשה חלף, אז הבוחן הזה כבר לא נספר לציון. אפשר עדיין לפתור אותו לתרגול.
+          </Typography>
+        )}
       </CardContent>
 
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end', px: 2, py: 1.5 }}>
         <Button
           onClick={onOpen}
-          variant={t.status === 'done' ? 'outlined' : 'contained'}
+          variant={t.status === 'done' || t.status === 'expired' ? 'outlined' : 'contained'}
           color={t.status === 'done' ? 'inherit' : kind}
           endIcon={t.status === 'done' ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
           sx={{ fontWeight: 800, borderRadius: 2 }}

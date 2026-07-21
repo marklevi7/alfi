@@ -11,8 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ButtonBase from '@mui/material/ButtonBase';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import QuizRoundedIcon from '@mui/icons-material/QuizRounded';
+import { KindIcon, type Kind } from './KindIcon';
 import { alpha } from '@mui/material/styles';
 import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red } from '@mui/material/colors';
@@ -28,8 +27,8 @@ const STATS = [
   { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 
-type Status = 'done' | 'partial' | 'notStarted';
-type Kind = 'תרגול' | 'בוחן';
+// expired = the deadline passed before it was finished.
+type Status = 'done' | 'partial' | 'notStarted' | 'expired';
 type Item = { title: string; kind: Kind; when: string; status: Status; score?: number; topic: string; unit: string; subTopic: string };
 
 // Newest first (top) → oldest last (bottom). Placeholder data.
@@ -38,6 +37,7 @@ const ITEMS: Item[] = [
   { title: 'תרגול גיאומטריה אנליטית', kind: 'תרגול', when: 'היום', status: 'partial', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל' },
   { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'אתמול', status: 'notStarted', topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'זהויות טריגונומטריות' },
   { title: 'תרגול חקירת פונקציות', kind: 'תרגול', when: 'לפני יומיים', status: 'done', topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'נגזרות' },
+  { title: 'בוחן בהסתברות', kind: 'בוחן', when: 'לפני 3 ימים', status: 'expired', topic: 'הסתברות', unit: '5 יח"ל', subTopic: 'עץ הסתברות' },
   { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 4 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית' },
   { title: 'תרגול הסתברות', kind: 'תרגול', when: 'בשבוע שעבר', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית' },
   { title: 'בוחן באלגברה', kind: 'בוחן', when: 'בשבוע שעבר', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות' },
@@ -48,10 +48,12 @@ const TOPICS = uniq(ITEMS.map((i) => i.topic));
 const UNITS = uniq(ITEMS.map((i) => i.unit));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
 
-const TONE: Record<Status, { c: string; label: string }> = {
-  done: { c: green[500], label: 'בוצע' },
-  partial: { c: amber[600], label: 'חלקי' },
-  notStarted: { c: grey[400], label: 'טרם התחלתי' },
+// c = the tint the chip sits on; ink = the text on that tint (WCAG AA at 11px).
+const TONE: Record<Status, { c: string; ink: string; label: string }> = {
+  done: { c: green[500], ink: green[900], label: 'בוצע' },
+  partial: { c: amber[600], ink: brown[900], label: 'חלקי' },
+  notStarted: { c: grey[400], ink: grey[900], label: 'טרם התחלתי' },
+  expired: { c: red[700], ink: red[900], label: 'פג תוקף' },
 };
 
 // Ribbon medal (from provided asset) in gold / silver / bronze, MUI tokens only.
@@ -104,7 +106,7 @@ export function History() {
               return (
                 <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-                    <Box sx={{ color: `${s.tone}.main`, display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.2rem' } }}>
+                    <Box sx={{ color: 'text.disabled', display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.2rem' } }}>
                       {s.icon}
                     </Box>
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{s.label}</Typography>
@@ -121,7 +123,7 @@ export function History() {
                     {s.total > 0 && (
                       <Stack direction="row" spacing={0.5}>
                         {Array.from({ length: s.total }).map((_, i) => (
-                          <Box key={i} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: i < Number(s.value) ? `${s.tone}.main` : 'grey.300' }} />
+                          <Box key={i} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: i < Number(s.value) ? 'primary.main' : 'grey.300' }} />
                         ))}
                       </Stack>
                     )}
@@ -184,20 +186,18 @@ export function History() {
                 <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.3, flex: 1, minWidth: 0 }} noWrap>{it.title}</Typography>
                 {it.score != null ? (
                   <Box sx={{ flexShrink: 0, width: 42, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), py: 0.25, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography sx={{ fontWeight: 900, fontSize: '1.05rem', lineHeight: 1, color: tone.c }}>{it.score}</Typography>
-                    <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, color: 'text.secondary' }}>ציון</Typography>
+                    <Typography sx={{ fontWeight: 900, fontSize: '1.05rem', lineHeight: 1, color: tone.ink }}>{it.score}</Typography>
+                    <Typography sx={{ fontSize: '0.6rem', fontWeight: 700, color: tone.ink }}>ציון</Typography>
                   </Box>
                 ) : (
-                  <Box sx={{ flexShrink: 0, px: 0.75, py: 0.25, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), color: tone.c, fontSize: '0.7rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{tone.label}</Box>
+                  <Box sx={{ flexShrink: 0, px: 0.75, py: 0.25, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), color: tone.ink, fontSize: '0.7rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{tone.label}</Box>
                 )}
               </Stack>
               <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" sx={{ mt: 1, rowGap: 0.5 }}>
-                <Box sx={{ color: 'primary.main', display: 'flex', '& svg': { fontSize: 18 } }}>
-                  {it.kind === 'בוחן' ? <QuizRoundedIcon /> : <AssignmentRoundedIcon />}
-                </Box>
-                <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>{it.topic}</Typography>
+                <KindIcon kind={it.kind} />
+                <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>{it.topic} · {it.subTopic}</Typography>
               </Stack>
-              <Typography sx={{ color: 'text.disabled', fontSize: '0.72rem', mt: 0.75 }}>{it.when}</Typography>
+              <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem', mt: 0.75 }}>{it.when}</Typography>
             </ButtonBase>
           );
         })}
