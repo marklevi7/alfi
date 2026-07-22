@@ -28,6 +28,9 @@ import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png
 
 export { robotImg };
 
+// Bot is hidden while it gets redesigned — flip to true to bring him back everywhere.
+export const SHOW_BOT = false;
+
 export const NAV = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeRoundedIcon />, screen: 'dashboard' as const },
   { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentRoundedIcon />, screen: 'practice' as const },
@@ -108,7 +111,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                 ))}
               </List>
 
-              {!hideSidebarRobot && (
+              {SHOW_BOT && !hideSidebarRobot && (
                 <Box sx={{ mt: 'auto', flexShrink: 0, pb: 3 }}>
                   <Box
                     component="img"

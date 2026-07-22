@@ -10,51 +10,51 @@ import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ButtonBase from '@mui/material/ButtonBase';
-import { KindIcon, type Kind } from './KindIcon';
-import { alpha } from '@mui/material/styles';
+import { type Kind } from './KindIcon';
+import { TaskCard, type TaskStatus } from './Practice';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red } from '@mui/material/colors';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
-import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
+import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
 import { Shell } from './Shell';
 
 const STATS = [
   { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'primary' as const },
-  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 תרגילים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
-  { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
+  { label: 'תרגולים השבוע', value: '2', total: 3, sub: '2 מתוך 3 תרגילים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
+  { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <TimerRoundedIcon />, tone: 'primary' as const },
 ];
 
 // expired = the deadline passed before it was finished.
 type Status = 'done' | 'partial' | 'notStarted' | 'expired';
-type Item = { title: string; kind: Kind; when: string; status: Status; score?: number; topic: string; unit: string; subTopic: string };
+type Item = { title: string; kind: Kind; when: string; status: Status; score?: number; topic: string; unit: string; subTopic: string; solved: number; total: number };
+
+// timeline status → the shared TaskCard's status language
+const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'inProgress', notStarted: 'new', expired: 'expired' };
 
 // Newest first (top) → oldest last (bottom). Placeholder data.
 const ITEMS: Item[] = [
-  { title: 'בוחן באלגברה', kind: 'בוחן', when: 'היום', status: 'done', score: 88, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'משוואות ריבועיות' },
-  { title: 'תרגול גיאומטריה אנליטית', kind: 'תרגול', when: 'היום', status: 'partial', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל' },
-  { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'אתמול', status: 'notStarted', topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'זהויות טריגונומטריות' },
-  { title: 'תרגול חקירת פונקציות', kind: 'תרגול', when: 'לפני יומיים', status: 'done', topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'נגזרות' },
-  { title: 'בוחן בהסתברות', kind: 'בוחן', when: 'לפני 3 ימים', status: 'expired', topic: 'הסתברות', unit: '5 יח"ל', subTopic: 'עץ הסתברות' },
-  { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 4 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית' },
-  { title: 'תרגול הסתברות', kind: 'תרגול', when: 'בשבוע שעבר', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית' },
-  { title: 'בוחן באלגברה', kind: 'בוחן', when: 'בשבוע שעבר', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות' },
+  // history starts yesterday — nothing from today lives here
+  { title: 'בוחן באלגברה', kind: 'בוחן', when: 'אתמול', status: 'done', score: 88, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'משוואות ריבועיות', solved: 8, total: 8 },
+  { title: 'תרגול גיאומטריה אנליטית', kind: 'תרגול', when: 'אתמול', status: 'partial', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 2, total: 5 },
+  { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני יומיים', status: 'notStarted', topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 0, total: 6 },
+  { title: 'תרגול חקירת פונקציות', kind: 'תרגול', when: 'לפני 3 ימים', status: 'done', topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'נגזרות', solved: 4, total: 4 },
+  { title: 'בוחן בהסתברות', kind: 'בוחן', when: 'לפני 4 ימים', status: 'expired', topic: 'הסתברות', unit: '5 יח"ל', subTopic: 'עץ הסתברות', solved: 2, total: 5 },
+  { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 5 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית', solved: 5, total: 5 },
+  { title: 'תרגול הסתברות', kind: 'תרגול', when: 'בשבוע שעבר', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית', solved: 2, total: 4 },
+  { title: 'בוחן באלגברה', kind: 'בוחן', when: 'בשבוע שעבר', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות', solved: 6, total: 6 },
+  // moved here from the תרגילים list — finished tasks live on the timeline
+  { title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 88, topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 6, total: 6 },
+  { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 76, topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'משוואות טריגונומטריות', solved: 5, total: 5 },
+  { title: 'בוחן בחקירת פונקציות', kind: 'בוחן', when: 'לפני שלושה שבועות', status: 'done', score: 94, topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'אסימפטוטות', solved: 8, total: 8 },
 ];
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
 const TOPICS = uniq(ITEMS.map((i) => i.topic));
 const UNITS = uniq(ITEMS.map((i) => i.unit));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
-
-// c = the tint the chip sits on; ink = the text on that tint (WCAG AA at 11px).
-const TONE: Record<Status, { c: string; ink: string; label: string }> = {
-  done: { c: green[500], ink: green[900], label: 'בוצע' },
-  partial: { c: amber[600], ink: brown[900], label: 'חלקי' },
-  notStarted: { c: grey[400], ink: grey[900], label: 'טרם התחלתי' },
-  expired: { c: red[700], ink: red[900], label: 'פג תוקף' },
-};
 
 // Ribbon medal (from provided asset) in gold / silver / bronze, MUI tokens only.
 const MEDAL_TIERS = {
@@ -172,35 +172,51 @@ export function History() {
           </Stack>
       </Box>
 
-      {/* grid of compact cards, styled like the exercise cards on the second screen */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5 }}>
+      {/* timeline: every item hangs on a vertical rail — dot = submission state
+          (filled = done, half = partial, hollow = not started / expired) */}
+      <Box sx={{ position: 'relative', paddingInlineStart: 4.5 }}>
+        <Box sx={{ position: 'absolute', insetInlineStart: '11px', top: 14, bottom: 14, width: 2, bgcolor: 'divider', borderRadius: 1 }} />
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5 }}>
         {items.map((it, i) => {
-          const tone = TONE[it.status];
           return (
-            <ButtonBase
-              key={i}
-              onClick={() => nav.go('practice')}
-              sx={{ display: 'block', textAlign: 'start', borderRadius: 2.5, p: 1.75, border: 1, borderColor: 'divider', bgcolor: 'background.paper', transition: (t) => t.transitions.create(['box-shadow', 'border-color']), '&:hover': { boxShadow: 3, borderColor: 'primary.main' }, '@media (prefers-reduced-motion: reduce)': { transition: 'none' } }}
+          <Box key={i} sx={{ position: 'relative' }}>
+            {/* timeline dot, centered on the rail */}
+            <Box
+              sx={{
+                position: 'absolute', insetInlineStart: '-36px', top: '50%', transform: 'translateY(-50%)',
+                width: 24, height: 24, borderRadius: '50%', zIndex: 1,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                bgcolor: 'background.paper',
+                ...(it.status === 'done' && { bgcolor: green[500] }),
+                ...(it.status === 'partial' && { border: 2, borderColor: amber[600], background: `linear-gradient(to left, ${amber[600]} 50%, transparent 50%)` }),
+                ...(it.status === 'notStarted' && { border: 2, borderColor: grey[400] }),
+                ...(it.status === 'expired' && { border: 2, borderColor: red[700] }),
+              }}
             >
-              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
-                <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.3, flex: 1, minWidth: 0 }} noWrap>{it.title}</Typography>
-                {it.score != null ? (
-                  <Box sx={{ flexShrink: 0, minWidth: 44, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.14), px: 0.5, py: 0.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', lineHeight: 1, color: tone.ink, fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.02em' }}>{it.score}</Typography>
-                    <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, color: tone.ink, letterSpacing: '0.04em', mt: 0.25 }}>ציון</Typography>
-                  </Box>
-                ) : (
-                  <Box sx={{ flexShrink: 0, px: 0.75, py: 0.25, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), color: tone.ink, fontSize: '0.7rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{tone.label}</Box>
-                )}
-              </Stack>
-              <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" sx={{ mt: 1, rowGap: 0.5 }}>
-                <KindIcon kind={it.kind} />
-                <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem' }}>{it.topic} · {it.subTopic}</Typography>
-              </Stack>
-              <Typography sx={{ color: 'text.secondary', fontSize: '0.78rem', mt: 0.75 }}>{it.when}</Typography>
-            </ButtonBase>
+              {it.status === 'done' && <CheckRoundedIcon sx={{ fontSize: 16, color: 'common.white' }} />}
+            </Box>
+            <TaskCard
+              t={{
+                id: i,
+                title: it.title,
+                kind: it.kind,
+                topic: it.topic,
+                subTopic: it.subTopic,
+                unit: it.unit,
+                total: it.total,
+                solved: it.solved,
+                status: STATUS_MAP[it.status],
+                from: '',
+                to: null,
+                grade: it.score,
+              }}
+              dateLabel={it.when}
+              onOpen={() => nav.go('practice')}
+            />
+          </Box>
           );
         })}
+        </Box>
       </Box>
       {items.length === 0 && (
         <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 6, fontWeight: 600 }}>

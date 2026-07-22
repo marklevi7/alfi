@@ -7,6 +7,7 @@ import { DashboardV2 } from './DashboardV2';
 import { DashboardV4 } from './DashboardV4';
 import { DashboardV5 } from './DashboardV5';
 import { DashboardV6 } from './DashboardV6';
+import { DashboardV7 } from './DashboardV7';
 import { Dashboard } from './Dashboard';
 
 export const DASH_VERSIONS = [
@@ -16,6 +17,7 @@ export const DASH_VERSIONS = [
   { label: 'v4', Comp: DashboardV4 },
   { label: 'v5', Comp: DashboardV5 },
   { label: 'v6', Comp: DashboardV6 },
+  { label: 'v7', Comp: DashboardV7 },
 ];
 
 /** Always-on-top version switcher bar (dark). */

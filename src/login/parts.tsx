@@ -187,6 +187,8 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
       <Stack
         component="form"
         spacing={2.5}
+        // fixed to the taller (signup) layout so switching tabs never resizes the card
+        sx={{ minHeight: 355 }}
         onSubmit={(e) => {
           e.preventDefault();
           nav.go('dashboard');

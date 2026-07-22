@@ -1,10 +1,11 @@
-import { alpha } from '@mui/material/styles';
-import { indigo } from '@mui/material/colors';
+import { alpha, keyframes, useTheme } from '@mui/material/styles';
+import { indigo, blue, cyan, pink, amber } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { AuthForm, FeatureList, FeatureGrid, SectionLabel, Footer, BrandMark, AlfiImg, Tagline, gradientBrand, COPY } from './parts';
+import { SHOW_BOT } from '../dashboard/Shell';
 
 /* 1 — Split: form right, ENORMOUS full-height Alfi left, features over gradient */
 function V1() {
@@ -202,11 +203,93 @@ function V10() {
 
 /* ---- 3 takes on #5 (glass card on gradient, mirrored Alfi) ---- */
 
+/* Floating math signs over the zone where Alfi stood (same language as the dashboard). */
+const floatSign = keyframes`
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-18px) rotate(8deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+`;
+const twinkle = keyframes`
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1; transform: scale(1.12); }
+`;
+const SIGN_CHARS = ['+', '−', '×', '÷', '=', 'π', '√', '%', '∞', 'Σ', '≈', '≠'];
+const SPARK_CHARS = ['✦', '✧', '⋆', '·'];
+// deterministic "randomness" — same galaxy on every load, no hydration drift
+const pr = (n: number) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+
+// A little galaxy: 3 concentric diagonal ellipses (tilted, rising toward the
+// card), jittered so it feels hand-scattered. Outermost ring slides behind the
+// card (container is full-bleed; the card sits above at zIndex 2).
+// +25° here renders as a visual rise toward the card: the RTL cache mirrors `left`.
+type Sign = { top: number; left: number; ch: string; size: number; big: boolean };
+function buildGalaxy(): Sign[] {
+  const th = (25 * Math.PI) / 180;
+  const cx = 46, cy = 50;
+  const rings = [
+    { a: 52, b: 26, n: 16, size: 30, signs: true },
+    { a: 37, b: 17, n: 11, size: 22, signs: true },
+    { a: 64, b: 34, n: 12, size: 16, signs: false }, // outer sparkle ring, dips behind the card
+  ];
+  const out: Sign[] = [];
+  let k = 0;
+  for (const r of rings) {
+    for (let i = 0; i < r.n; i++) {
+      k++;
+      const t = (i / r.n) * Math.PI * 2 + pr(k) * 0.5;           // angular jitter
+      const wob = 1 + (pr(k * 3) - 0.5) * 0.16;                  // radial jitter
+      const a = r.a * wob, b = r.b * wob;
+      const left = cx + a * Math.cos(t) * Math.cos(th) - b * Math.sin(t) * Math.sin(th);
+      const top = cy + a * Math.cos(t) * Math.sin(th) + b * Math.sin(t) * Math.cos(th);
+      if (top < 4 || top > 96 || left < 1 || left > 99) continue;
+      const ch = r.signs
+        ? SIGN_CHARS[Math.floor(pr(k * 7) * SIGN_CHARS.length)]
+        : SPARK_CHARS[Math.floor(pr(k * 7) * SPARK_CHARS.length)];
+      out.push({ top, left, ch, size: r.size + Math.round(pr(k * 13) * 12), big: r.signs });
+    }
+  }
+  return out;
+}
+const GALAXY = buildGalaxy();
+
+function LoginSigns() {
+  const theme = useTheme();
+  // primary-driven so v5 stays purple and v6/v7 stay green
+  const colors = [theme.palette.primary.light, blue[400], cyan[500], pink[400], amber[500], theme.palette.primary.main, blue[300], pink[300]];
+  return (
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', display: { xs: 'none', md: 'block' } }}>
+      {GALAXY.map((s, i) => {
+        const c = colors[i % colors.length];
+        const dur = 3.5 + pr(i + 99) * 3;
+        const delay = pr(i + 51) * 2;
+        return (
+          <Box
+            key={i}
+            sx={{
+              position: 'absolute', top: `${s.top}%`, left: `${s.left}%`,
+              fontWeight: 900, fontSize: s.size, lineHeight: 1, color: c,
+              opacity: s.big ? 1 : 0.8,
+              textShadow: `0 0 14px ${alpha(c, 0.85)}, 0 0 28px ${alpha(c, 0.5)}`,
+              animation: `${floatSign} ${dur}s ease-in-out ${delay}s infinite, ${twinkle} ${dur * 0.8}s ease-in-out ${delay}s infinite`,
+              '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+            }}
+          >
+            {s.ch}
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
 /* 5A — Alfi full-height bottom-left, glass card right (ref) */
 function V5a() {
   return (
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
-      <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, transform: 'translateX(-100px)' }} />
+      {SHOW_BOT && (
+        <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, transform: 'translateX(-100px)' }} />
+      )}
+      <LoginSigns />
       <Paper elevation={4} sx={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 4, bgcolor: 'background.paper' }}>
         <BrandMark variant="dark" size="xl" sx={{ mb: 3 }} />
         <AuthForm showTitle={false} showFooter={false} />

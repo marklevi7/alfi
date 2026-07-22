@@ -88,8 +88,8 @@ export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
   const [ver, setVer] = useState(DASH_VERSIONS.length - 1);
   const DashVariant = DASH_VERSIONS[ver].Comp;
-  // The selected version themes the WHOLE app: v6 = green, everything else = purple.
-  const activeTheme = DASH_VERSIONS[ver].label === 'v6' ? greenTheme : theme;
+  // The selected version themes the WHOLE app: v6/v7 = green, everything else = purple.
+  const activeTheme = ['v6', 'v7'].includes(DASH_VERSIONS[ver].label) ? greenTheme : theme;
   return (
     <NavContext.Provider value={{ go: setScreen }}>
       <ThemeProvider theme={activeTheme}>

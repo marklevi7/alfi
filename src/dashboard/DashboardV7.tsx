@@ -9,7 +9,7 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT } from './Shell';
 import { useNav } from '../nav';
 
-// v6 = green main screen. App themes the whole app green when v6 is selected;
+// v7 = clone of v6 (green) — diverge from here. App themes the whole app green when v6 is selected;
 // these local green literals just match that on the decorative bits.
 
 const floaty = keyframes`
@@ -88,14 +88,14 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
     <Box sx={{ position: 'relative', width: '100%', maxWidth: 220, mx: 'auto' }}>
       <Box component="svg" viewBox="0 0 200 120" sx={{ width: '100%', display: 'block', overflow: 'visible' }}>
         <defs>
-          <linearGradient id="alfiGaugeV6" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="alfiGaugeV7" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor={red[400]} />
             <stop offset="50%" stopColor={amber[400]} />
             <stop offset="100%" stopColor={green[500]} />
           </linearGradient>
         </defs>
         <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke={alpha(green[900], 0.08)} strokeWidth={18} strokeLinecap="round" />
-        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV6)" strokeWidth={18} strokeLinecap="round" />
+        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV7)" strokeWidth={18} strokeLinecap="round" />
         <circle cx={mx} cy={my} r={11} fill={common.white} stroke={green[500]} strokeWidth={5} />
       </Box>
       <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>
@@ -108,7 +108,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function DashboardV6() {
+export function DashboardV7() {
   const theme = useTheme();
   const nav = useNav();
   return (

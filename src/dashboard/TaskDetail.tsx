@@ -465,7 +465,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
       <Box>
         <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title} <Typography component="span" color="text.secondary" sx={{ fontWeight: 700 }}>#{task.id}</Typography></Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'ללא תאריך יעד'}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
       </Box>
 
       <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2, md: 2.5 }, bgcolor: (t) => alpha(t.palette.primary.main, 0.07) }}>

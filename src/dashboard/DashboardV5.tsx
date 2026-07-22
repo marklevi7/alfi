@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { deepPurple, blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import { Shell } from './Shell';
+import { Shell, SHOW_BOT } from './Shell';
+import { useNav } from '../nav';
 
 const floaty = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -106,11 +107,13 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
 
 export function DashboardV5() {
   const theme = useTheme();
+  const nav = useNav();
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: '-150px', mb: { xs: -16, md: -40 }, position: 'relative', zIndex: 0 }}>
-        {/* ALFI speech bubble */}
+      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
+        {/* speech bubble rides the bot; without him the greeting is the hero */}
+        {SHOW_BOT ? (
         <Box
           sx={{
             position: 'absolute',
@@ -135,14 +138,22 @@ export function DashboardV5() {
             שלום, מארק! 👋
           </Typography>
         </Box>
+        ) : (
+          <Typography sx={{ position: 'relative', zIndex: 2, fontWeight: 800, fontSize: { xs: '2rem', md: '3rem' }, textAlign: 'center', textWrap: 'balance' }}>
+            שלום, מארק! 👋
+          </Typography>
+        )}
         <MathSigns />
         {/* colorful glow halo behind ALFI */}
+        {SHOW_BOT && (
         <Box sx={{
           position: 'absolute', zIndex: 0,
           width: { xs: 320, md: 520 }, height: { xs: 320, md: 520 }, borderRadius: '50%',
           background: `radial-gradient(circle, ${alpha(cyan[300], 0.55)} 0%, ${alpha(deepPurple[300], 0.35)} 45%, transparent 70%)`,
           filter: 'blur(20px)',
         }} />
+        )}
+        {SHOW_BOT && (
         <Box
           component="img"
           src="alfi%20full%20body%201.png"
@@ -158,10 +169,11 @@ export function DashboardV5() {
             filter: (t) => `drop-shadow(0 24px 40px ${alpha(t.palette.primary.dark, 0.35)})`,
           }}
         />
+        )}
       </Box>
 
       {/* Boxes — colorful, overlapping ALFI's hands */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: '-50px', zIndex: 1 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
@@ -178,10 +190,11 @@ export function DashboardV5() {
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגיל הבא שלי</Typography>
             <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
-              יש לי 8 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
+              יש לי 2 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
             </Typography>
             <Button
               variant="contained"
+              onClick={() => nav.go('practice')}
               endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
               sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2, '&:hover': { transform: 'scale(1.05)' } }}
             >
