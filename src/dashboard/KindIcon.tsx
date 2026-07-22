@@ -1,6 +1,6 @@
 import Avatar from '@mui/material/Avatar';
 import { alpha } from '@mui/material/styles';
-import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
 
 export type Kind = 'תרגול' | 'בוחן';
@@ -19,12 +19,13 @@ export function KindIcon({ kind }: { kind: Kind }) {
         width: 36,
         height: 36,
         flexShrink: 0,
-        bgcolor: (t) => alpha(t.palette.primary.main, 0.14),
-        color: 'primary.main',
+        // neutral on purpose: kind is carried by the glyph + label, not color
+        bgcolor: (t) => alpha(t.palette.text.primary, 0.06),
+        color: 'grey.700',
         '& svg': { fontSize: 20 },
       }}
     >
-      {kind === 'בוחן' ? <TimerRoundedIcon /> : <EditNoteRoundedIcon />}
+      {kind === 'בוחן' ? <TimerRoundedIcon /> : <MenuBookRoundedIcon />}
     </Avatar>
   );
 }

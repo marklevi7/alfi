@@ -24,8 +24,6 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
-import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
@@ -158,7 +156,7 @@ export function Footer() {
   );
 }
 
-export function AuthForm({ showTitle = true, showFooter = true, showFeatures = false }: { showTitle?: boolean; showFooter?: boolean; showFeatures?: boolean }) {
+export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: boolean; showFooter?: boolean }) {
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const nav = useNav();
@@ -243,28 +241,7 @@ export function AuthForm({ showTitle = true, showFooter = true, showFeatures = f
         <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700, borderRadius: 2 }}>
           {tab === 0 ? 'התחברות' : 'הרשמה'}
         </Button>
-
-        {/* alternative identity methods (not yet supported — planned for students) */}
-        <Divider sx={{ my: 0.5 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-            {tab === 0 ? 'או המשך עם' : 'או הירשמו עם'}
-          </Typography>
-        </Divider>
-        <Button variant="outlined" size="large" fullWidth startIcon={<AccountBalanceRoundedIcon />} sx={{ py: 1.1, fontWeight: 700, borderRadius: 2 }}>
-          משרד החינוך
-        </Button>
-        <Button variant="outlined" size="large" fullWidth startIcon={<MailOutlineRoundedIcon />} sx={{ py: 1.1, fontWeight: 700, borderRadius: 2 }}>
-          אימייל
-        </Button>
       </Stack>
-
-      {/* marketing pitch belongs on signup only, not on login */}
-      {showFeatures && tab === 1 && (
-        <>
-          <SectionLabel>למה אלפי?</SectionLabel>
-          <FeatureGrid />
-        </>
-      )}
 
       {showFooter && (
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>

@@ -72,13 +72,8 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
     >
       <CardHeader
         avatar={
-          t.status === 'done' && t.grade != null ? (
-            // teacher-graded: a green grade "stamp"
-            <Box sx={{ width: 46, height: 40, borderRadius: 2, bgcolor: alpha(green[500], 0.16), display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography sx={{ fontWeight: 900, fontSize: '1.1rem', lineHeight: 1, color: green[800] }}>{t.grade}</Typography>
-              <Typography sx={{ fontSize: '0.55rem', fontWeight: 700, color: green[700] }}>ציון</Typography>
-            </Box>
-          ) : t.status === 'done' ? (
+          // icon always stays; the grade lives on the count line below, never replaces the icon
+          t.status === 'done' ? (
             <Avatar variant="rounded" sx={{ bgcolor: alpha(green[600], 0.14), color: green[700], width: 36, height: 36, '& svg': { fontSize: 20 } }}>
               <CheckRoundedIcon />
             </Avatar>
@@ -98,8 +93,8 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
             {/* only NEW gets the notification dot; in-progress reads from the bar below */}
             {t.status === 'new' && (
               <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main', flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'primary.dark' }}>חדש</Typography>
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
               </Stack>
             )}
             {/* expired reads as a state, not an alarm: same dot pattern, error color */}
@@ -108,6 +103,13 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'error.dark' }}>פג תוקף</Typography>
               </Stack>
+            )}
+            {/* teacher grade rides next to the title, not on top of the icon */}
+            {t.status === 'done' && t.grade != null && (
+              <Box sx={{ px: 1, py: 0.375, borderRadius: 1.5, bgcolor: alpha(green[600], 0.14), display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+                <Typography component="span" sx={{ fontSize: '0.65rem', fontWeight: 700, color: green[800], letterSpacing: '0.02em' }}>ציון</Typography>
+                <Typography component="span" sx={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, color: green[900], fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
+              </Box>
             )}
           </Stack>
         }
@@ -123,8 +125,7 @@ function TaskCard({ t, onOpen }: { t: Task; onOpen: () => void }) {
           <LinearProgress
             variant="determinate"
             value={pct}
-            color={kind}
-            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.500' } }) }}
+            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: 'grey.600' }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
           />
           <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
             {t.solved}/{t.total} שאלות

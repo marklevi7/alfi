@@ -185,9 +185,9 @@ export function History() {
               <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
                 <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', lineHeight: 1.3, flex: 1, minWidth: 0 }} noWrap>{it.title}</Typography>
                 {it.score != null ? (
-                  <Box sx={{ flexShrink: 0, width: 42, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), py: 0.25, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography sx={{ fontWeight: 900, fontSize: '1.05rem', lineHeight: 1, color: tone.ink }}>{it.score}</Typography>
-                    <Typography sx={{ fontSize: '0.6rem', fontWeight: 700, color: tone.ink }}>ציון</Typography>
+                  <Box sx={{ flexShrink: 0, minWidth: 44, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.14), px: 0.5, py: 0.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', lineHeight: 1, color: tone.ink, fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.02em' }}>{it.score}</Typography>
+                    <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, color: tone.ink, letterSpacing: '0.04em', mt: 0.25 }}>ציון</Typography>
                   </Box>
                 ) : (
                   <Box sx={{ flexShrink: 0, px: 0.75, py: 0.25, borderRadius: 1.5, bgcolor: alpha(tone.c, 0.16), color: tone.ink, fontSize: '0.7rem', fontWeight: 800, whiteSpace: 'nowrap' }}>{tone.label}</Box>
