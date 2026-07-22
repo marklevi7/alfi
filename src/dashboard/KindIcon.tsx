@@ -1,7 +1,7 @@
 import Avatar from '@mui/material/Avatar';
 import { alpha } from '@mui/material/styles';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import QuizRoundedIcon from '@mui/icons-material/QuizRounded';
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
 
 export type Kind = 'תרגול' | 'בוחן';
 
@@ -24,7 +24,7 @@ export function KindIcon({ kind }: { kind: Kind }) {
         '& svg': { fontSize: 20 },
       }}
     >
-      {kind === 'בוחן' ? <QuizRoundedIcon /> : <AssignmentRoundedIcon />}
+      {kind === 'בוחן' ? <TimerRoundedIcon /> : <EditNoteRoundedIcon />}
     </Avatar>
   );
 }
