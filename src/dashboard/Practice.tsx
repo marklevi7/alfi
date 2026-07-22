@@ -34,8 +34,13 @@ const TASKS: Task[] = [
   // done / expired tasks live on the תמונת מצב timeline (History.tsx ITEMS)
 ];
 
-// new & inProgress on top, done sinks to the bottom.
-const RANK: Record<Status, number> = { inProgress: 0, new: 1, expired: 2, done: 3 };
+// urgent new (has a deadline) first, then ongoing, open-ended last; expired/done sink.
+const rankOf = (t: Task) =>
+  t.status === 'new' && t.to ? 0
+  : t.status === 'inProgress' ? 1
+  : t.status === 'new' ? 2
+  : t.status === 'expired' ? 3
+  : 4;
 
 // Canonical MUI palette roles per kind / status.
 const KIND: Record<Kind, 'primary'> = { תרגול: 'primary', בוחן: 'primary' };
@@ -50,8 +55,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // progress reads like the gauge: low = red, mid = yellow, high = green
   const barColor = pct >= 67 ? green[600] : pct >= 34 ? amber[600] : red[500];
   const cta =
-    t.status === 'done' ? 'צפה בסיכום'
-    : t.status === 'expired' ? 'תרגול ללא ציון'
+    t.status === 'done' || t.status === 'expired' ? 'צפה בסיכום'
     : t.status === 'inProgress' ? 'המשך תרגול'
     : 'בוא נתרגל!';
   return (
@@ -59,10 +63,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       variant="outlined"
       sx={{
         borderRadius: 3,
-        // done tasks recede: green-tinted + dimmed, restored on hover
-        ...(t.status === 'done' && { bgcolor: green[50], opacity: 0.68 }),
-        transition: (th) => th.transitions.create(['box-shadow', 'border-color', 'opacity']),
-        '&:hover': { boxShadow: 4, borderColor: `${kind}.main`, ...(t.status === 'done' && { opacity: 1 }) },
+        // done tasks get the green tint but stay full-strength — the grade is the headline
+        ...(t.status === 'done' && { bgcolor: green[50] }),
+        transition: (th) => th.transitions.create(['box-shadow', 'border-color']),
+        '&:hover': { boxShadow: 4, borderColor: `${kind}.main` },
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
@@ -100,11 +104,12 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'error.dark' }}>פג תוקף</Typography>
               </Stack>
             )}
-            {/* teacher grade rides next to the title, not on top of the icon */}
+            {/* the grade is the point of a finished card — solid green, white, title-scale.
+                Same row, same card size; weight comes from contrast, not from footprint. */}
             {t.status === 'done' && t.grade != null && (
-              <Box sx={{ px: 1, py: 0.375, borderRadius: 1.5, bgcolor: alpha(green[600], 0.14), display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-                <Typography component="span" sx={{ fontSize: '0.65rem', fontWeight: 700, color: green[800], letterSpacing: '0.02em' }}>ציון</Typography>
-                <Typography component="span" sx={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, color: green[900], fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
+              <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
+                <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
+                <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
           </Stack>
@@ -121,7 +126,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           <LinearProgress
             variant="determinate"
             value={pct}
-            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'new' && t.to && { bgcolor: alpha(amber[500], 0.35) }), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
           />
           <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
             {t.solved}/{t.total} שאלות
@@ -130,7 +135,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         {/* say what expiring actually cost the student, and what's still open */}
         {t.status === 'expired' && (
           <Typography sx={{ ...META, mt: 1 }}>
-            המועד להגשה חלף, אז הבוחן הזה כבר לא נספר לציון. אפשר עדיין לפתור אותו לתרגול.
+            המועד להגשה חלף, אז המשימה הזאת כבר לא נספרת לציון.
           </Typography>
         )}
       </CardContent>
@@ -140,8 +145,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         <Button
           onClick={onOpen}
           variant={t.status === 'done' || t.status === 'expired' ? 'outlined' : 'contained'}
-          color={t.status === 'done' ? 'inherit' : kind}
-          endIcon={t.status === 'done' ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
+          color={t.status === 'done' || t.status === 'expired' ? 'inherit' : kind}
+          endIcon={t.status === 'done' || t.status === 'expired' ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
           sx={{ fontWeight: 800, borderRadius: 2 }}
         >
           {cta}
@@ -160,7 +165,7 @@ export function Practice() {
       TASKS
         .filter((t) => t.status === 'new' || t.status === 'inProgress')
         .slice()
-        .sort((a, b) => RANK[a.status] - RANK[b.status]),
+        .sort((a, b) => rankOf(a) - rankOf(b)),
     []
   );
 

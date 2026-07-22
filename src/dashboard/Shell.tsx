@@ -154,14 +154,16 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     onClose={() => setMenuAnchor(null)}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                    slotProps={{ paper: { sx: { borderRadius: 3, mt: 1 } } }}
+                    MenuListProps={{ sx: { py: 1 } }}
                   >
-                    <MenuItem onClick={() => setMenuAnchor(null)}>
-                      <ListItemIcon><SettingsRoundedIcon fontSize="small" /></ListItemIcon>
-                      <ListItemText primary="הגדרות" primaryTypographyProps={{ fontWeight: 600 }} />
+                    <MenuItem onClick={() => setMenuAnchor(null)} sx={{ py: 1.5, px: 3, minWidth: 220 }}>
+                      <ListItemIcon sx={{ minWidth: 44 }}><SettingsRoundedIcon /></ListItemIcon>
+                      <ListItemText primary="הגדרות" primaryTypographyProps={{ fontWeight: 600, fontSize: '1.05rem' }} />
                     </MenuItem>
-                    <MenuItem onClick={() => { setMenuAnchor(null); navTo.go('login'); }}>
-                      <ListItemIcon><LogoutRoundedIcon className="dir-icon" fontSize="small" /></ListItemIcon>
-                      <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600 }} />
+                    <MenuItem onClick={() => { setMenuAnchor(null); navTo.go('login'); }} sx={{ py: 1.5, px: 3, minWidth: 220 }}>
+                      <ListItemIcon sx={{ minWidth: 44 }}><LogoutRoundedIcon className="dir-icon" /></ListItemIcon>
+                      <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, fontSize: '1.05rem' }} />
                     </MenuItem>
                   </Menu>
                 </Stack>

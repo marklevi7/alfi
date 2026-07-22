@@ -31,8 +31,10 @@ const STATS = [
 type Status = 'done' | 'partial' | 'notStarted' | 'expired';
 type Item = { title: string; kind: Kind; when: string; status: Status; score?: number; topic: string; unit: string; subTopic: string; solved: number; total: number };
 
-// timeline status → the shared TaskCard's status language
-const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'inProgress', notStarted: 'new', expired: 'expired' };
+// timeline status → the shared TaskCard's status language.
+// Anything unfinished here is past its deadline — locked, no more credit —
+// so partial / not-started render as expired cards (the dots still show how far they got).
+const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'expired', notStarted: 'expired', expired: 'expired' };
 
 // Newest first (top) → oldest last (bottom). Placeholder data.
 const ITEMS: Item[] = [
