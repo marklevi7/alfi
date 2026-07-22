@@ -126,7 +126,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           <LinearProgress
             variant="determinate"
             value={pct}
-            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'new' && t.to && { bgcolor: alpha(amber[500], 0.35) }), ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
           />
           <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
             {t.solved}/{t.total} שאלות
