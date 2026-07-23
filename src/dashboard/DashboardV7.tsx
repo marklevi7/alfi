@@ -108,7 +108,9 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function DashboardV7() {
+// dashboard1 = full, dashboard2 = no average grade yet, dashboard3 = no next task,
+// dashboard4 = empty: no boxes at all, just the greeting on the sign backdrop.
+export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade' | 'noNext' | 'empty' }) {
   const theme = useTheme();
   const nav = useNav();
   return (
@@ -175,16 +177,24 @@ export function DashboardV7() {
         )}
       </Box>
 
-      {/* Boxes — colorful, overlapping ALFI's hands */}
+      {/* Boxes — colorful, overlapping ALFI's hands. dashboard4 shows none. */}
+      {variant !== 'empty' && (
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>הציון הממוצע שלי</Typography>
-            <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-              <ScoreGauge value={78} />
-            </Box>
+            {variant === 'noGrade' ? (
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 0.5 }}>
+                <Typography sx={{ fontWeight: 700, color: 'text.secondary' }}>עדיין אין ציון ממוצע</Typography>
+                <Typography variant="body2" color="text.secondary">אחרי הבוחן הראשון הציון יופיע כאן</Typography>
+              </Box>
+            ) : (
+              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                <ScoreGauge value={78} />
+              </Box>
+            )}
           </CardContent>
         </Card>
 
@@ -192,20 +202,38 @@ export function DashboardV7() {
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגיל הבא שלי</Typography>
-            <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
-              יש לי 2 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => nav.go('practice')}
-              endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-              sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2, '&:hover': { transform: 'scale(1.05)' } }}
-            >
-              בוא נתרגל!
-            </Button>
+            {variant === 'noNext' ? (
+              <>
+                <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
+                  אין תרגילים חדשים כרגע. כשהמורה תשלח משימה, היא תופיע כאן.
+                </Typography>
+                <Button
+                  variant="outlined"
+                  onClick={() => nav.go('practice')}
+                  sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2 }}
+                >
+                  לכל התרגילים
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
+                  יש לי 2 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={() => nav.go('practice')}
+                  endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
+                  sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2, '&:hover': { transform: 'scale(1.05)' } }}
+                >
+                  בוא נתרגל!
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
       </Box>
+      )}
     </Shell>
   );
 }

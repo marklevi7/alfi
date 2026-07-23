@@ -86,19 +86,22 @@ function LoginSwitcher() {
 
 export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
-  const [ver, setVer] = useState(DASH_VERSIONS.length - 1);
-  const DashVariant = DASH_VERSIONS[ver].Comp;
+  const [ver, setVer] = useState(() => Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7')));
+  const [sub, setSub] = useState(0);
+  const active = DASH_VERSIONS[ver];
+  const DashVariant = active.Comp;
+  const variant = active.subs?.[sub]?.variant;
   // The selected version themes the WHOLE app: v6/v7 = green, everything else = purple.
-  const activeTheme = ['v6', 'v7'].includes(DASH_VERSIONS[ver].label) ? greenTheme : theme;
+  const activeTheme = active.label === 'v6' || active.label.startsWith('v7') ? greenTheme : theme;
   return (
     <NavContext.Provider value={{ go: setScreen }}>
       <ThemeProvider theme={activeTheme}>
-        {screen !== 'login' && <VersionBar value={ver} onChange={setVer} />}
+        {screen !== 'login' && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />}
         {screen === 'login' ? <LoginSwitcher />
           : screen === 'analytics' ? <Analytics />
           : screen === 'practice' ? <Practice />
           : screen === 'history' ? <History />
-          : <DashVariant />}
+          : <DashVariant variant={variant} />}
       </ThemeProvider>
     </NavContext.Provider>
   );

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { green, amber, red } from '@mui/material/colors';
+import { green, amber, red, brown } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -19,7 +19,8 @@ import { Shell } from './Shell';
 import { TaskDetail } from './TaskDetail';
 
 // expired = deadline passed with questions left; still practiceable, no longer graded.
-export type TaskStatus = 'new' | 'inProgress' | 'expired' | 'done';
+// partial / notStarted = closed history states (window over): done partially / never opened.
+export type TaskStatus = 'new' | 'inProgress' | 'expired' | 'done' | 'partial' | 'notStarted';
 type Status = TaskStatus;
 // grade = the teacher's mark on a graded, done בוחן (תרגול is never scored).
 // to = deadline; null means the teacher set no deadline (open-ended practice).
@@ -54,10 +55,9 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   const pct = t.total ? Math.round((t.solved / t.total) * 100) : 0;
   // progress reads like the gauge: low = red, mid = yellow, high = green
   const barColor = pct >= 67 ? green[600] : pct >= 34 ? amber[600] : red[500];
-  const cta =
-    t.status === 'done' || t.status === 'expired' ? 'צפה בסיכום'
-    : t.status === 'inProgress' ? 'המשך תרגול'
-    : 'בוא נתרגל!';
+  // closed history states are locked: summary only
+  const locked = t.status === 'done' || t.status === 'expired' || t.status === 'partial' || t.status === 'notStarted';
+  const cta = locked ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';
   return (
     <Card
       variant="outlined"
@@ -71,6 +71,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       }}
     >
       <CardHeader
+        sx={{ pb: 1, alignItems: 'flex-start', '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }}
         avatar={
           // icon always stays; the grade lives on the count line below, never replaces the icon
           t.status === 'done' ? (
@@ -83,7 +84,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         }
         action={
           // no deadline = open-ended; say so plainly instead of leaving a gap
-          <Typography sx={{ ...META, display: 'block', mt: 1.25, mr: 1, whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
+          <Typography sx={{ ...META, display: 'block', whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
             {dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה')}
           </Typography>
         }
@@ -97,11 +98,23 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
               </Stack>
             )}
-            {/* expired reads as a state, not an alarm: same dot pattern, error color */}
+            {/* closed states read as states, not alarms: same dot pattern, status color */}
             {t.status === 'expired' && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'error.dark' }}>פג תוקף</Typography>
+              </Stack>
+            )}
+            {t.status === 'partial' && (
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: amber[600], flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: brown[900] }}>בוצע חלקית</Typography>
+              </Stack>
+            )}
+            {t.status === 'notStarted' && (
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'grey.500', flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'text.secondary' }}>טרם התחלתי</Typography>
               </Stack>
             )}
             {/* the grade is the point of a finished card — solid green, white, title-scale.
@@ -115,13 +128,13 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           </Stack>
         }
         subheader={
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.75 }}>
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
             <Typography sx={META}>{t.topic} · {t.subTopic}</Typography>
           </Stack>
         }
       />
 
-      <CardContent sx={{ pt: 0 }}>
+      <CardContent sx={{ pt: 1, pb: 2 }}>
         <Stack direction="row" spacing={1.5} alignItems="center">
           <LinearProgress
             variant="determinate"
@@ -141,12 +154,12 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       </CardContent>
 
       <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end', px: 2, py: 1.5 }}>
+      <CardActions sx={{ justifyContent: 'flex-end', px: 2.5, py: 1.25 }}>
         <Button
           onClick={onOpen}
-          variant={t.status === 'done' || t.status === 'expired' ? 'outlined' : 'contained'}
-          color={t.status === 'done' || t.status === 'expired' ? 'inherit' : kind}
-          endIcon={t.status === 'done' || t.status === 'expired' ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
+          variant={locked ? 'outlined' : 'contained'}
+          color={locked ? 'inherit' : kind}
+          endIcon={locked ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
           sx={{ fontWeight: 800, borderRadius: 2 }}
         >
           {cta}

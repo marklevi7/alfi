@@ -32,9 +32,9 @@ type Status = 'done' | 'partial' | 'notStarted' | 'expired';
 type Item = { title: string; kind: Kind; when: string; status: Status; score?: number; topic: string; unit: string; subTopic: string; solved: number; total: number };
 
 // timeline status → the shared TaskCard's status language.
-// Anything unfinished here is past its deadline — locked, no more credit —
-// so partial / not-started render as expired cards (the dots still show how far they got).
-const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'expired', notStarted: 'expired', expired: 'expired' };
+// All four closed states stay distinct on the card: בוצע / בוצע חלקית / טרם התחלתי / פג תוקף.
+// Everything is locked (summary only); the timeline dots mirror the same states.
+const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'partial', notStarted: 'notStarted', expired: 'expired' };
 
 // Newest first (top) → oldest last (bottom). Placeholder data.
 const ITEMS: Item[] = [
@@ -55,7 +55,6 @@ const ITEMS: Item[] = [
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
 const TOPICS = uniq(ITEMS.map((i) => i.topic));
-const UNITS = uniq(ITEMS.map((i) => i.unit));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
 
 // Ribbon medal (from provided asset) in gold / silver / bronze, MUI tokens only.
@@ -81,7 +80,7 @@ export function History() {
   const nav = useNav();
   const [q, setQ] = useState('');
   const [topic, setTopic] = useState('');
-  const [unit, setUnit] = useState('');
+  const [unit] = useState('');
   const [subTopic, setSubTopic] = useState('');
   const [kind, setKind] = useState<'all' | Kind>('all');
 
@@ -151,10 +150,6 @@ export function History() {
             <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: '1 1 110px', minWidth: 100 }}>
               <MenuItem value="">כל הנושאים</MenuItem>
               {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-            </TextField>
-            <TextField select size="small" label="יחידה" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ flex: '0 1 96px', minWidth: 86 }}>
-              <MenuItem value="">הכל</MenuItem>
-              {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
             </TextField>
             <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: '1 1 110px', minWidth: 100 }}>
               <MenuItem value="">הכל</MenuItem>
