@@ -210,7 +210,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
                 <Button
                   variant="outlined"
                   onClick={() => nav.go('practice')}
-                  sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2 }}
+                  sx={{ alignSelf: 'flex-start', fontWeight: 800 }}
                 >
                   לכל התרגילים
                 </Button>
@@ -224,7 +224,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
                   variant="contained"
                   onClick={() => nav.go('practice')}
                   endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-                  sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2, '&:hover': { transform: 'scale(1.05)' } }}
+                  sx={{ alignSelf: 'flex-start', fontWeight: 800, '&:hover': { transform: 'scale(1.05)' } }}
                 >
                   בוא נתרגל!
                 </Button>

@@ -160,7 +160,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           variant={locked ? 'outlined' : 'contained'}
           color={locked ? 'inherit' : kind}
           endIcon={locked ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
-          sx={{ fontWeight: 800, borderRadius: 2 }}
+          sx={{ fontWeight: 800 }}
         >
           {cta}
         </Button>

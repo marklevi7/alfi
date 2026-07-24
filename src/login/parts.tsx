@@ -240,7 +240,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
             }
           />
         )}
-        <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700, borderRadius: 2 }}>
+        <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700 }}>
           {tab === 0 ? 'התחברות' : 'הרשמה'}
         </Button>
       </Stack>

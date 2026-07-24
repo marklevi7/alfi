@@ -125,7 +125,7 @@ function MathDialog({ open, onClose, onPick }: { open: boolean; onClose: () => v
         <Grid container spacing={1}>
           {SYMBOLS.map((s) => (
             <Grid item xs={3} key={s}>
-              <Button fullWidth variant="outlined" onClick={() => { onPick(s); onClose(); }} sx={{ minHeight: 48, fontSize: '1.1rem', borderRadius: 2 }}>{s}</Button>
+              <Button fullWidth variant="outlined" onClick={() => { onPick(s); onClose(); }} sx={{ minHeight: 48, fontSize: '1.1rem' }}>{s}</Button>
             </Grid>
           ))}
         </Grid>
@@ -204,8 +204,8 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1, px: 2, py: 1.5, borderTop: 1, borderColor: 'divider', bgcolor: grey[50] }}>
-        <Button onClick={onClose} color="inherit" sx={{ fontWeight: 700, borderRadius: 2 }}>ביטול</Button>
-        <Button onClick={choose} variant="contained" sx={{ fontWeight: 800, borderRadius: 2 }}>פתיחה</Button>
+        <Button onClick={onClose} color="inherit" sx={{ fontWeight: 700 }}>ביטול</Button>
+        <Button onClick={choose} variant="contained" sx={{ fontWeight: 800 }}>פתיחה</Button>
       </Box>
     </Dialog>
   );
@@ -324,14 +324,14 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
         sx={{ mb: 1 }}
       />
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
-        <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ borderRadius: 2 }}>צרף קובץ</Button>
-        <Button size="small" variant="outlined" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen(true)} sx={{ borderRadius: 2 }}>נוסחה</Button>
-        <Button size="small" variant="outlined" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ borderRadius: 2 }}>צלם תשובה</Button>
+        <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ }}>צרף קובץ</Button>
+        <Button size="small" variant="outlined" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen(true)} sx={{ }}>נוסחה</Button>
+        <Button size="small" variant="outlined" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ }}>צלם תשובה</Button>
       </Stack>
       <Button
         fullWidth variant="contained" onClick={send} disabled={thinking || !draft.trim()}
         endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
-        sx={{ fontWeight: 800, borderRadius: 2, py: 1.1 }}
+        sx={{ fontWeight: 800, py: 1.1 }}
       >
         {thinking ? 'שולח…' : 'שלח תשובה'}
       </Button>
@@ -350,7 +350,7 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
   return (
     <>
-      <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, borderRadius: 2, color: 'text.secondary' }}>
+      <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
         חזרה לשאלות
       </Button>
 
@@ -381,8 +381,8 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
       {solved && (
         <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
           {onNext
-            ? <Button variant="contained" onClick={onNext} endIcon={<ArrowForwardRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800, borderRadius: 2 }}>לשאלה הבאה</Button>
-            : <Button variant="contained" color="success" onClick={onBack} sx={{ fontWeight: 800, borderRadius: 2 }}>סיימת! חזרה לשאלות</Button>}
+            ? <Button variant="contained" onClick={onNext} endIcon={<ArrowForwardRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800 }}>לשאלה הבאה</Button>
+            : <Button variant="contained" color="success" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
         </Stack>
       )}
     </>

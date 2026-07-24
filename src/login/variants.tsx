@@ -225,7 +225,7 @@ const pr = (n: number) => { const x = Math.sin(n * 127.1) * 43758.5453; return x
 type Sign = { top: number; left: number; ch: string; size: number; big: boolean };
 function buildGalaxy(): Sign[] {
   const th = (25 * Math.PI) / 180;
-  const cx = 46, cy = 50;
+  const cx = 50, cy = 50;
   const rings = [
     { a: 52, b: 26, n: 16, size: 30, signs: true },
     { a: 37, b: 17, n: 11, size: 22, signs: true },
@@ -285,7 +285,7 @@ function LoginSigns() {
 /* 5A — Alfi full-height bottom-left, glass card right (ref) */
 function V5a() {
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
       {SHOW_BOT && (
         <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, transform: 'translateX(-100px)' }} />
       )}

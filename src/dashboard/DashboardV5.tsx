@@ -196,7 +196,7 @@ export function DashboardV5() {
               variant="contained"
               onClick={() => nav.go('practice')}
               endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-              sx={{ alignSelf: 'flex-start', fontWeight: 800, borderRadius: 2, '&:hover': { transform: 'scale(1.05)' } }}
+              sx={{ alignSelf: 'flex-start', fontWeight: 800, '&:hover': { transform: 'scale(1.05)' } }}
             >
               בוא נתרגל!
             </Button>
