@@ -19,9 +19,8 @@ export function KindIcon({ kind }: { kind: Kind }) {
         width: 36,
         height: 36,
         flexShrink: 0,
-        // neutral on purpose: kind is carried by the glyph + label, not color
-        bgcolor: (t) => alpha(t.palette.text.primary, 0.06),
-        color: 'grey.700',
+        bgcolor: (t) => alpha(t.palette.primary.main, 0.12),
+        color: 'primary.main',
         '& svg': { fontSize: 20 },
       }}
     >

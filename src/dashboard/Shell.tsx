@@ -3,8 +3,12 @@ import type { ReactNode } from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
 import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -20,8 +24,6 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useNav, type Screen } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -42,7 +44,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
   const sidebarRobot = theme.palette.primary.main === green[700] ? 'alfi-green-body.png' : robotImg;
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   return (
     <Box
       sx={{
@@ -132,8 +134,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             <Stack direction="row" justifyContent="space-between" alignItems="center"
               sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
               <Logo variant="dark" size="small" />
-              <IconButton aria-label="תפריט" onClick={(e) => setMenuAnchor(e.currentTarget)}>
-                <MenuRoundedIcon />
+              <IconButton aria-label="התנתקות" onClick={() => setConfirmLogout(true)}>
+                <LogoutRoundedIcon className="dir-icon" />
               </IconButton>
             </Stack>
 
@@ -144,29 +146,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   {title}
                 </Typography>
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <IconButton aria-label="תפריט" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={(e) => setMenuAnchor(e.currentTarget)}>
-                    <MenuRoundedIcon />
-                  </IconButton>
-                  <Menu
-                    anchorEl={menuAnchor}
-                    open={Boolean(menuAnchor)}
-                    onClose={() => setMenuAnchor(null)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    slotProps={{ paper: { sx: { borderRadius: 3, mt: 1 } } }}
-                    MenuListProps={{ sx: { py: 1 } }}
-                  >
-                    <MenuItem onClick={() => setMenuAnchor(null)} sx={{ py: 1.5, px: 3, minWidth: 220 }}>
-                      <ListItemIcon sx={{ minWidth: 44 }}><SettingsRoundedIcon /></ListItemIcon>
-                      <ListItemText primary="הגדרות" primaryTypographyProps={{ fontWeight: 600, fontSize: '1.05rem' }} />
-                    </MenuItem>
-                    <MenuItem onClick={() => { setMenuAnchor(null); navTo.go('login'); }} sx={{ py: 1.5, px: 3, minWidth: 220 }}>
-                      <ListItemIcon sx={{ minWidth: 44 }}><LogoutRoundedIcon className="dir-icon" /></ListItemIcon>
-                      <ListItemText primary="התנתקות" primaryTypographyProps={{ fontWeight: 600, fontSize: '1.05rem' }} />
-                    </MenuItem>
-                  </Menu>
-                </Stack>
+                <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
+                  <LogoutRoundedIcon className="dir-icon" />
+                </IconButton>
               </Stack>
             </Box>
 
@@ -202,6 +184,28 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           ))}
         </BottomNavigation>
       </Paper>
+
+      {/* Confirm before signing out */}
+      <Dialog
+        open={confirmLogout}
+        onClose={() => setConfirmLogout(false)}
+        PaperProps={{ sx: { borderRadius: 4, px: 1, py: 0.5, maxWidth: 380 } }}
+      >
+        <DialogTitle sx={{ fontWeight: 800, textAlign: 'center' }}>להתנתק מאלפי?</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ textAlign: 'center' }}>
+            נצטרך להתחבר מחדש בכניסה הבאה. ההתקדמות שלך נשמרת.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button onClick={() => setConfirmLogout(false)} variant="outlined" color="inherit" fullWidth sx={{ fontWeight: 700, borderRadius: 2 }}>
+            נשארים
+          </Button>
+          <Button onClick={() => { setConfirmLogout(false); navTo.go('login'); }} variant="contained" fullWidth startIcon={<LogoutRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800, borderRadius: 2 }}>
+            התנתקות
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
