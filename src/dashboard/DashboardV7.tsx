@@ -184,12 +184,14 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         {/* Score gauge card */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>הציון הממוצע שלי</Typography>
+            {/* empty state mirrors the task card: headline as title, start-aligned body */}
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+              {variant === 'noGrade' ? 'עדיין אין ציון ממוצע' : 'הציון הממוצע שלי'}
+            </Typography>
             {variant === 'noGrade' ? (
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', gap: 0.5 }}>
-                <Typography sx={{ fontWeight: 700, color: 'text.secondary' }}>עדיין אין ציון ממוצע</Typography>
-                <Typography variant="body2" color="text.secondary">אחרי הבוחן הראשון הציון יופיע כאן</Typography>
-              </Box>
+              <Typography sx={{ textAlign: 'start', flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
+                אחרי הבוחן הראשון הציון יופיע כאן.
+              </Typography>
             ) : (
               <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                 <ScoreGauge value={78} />
