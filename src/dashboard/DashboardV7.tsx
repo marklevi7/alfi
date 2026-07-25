@@ -201,11 +201,13 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         {/* Next task CTA card — simple white card, green primary CTA */}
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגיל הבא שלי</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
+              {variant === 'noNext' ? 'אין תרגילים חדשים כרגע' : 'התרגיל הבא שלי'}
+            </Typography>
             {variant === 'noNext' ? (
               <>
                 <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
-                  אין תרגילים חדשים כרגע. כשהמורה תשלח משימה, היא תופיע כאן.
+                  כשהמורה תשלח משימה, היא תופיע כאן.
                 </Typography>
                 <Button
                   variant="outlined"
