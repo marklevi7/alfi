@@ -117,13 +117,12 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
     <Shell active="dashboard" title="" hideSidebarRobot>
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
       <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
-        {/* speech bubble rides the bot; without him the greeting is the hero */}
-        {SHOW_BOT ? (
+        {/* speech bubble — always greets; oval marks where Alfi will stand */}
         <Box
           sx={{
             position: 'absolute',
             top: { xs: 8, md: 40 },
-            insetInlineStart: { xs: '6%', md: '16%' },
+            insetInlineStart: { xs: '8%', md: '52%' },
             zIndex: 2,
             bgcolor: 'background.paper',
             boxShadow: theme.shadows[6],
@@ -143,10 +142,8 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             שלום, מארק! 👋
           </Typography>
         </Box>
-        ) : (
-          <Typography sx={{ position: 'relative', zIndex: 2, fontWeight: 800, fontSize: { xs: '2rem', md: '3rem' }, textAlign: 'center', textWrap: 'balance' }}>
-            שלום, מארק! 👋
-          </Typography>
+        {!SHOW_BOT && (
+          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 220, md: 340 }, height: { xs: 300, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
         )}
         <MathSigns />
         {/* colorful glow halo behind ALFI */}
@@ -182,7 +179,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
-        <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
+        <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* empty state mirrors the task card: headline as title, start-aligned body */}
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
@@ -201,7 +198,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         </Card>
 
         {/* Next task CTA card — simple white card, green primary CTA */}
-        <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8] }}>
+        <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
               {variant === 'noNext' ? 'אין תרגילים חדשים כרגע' : 'התרגיל הבא שלי'}

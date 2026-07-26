@@ -96,7 +96,7 @@ export function App() {
   return (
     <NavContext.Provider value={{ go: setScreen }}>
       <ThemeProvider theme={activeTheme}>
-        {screen !== 'login' && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />}
+        <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />
         {screen === 'login' ? <LoginSwitcher />
           : screen === 'analytics' ? <Analytics />
           : screen === 'practice' ? <Practice />

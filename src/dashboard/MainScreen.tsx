@@ -1,6 +1,8 @@
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import { grey } from '@mui/material/colors';
 import { DashboardV5 } from './DashboardV5';
 import { DashboardV7 } from './DashboardV7';
@@ -12,20 +14,20 @@ export type DashVersion = {
   subs?: { label: string; variant: 'full' | 'noGrade' | 'noNext' | 'empty' }[];
 };
 
-// Only the two live directions are exposed: v5 (purple) and v7 (green).
+// Only the two live directions are exposed: v7 (green, default) and v5 (purple).
 // Older versions stay in the repo, just unlisted.
 export const DASH_VERSIONS: DashVersion[] = [
-  { label: 'v5', Comp: DashboardV5 },
   {
     label: 'v7',
     Comp: DashboardV7,
     subs: [
-      { label: 'dashboard1', variant: 'full' },
-      { label: 'dashboard2', variant: 'noGrade' },
-      { label: 'dashboard3', variant: 'noNext' },
-      { label: 'dashboard4', variant: 'empty' },
+      { label: 'main screen 1', variant: 'full' },
+      { label: 'main screen 2', variant: 'noGrade' },
+      { label: 'main screen 3', variant: 'noNext' },
+      { label: 'main screen 4', variant: 'empty' },
     ],
   },
+  { label: 'v5', Comp: DashboardV5 },
 ];
 
 const barBtnSx = (selected: boolean) => ({
@@ -37,41 +39,40 @@ const barBtnSx = (selected: boolean) => ({
     : { color: grey[300], borderColor: grey[700], '&:hover': { borderColor: grey[500], bgcolor: 'transparent' } }),
 });
 
-/** Always-on-top version switcher bar (dark). Second row = sub-dashboards of the active version. */
+/** Always-on-top switcher (dark, one line): version dropdown · divider · sub-dashboards. */
 export function VersionBar({ value, onChange, sub, onSubChange }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void }) {
   const subs = DASH_VERSIONS[value].subs;
   return (
-    <Stack sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }} spacing={0.75}>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="caption" sx={{ color: grey[500], fontWeight: 700, me: 1 }}>גרסה</Typography>
+    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }}>
+      <Select
+        size="small"
+        value={value}
+        onChange={(e) => { onChange(Number(e.target.value)); onSubChange(0); }}
+        sx={{
+          minWidth: 84,
+          fontWeight: 700,
+          color: grey[100],
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: grey[700] },
+          '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: grey[500] },
+          '& .MuiSvgIcon-root': { color: grey[400] },
+        }}
+      >
         {DASH_VERSIONS.map((ver, i) => (
-          <Button
-            key={ver.label}
-            size="small"
-            variant={i === value ? 'contained' : 'outlined'}
-            onClick={() => { onChange(i); onSubChange(0); }}
-            sx={barBtnSx(i === value)}
-          >
-            {ver.label}
-          </Button>
+          <MenuItem key={ver.label} value={i} sx={{ fontWeight: 700 }}>{ver.label}</MenuItem>
         ))}
-      </Stack>
-      {subs && (
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="caption" sx={{ color: grey[500], fontWeight: 700, me: 1 }}>מסך</Typography>
-          {subs.map((s, i) => (
-            <Button
-              key={s.label}
-              size="small"
-              variant={i === sub ? 'contained' : 'outlined'}
-              onClick={() => onSubChange(i)}
-              sx={barBtnSx(i === sub)}
-            >
-              {s.label}
-            </Button>
-          ))}
-        </Stack>
-      )}
+      </Select>
+      {subs && <Divider orientation="vertical" flexItem sx={{ borderColor: grey[700] }} />}
+      {subs?.map((s, i) => (
+        <Button
+          key={s.label}
+          size="small"
+          variant={i === sub ? 'contained' : 'outlined'}
+          onClick={() => onSubChange(i)}
+          sx={barBtnSx(i === sub)}
+        >
+          {s.label}
+        </Button>
+      ))}
     </Stack>
   );
 }
