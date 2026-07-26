@@ -88,6 +88,7 @@ export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
   const [ver, setVer] = useState(() => Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7')));
   const [sub, setSub] = useState(0);
+  const [showBar, setShowBar] = useState(false);
   const active = DASH_VERSIONS[ver];
   const DashVariant = active.Comp;
   const variant = active.subs?.[sub]?.variant;
@@ -96,7 +97,13 @@ export function App() {
   return (
     <NavContext.Provider value={{ go: setScreen }}>
       <ThemeProvider theme={activeTheme}>
-        <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />
+        {/* invisible hotspot — top-right corner toggles the dev control bar (hidden by default) */}
+        <Box
+          onClick={() => setShowBar((v) => !v)}
+          aria-label="הצגת בקרות פיתוח"
+          sx={{ position: 'fixed', top: 0, insetInlineStart: 0, width: 56, height: 56, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
+        />
+        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />}
         {screen === 'login' ? <LoginSwitcher />
           : screen === 'analytics' ? <Analytics />
           : screen === 'practice' ? <Practice />
