@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { deepPurple, blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT } from './Shell';
+import { TermsDialog } from './TermsDialog';
 import { useNav } from '../nav';
 
 const floaty = keyframes`
@@ -105,11 +106,13 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   );
 }
 
-export function DashboardV5() {
+export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade' | 'noNext' | 'empty' | 'terms' }) {
   const theme = useTheme();
   const nav = useNav();
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>
+      {/* main screen 5: first-login terms-of-use popup over the full dashboard */}
+      {variant === 'terms' && <TermsDialog />}
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
       <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
         {/* speech bubble — always greets; oval marks where Alfi will stand */}

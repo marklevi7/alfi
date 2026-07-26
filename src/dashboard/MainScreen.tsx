@@ -8,10 +8,11 @@ import { DashboardV5 } from './DashboardV5';
 import { DashboardV7 } from './DashboardV7';
 
 // A version can carry sub-dashboards (v7: full / no-grade / no-next-task states).
+export type DashVariant = 'full' | 'noGrade' | 'noNext' | 'empty' | 'terms';
 export type DashVersion = {
   label: string;
-  Comp: (props: { variant?: 'full' | 'noGrade' | 'noNext' | 'empty' }) => JSX.Element;
-  subs?: { label: string; variant: 'full' | 'noGrade' | 'noNext' | 'empty' }[];
+  Comp: (props: { variant?: DashVariant }) => JSX.Element;
+  subs?: { label: string; variant: DashVariant }[];
 };
 
 // Only the two live directions are exposed: v7 (green, default) and v5 (purple).
@@ -25,9 +26,17 @@ export const DASH_VERSIONS: DashVersion[] = [
       { label: 'main screen 2', variant: 'noGrade' },
       { label: 'main screen 3', variant: 'noNext' },
       { label: 'main screen 4', variant: 'empty' },
+      { label: 'main screen 5', variant: 'terms' },
     ],
   },
-  { label: 'v5', Comp: DashboardV5 },
+  {
+    label: 'v5',
+    Comp: DashboardV5,
+    subs: [
+      { label: 'main screen 1', variant: 'full' },
+      { label: 'main screen 5', variant: 'terms' },
+    ],
+  },
 ];
 
 const barBtnSx = (selected: boolean) => ({
