@@ -14,17 +14,17 @@ import { type Kind } from './KindIcon';
 import { TaskCard, type TaskStatus } from './Practice';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useNav } from '../nav';
-import { green, amber, grey, brown, blueGrey, red } from '@mui/material/colors';
+import { green, amber, grey, brown, blueGrey, red, deepOrange, blue } from '@mui/material/colors';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
-import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
-import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
+import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
+import TaskAltTwoToneIcon from '@mui/icons-material/TaskAltTwoTone';
+import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
 import { Shell } from './Shell';
 
 const STATS = [
-  { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'primary' as const },
-  { label: 'תרגולים השבוע', value: '2', total: 3, sub: '2 מתוך 3 תרגילים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
-  { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <TimerRoundedIcon />, tone: 'primary' as const },
+  { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentTwoToneIcon sx={{ color: deepOrange[500] }} />, tone: 'primary' as const },
+  { label: 'תרגולים השבוע', value: '2', total: 3, sub: '2 מתוך 3 תרגילים', icon: <TaskAltTwoToneIcon sx={{ color: green[600] }} />, tone: 'warning' as const },
+  { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <TimerTwoToneIcon sx={{ color: blue[500] }} />, tone: 'primary' as const },
 ];
 
 // expired = the deadline passed before it was finished.
@@ -107,7 +107,7 @@ export function History() {
               return (
                 <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-                    <Box sx={{ color: 'text.disabled', display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.2rem' } }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' } }}>
                       {s.icon}
                     </Box>
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{s.label}</Typography>

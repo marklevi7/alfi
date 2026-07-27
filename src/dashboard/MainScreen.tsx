@@ -1,8 +1,11 @@
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { grey } from '@mui/material/colors';
 import { DashboardV5 } from './DashboardV5';
 import { DashboardV7 } from './DashboardV7';
@@ -26,7 +29,7 @@ export const DASH_VERSIONS: DashVersion[] = [
       { label: 'main screen 2', variant: 'noGrade' },
       { label: 'main screen 3', variant: 'noNext' },
       { label: 'main screen 4', variant: 'empty' },
-      { label: 'main screen 5', variant: 'terms' },
+      { label: 'terms of use', variant: 'terms' },
     ],
   },
   {
@@ -34,7 +37,7 @@ export const DASH_VERSIONS: DashVersion[] = [
     Comp: DashboardV5,
     subs: [
       { label: 'main screen 1', variant: 'full' },
-      { label: 'main screen 5', variant: 'terms' },
+      { label: 'terms of use', variant: 'terms' },
     ],
   },
 ];
@@ -49,7 +52,7 @@ const barBtnSx = (selected: boolean) => ({
 });
 
 /** Always-on-top switcher (dark, one line): version dropdown · divider · sub-dashboards. */
-export function VersionBar({ value, onChange, sub, onSubChange }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void }) {
+export function VersionBar({ value, onChange, sub, onSubChange, onClose }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void }) {
   const subs = DASH_VERSIONS[value].subs;
   return (
     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }}>
@@ -82,6 +85,10 @@ export function VersionBar({ value, onChange, sub, onSubChange }: { value: numbe
           {s.label}
         </Button>
       ))}
+      <Box sx={{ flex: 1 }} />
+      <IconButton size="small" onClick={onClose} aria-label="סגירת בקרות" sx={{ color: grey[400], '&:hover': { color: grey[100] } }}>
+        <CloseRoundedIcon fontSize="small" />
+      </IconButton>
     </Stack>
   );
 }

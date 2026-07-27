@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { alpha } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -31,17 +30,7 @@ export function TermsDialog() {
         <Typography sx={{ color: 'text.secondary', mb: 2, textWrap: 'pretty' }}>
           לפני שמתחילים לתרגל, נשאר רק דבר אחד קטן: לאשר את תנאי השימוש.
         </Typography>
-        <Box
-          sx={{
-            maxHeight: 180,
-            overflowY: 'auto',
-            border: 1,
-            borderColor: 'divider',
-            borderRadius: 2,
-            p: 2,
-            bgcolor: (t) => alpha(t.palette.primary.main, 0.04),
-          }}
-        >
+        <Box sx={{ maxHeight: 180, overflowY: 'auto' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
             {`1. אלפי היא מערכת לימוד ותרגול במתמטיקה לתלמידים.
 2. השימוש במערכת מיועד ללמידה אישית בלבד.

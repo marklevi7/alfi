@@ -103,7 +103,7 @@ export function App() {
           aria-label="הצגת בקרות פיתוח"
           sx={{ position: 'fixed', top: 0, insetInlineStart: 0, width: 56, height: 56, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
         />
-        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} />}
+        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} onClose={() => setShowBar(false)} />}
         {screen === 'login' ? <LoginSwitcher />
           : screen === 'analytics' ? <Analytics />
           : screen === 'practice' ? <Practice />
