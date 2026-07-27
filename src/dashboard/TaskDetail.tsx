@@ -479,20 +479,21 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         חזרה לרשימת המשימות
       </Button>
 
-      <Box>
-        <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title} <Typography component="span" color="text.secondary" sx={{ fontWeight: 700 }}>#{task.id}</Typography></Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
-      </Box>
-
-      {/* slim progress row — same language as the task cards */}
-      <Stack direction="row" spacing={1.5} alignItems="center">
-        <LinearProgress
-          variant="determinate" value={pct} color="primary"
-          sx={{ flex: 1, height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
-        />
-        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
-          {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
-        </Typography>
+      {/* header row — title/date at the start, compact progress tucked at the end */}
+      <Stack direction="row" justifyContent="space-between" alignItems="flex-end" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title} <Typography component="span" color="text.secondary" sx={{ fontWeight: 700 }}>#{task.id}</Typography></Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
+        </Box>
+        <Box sx={{ width: 150 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5, textAlign: 'start' }}>
+            {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
+          </Typography>
+          <LinearProgress
+            variant="determinate" value={pct} color="primary"
+            sx={{ height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
+          />
+        </Box>
       </Stack>
 
       <Stack spacing={1.5}>

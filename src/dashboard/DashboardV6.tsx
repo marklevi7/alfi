@@ -130,7 +130,7 @@ export function DashboardV6() {
             animation: `${floaty} 3s ease-in-out infinite`,
             '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
             '&::after': {
-              content: '""', position: 'absolute', bottom: -12, insetInlineEnd: 28,
+              content: '""', position: 'absolute', bottom: -12, insetInlineStart: 28,
               borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
               borderColor: `${theme.palette.background.paper} transparent transparent transparent`,
             },
