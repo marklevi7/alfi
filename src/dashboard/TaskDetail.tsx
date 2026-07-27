@@ -40,6 +40,17 @@ import { Shell } from './Shell';
 // to = deadline; null means the teacher set no deadline (open-ended practice).
 export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null };
 
+// '29 ביוני 2026' → ', יום שני' (empty string when the date can't be parsed)
+const HE_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+const HE_DAYS = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת'];
+function hebrewWeekday(dateStr: string): string {
+  const m = dateStr.match(/^(\d{1,2}) ב(.+) (\d{4})$/);
+  if (!m) return '';
+  const month = HE_MONTHS.indexOf(m[2]);
+  if (month === -1) return '';
+  return `, ${HE_DAYS[new Date(Number(m[3]), month, Number(m[1])).getDay()]}`;
+}
+
 /* ---------- tiny math renderer (no external lib) ---------- */
 function Frac({ n, d }: { n: ReactNode; d: ReactNode }) {
   return (
@@ -485,7 +496,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
           <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
         </Stack>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{task.to ? `להגשה עד ${task.to}${hebrewWeekday(task.to)}.` : 'להגשה עד סוף השנה.'}</Typography>
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mt: 1.5 }}>
           <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
             {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
