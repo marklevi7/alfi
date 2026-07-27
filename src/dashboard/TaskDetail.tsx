@@ -479,25 +479,23 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         חזרה לרשימת המשימות
       </Button>
 
-      {/* header row — title/date at the start, one-line progress centered at the end */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ mt: 2, rowGap: 1.5, columnGap: 3 }}>
-        <Box>
-          <Stack direction="row" alignItems="baseline" spacing={1}>
-            <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
-          </Stack>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
-        </Box>
-        <Stack direction="row" spacing={1.25} alignItems="center">
+      {/* header — title, then meta line with the progress tucked under it as helper text */}
+      <Box sx={{ mt: 2 }}>
+        <Stack direction="row" alignItems="baseline" spacing={1}>
+          <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
+          <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
+        </Stack>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
+        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mt: 1.5 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+            {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
+          </Typography>
           <LinearProgress
             variant="determinate" value={pct} color="primary"
             sx={{ width: 120, height: 4, borderRadius: 2, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
           />
-          <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-            {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
-          </Typography>
         </Stack>
-      </Stack>
+      </Box>
 
       <Divider sx={{ mt: 2.5, mb: 1 }} />
 
