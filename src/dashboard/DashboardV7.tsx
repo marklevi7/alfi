@@ -179,7 +179,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
 
       {/* Boxes — colorful, overlapping ALFI's hands. dashboard4 shows none. */}
       {variant !== 'empty' && (
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 3fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
         <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
