@@ -491,9 +491,9 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         <Stack direction="row" spacing={1.25} alignItems="center">
           <LinearProgress
             variant="determinate" value={pct} color="primary"
-            sx={{ width: 120, height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
+            sx={{ width: 120, height: 4, borderRadius: 2, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
           />
-          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
+          <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
             {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
           </Typography>
         </Stack>
