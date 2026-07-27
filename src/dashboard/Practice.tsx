@@ -91,8 +91,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         title={
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>{t.title}</Typography>
-            {/* only NEW gets the notification dot; in-progress reads from the bar below */}
-            {t.status === 'new' && (
+            {/* only NEW gets the notification dot; solving even 1 question removes it */}
+            {t.status === 'new' && t.solved === 0 && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }} />
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>

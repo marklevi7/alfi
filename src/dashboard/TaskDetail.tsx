@@ -494,6 +494,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       <Box sx={{ mt: 2 }}>
         <Stack direction="row" alignItems="baseline" spacing={1}>
           <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
+          {/* new until the first question is solved — same rule as the task list */}
+          {done === 0 && (
+            <Stack direction="row" spacing={0.5} alignItems="center" sx={{ alignSelf: 'center' }}>
+              <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }} />
+              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
+            </Stack>
+          )}
           <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{task.to ? `להגשה עד ${task.to}${hebrewWeekday(task.to)}.` : 'להגשה עד סוף השנה.'}</Typography>
