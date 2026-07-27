@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { blue, cyan, amber, green, red, pink, common } from '@mui/material/colors';
+import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT } from './Shell';
 import { useNav } from '../nav';
@@ -89,13 +89,13 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
       <Box component="svg" viewBox="0 0 200 120" sx={{ width: '100%', display: 'block', overflow: 'visible' }}>
         <defs>
           <linearGradient id="alfiGaugeV6" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor={red[400]} />
-            <stop offset="50%" stopColor={amber[400]} />
+            <stop offset="0%" stopColor={red[400]} /><stop offset="25%" stopColor={orange[400]} />
+            <stop offset="45%" stopColor={amber[400]} /><stop offset="70%" stopColor={amber[400]} />
             <stop offset="100%" stopColor={green[500]} />
           </linearGradient>
         </defs>
-        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke={alpha(green[900], 0.08)} strokeWidth={18} strokeLinecap="round" />
-        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV6)" strokeWidth={18} strokeLinecap="round" />
+        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke={alpha(green[900], 0.08)} strokeWidth={13.5} strokeLinecap="round" />
+        <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV6)" strokeWidth={13.5} strokeLinecap="round" />
         <circle cx={mx} cy={my} r={11} fill={common.white} stroke={green[500]} strokeWidth={5} />
       </Box>
       <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>

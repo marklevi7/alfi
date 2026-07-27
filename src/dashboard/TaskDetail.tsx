@@ -479,21 +479,24 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         חזרה לרשימת המשימות
       </Button>
 
-      {/* header row — title/date at the start, compact progress tucked at the end */}
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-end" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
+      {/* header row — title/date at the start, one-line progress centered at the end */}
+      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, columnGap: 3 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title} <Typography component="span" color="text.secondary" sx={{ fontWeight: 700 }}>#{task.id}</Typography></Typography>
+          <Stack direction="row" alignItems="baseline" spacing={1}>
+            <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
+          </Stack>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
         </Box>
-        <Box sx={{ width: 150 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5, textAlign: 'start' }}>
-            {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
-          </Typography>
+        <Stack direction="row" spacing={1.25} alignItems="center">
           <LinearProgress
             variant="determinate" value={pct} color="primary"
-            sx={{ height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
+            sx={{ width: 120, height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
           />
-        </Box>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
+            {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
+          </Typography>
+        </Stack>
       </Stack>
 
       <Stack spacing={1.5}>
