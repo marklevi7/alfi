@@ -38,7 +38,7 @@ import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import { Shell } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
-export type SolveTask = { id: number; title: string; total: number; from: string; to: string | null };
+export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null };
 
 /* ---------- tiny math renderer (no external lib) ---------- */
 function Frac({ n, d }: { n: ReactNode; d: ReactNode }) {
@@ -378,10 +378,11 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
         <ChatPanel q={q} onSolved={onSolved} />
       )}
 
-      {solved && (
+      {/* always reachable at the bottom — solved styles it as the primary action */}
+      {(onNext || solved) && (
         <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
           {onNext
-            ? <Button variant="contained" onClick={onNext} endIcon={<ArrowForwardRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800 }}>לשאלה הבאה</Button>
+            ? <Button variant={solved ? 'contained' : 'outlined'} onClick={onNext} endIcon={<ArrowForwardRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800 }}>לשאלה הבאה</Button>
             : <Button variant="contained" color="success" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
         </Stack>
       )}
@@ -428,7 +429,8 @@ function QuestionCard({ q, index, solved, onOpen }: { q: Question; index: number
 /* ---------- task detail (list <-> question page) ---------- */
 export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => void }) {
   const questions = QUESTIONS.slice(0, Math.max(1, Math.min(task.total, QUESTIONS.length)));
-  const [solved, setSolved] = useState<Set<number>>(new Set());
+  // the task's solved count seeds the page: those questions arrive already solved
+  const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: Math.min(task.solved, questions.length) }, (_, i) => i)));
   const [openQ, setOpenQ] = useState<number | null>(null);
   const done = solved.size;
   const pct = Math.round((done / questions.length) * 100);
@@ -459,7 +461,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
   return (
     <Shell active="practice" title="">
-      <Button onClick={onBack} startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
+      <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
         חזרה לרשימת המשימות
       </Button>
 
@@ -468,16 +470,16 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
       </Box>
 
-      <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2, md: 2.5 }, bgcolor: (t) => alpha(t.palette.primary.main, 0.07) }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: 'primary.dark' }}>{done} / {questions.length} שאלות</Typography>
-          <Typography variant="body2" color="text.secondary">{done === questions.length ? 'סיימת! כל הכבוד 🎉' : 'התקדמות'}</Typography>
-        </Stack>
+      {/* slim progress row — same language as the task cards */}
+      <Stack direction="row" spacing={1.5} alignItems="center">
         <LinearProgress
           variant="determinate" value={pct} color="primary"
-          sx={{ height: 8, borderRadius: 4, bgcolor: (t) => alpha(t.palette.primary.main, 0.15) }}
+          sx={{ flex: 1, height: 6, borderRadius: 3, bgcolor: (t) => alpha(t.palette.primary.main, 0.12) }}
         />
-      </Paper>
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
+          {done === questions.length ? 'סיימת! כל הכבוד 🎉' : `${done}/${questions.length} שאלות`}
+        </Typography>
+      </Stack>
 
       <Stack spacing={1.5}>
         {questions.map((q, i) => (

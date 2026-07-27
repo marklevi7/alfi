@@ -184,7 +184,7 @@ export function Practice() {
 
   const openTask = TASKS.find((t) => t.id === openId);
   if (openTask) {
-    return <TaskDetail task={{ id: openTask.id, title: openTask.title, total: openTask.total, from: openTask.from, to: openTask.to }} onBack={() => setOpenId(null)} />;
+    return <TaskDetail task={{ id: openTask.id, title: openTask.title, total: openTask.total, solved: openTask.solved, from: openTask.from, to: openTask.to }} onBack={() => setOpenId(null)} />;
   }
 
   return (
