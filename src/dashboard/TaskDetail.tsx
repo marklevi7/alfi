@@ -54,33 +54,38 @@ const Eq = ({ children }: { children: ReactNode }) => (
 );
 
 type Turn = { title?: string; body: ReactNode };
-type Question = { points: number; diff: 'קשה' | 'בינוני' | 'קל'; short: string; prompt: ReactNode; guide: Turn };
+type Question = { points: number; diff: 'קשה' | 'בינוני' | 'קל'; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode };
 
 const QUESTIONS: Question[] = [
   {
     points: 20, diff: 'קשה', short: 'חקירת פונקציה מלאה',
     prompt: <>נתונה הפונקציה <Eq>y = <Frac n={<>√(x²−1)</>} d={<>x−2</>} /></Eq>. ערוך חקירה מלאה: תחום הגדרה, נגזרת, אסימפטוטות, נקודות קיצון, ותחומי עלייה וירידה.</>,
     guide: { title: 'חקירה מלאה כוללת 5 שלבים', body: <>1. תחום הגדרה  2. נגזרת  3. אסימפטוטות  4. נקודות קיצון  5. תחומי עלייה וירידה.<br />נתחיל מהתחלה — <b>מה תחום ההגדרה לדעתך?</b></> },
+    solution: <><b>תחום הגדרה:</b> x²−1 ≥ 0 וגם x ≠ 2, לכן x ≤ −1 או x ≥ 1, x ≠ 2.<br /><b>אסימפטוטות:</b> אנכית x = 2; אופקיות y = 1 (כאשר x → ∞) ו-y = −1 (כאשר x → −∞).<br /><b>נגזרת ונקודות קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.<br /><b>עלייה וירידה:</b> הפונקציה יורדת בכל תחום ההגדרה.</>,
   },
   {
     points: 20, diff: 'קל', short: 'תחום הגדרה',
     prompt: <>מצא את תחום ההגדרה של הפונקציה <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq>.</>,
     guide: { body: <>לתחום צריך שני תנאים <b>בנפרד</b>: השורש חייב להיות ≥ 0, והמכנה ≠ 0. <b>מה יוצא מהתנאי הראשון?</b></> },
+    solution: <>מהשורש: x ≥ 0. מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9.<br /><b>תחום ההגדרה:</b> x ≥ 0 וגם x ≠ 9.</>,
   },
   {
     points: 20, diff: 'קל', short: 'אסימפטוטות',
     prompt: <>מצא את האסימפטוטות של <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq> והסבר כיצד הפונקציה מתנהגת משני צידי האסימפטוטה האנכית.</>,
     guide: { body: <>האסימפטוטה האנכית נמצאת היכן שהמכנה מתאפס. <b>באיזה x זה קורה?</b></> },
+    solution: <><b>אנכית:</b> x = 9 (המכנה מתאפס והמונה ≠ 0).<br /><b>אופקית:</b> y = 0 (המכנה גדל מהר מהמונה).<br /><b>התנהגות:</b> משמאל ל-9 הפונקציה שואפת ל-−∞, מימין ל-9 שואפת ל-+∞.</>,
   },
   {
     points: 20, diff: 'בינוני', short: 'תחום, נגזרת וקיצון',
     prompt: <>נתונה <Eq>y = <Frac n={<>x</>} d={<>√(x²−9)</>} /></Eq>. מצא את תחום ההגדרה, חשב את הנגזרת, ומצא נקודות קיצון אם קיימות.</>,
     guide: { body: <>נתחיל מהתחום: הביטוי תחת השורש חייב להיות חיובי <b>ממש</b>. <b>מה אי-השוויון שצריך לפתור?</b></> },
+    solution: <><b>תחום הגדרה:</b> x²−9 &gt; 0 ולכן x &lt; −3 או x &gt; 3.<br /><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).<br /><b>קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
   },
   {
     points: 20, diff: 'בינוני', short: 'תחום ונקודות חיתוך',
     prompt: <>נתונה <Eq>y = √(x²−4)</Eq>. מצא את תחום ההגדרה ואת נקודות החיתוך עם הצירים.</>,
     guide: { body: <>תחת השורש חייב להיות ≥ 0. <b>מה פתרון אי-השוויון x²−4 ≥ 0?</b></> },
+    solution: <><b>תחום הגדרה:</b> x²−4 ≥ 0 ולכן x ≤ −2 או x ≥ 2.<br /><b>חיתוך עם ציר x:</b> (−2, 0) ו-(2, 0).<br /><b>חיתוך עם ציר y:</b> אין — x = 0 מחוץ לתחום.</>,
   },
 ];
 
@@ -369,11 +374,20 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
       </Paper>
 
       {solved ? (
-        <Paper variant="outlined" sx={{ borderRadius: 3, p: 3, textAlign: 'center', bgcolor: (t) => alpha(t.palette.success.main, 0.06), borderColor: 'success.light' }}>
-          <CheckCircleRoundedIcon sx={{ fontSize: 44, color: 'success.main' }} />
-          <Typography sx={{ fontWeight: 800, mt: 1 }}>כל הכבוד! פתרת את השאלה</Typography>
-          <Typography variant="body2" color="success.dark" sx={{ mt: 0.5 }}>התשובה נשמרה</Typography>
-        </Paper>
+        <>
+          <Paper variant="outlined" sx={{ borderRadius: 3, p: 3, textAlign: 'center', bgcolor: (t) => alpha(t.palette.success.main, 0.06), borderColor: 'success.light' }}>
+            <CheckCircleRoundedIcon sx={{ fontSize: 44, color: 'success.main' }} />
+            <Typography sx={{ fontWeight: 800, mt: 1 }}>כל הכבוד! פתרת את השאלה</Typography>
+            <Typography variant="body2" color="success.dark" sx={{ mt: 0.5 }}>התשובה נשמרה</Typography>
+          </Paper>
+          {/* the saved solution — read-only */}
+          <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2.5, md: 3 } }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1.5 }}>הפתרון שלי</Typography>
+            <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary' }}>
+              {q.solution}
+            </Typography>
+          </Paper>
+        </>
       ) : (
         <ChatPanel q={q} onSolved={onSolved} />
       )}
