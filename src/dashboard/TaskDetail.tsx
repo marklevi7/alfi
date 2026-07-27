@@ -417,10 +417,10 @@ function QuestionCard({ q, index, solved, onOpen }: { q: Question; index: number
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
-      <CardActionArea onClick={onOpen} sx={{ p: { xs: 2, md: 2.5 } }}>
+      <CardActionArea onClick={onOpen} sx={{ p: { xs: 2.5, md: 3 } }}>
         <Stack direction="row" alignItems="center" spacing={1.5}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
               <QMeta index={index} solved={solved} />
               <Stack direction="row" spacing={1} alignItems="center">
                 <DiffChip diff={q.diff} />
@@ -480,13 +480,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       </Button>
 
       {/* header row — title/date at the start, one-line progress centered at the end */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, columnGap: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ mt: 2, rowGap: 1.5, columnGap: 3 }}>
         <Box>
           <Stack direction="row" alignItems="baseline" spacing={1}>
             <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
             <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
           </Stack>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>נשלח על ידי המורה · {task.to ? `עד ${task.to}` : 'עד סוף השנה'}</Typography>
         </Box>
         <Stack direction="row" spacing={1.25} alignItems="center">
           <LinearProgress
@@ -499,13 +499,15 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         </Stack>
       </Stack>
 
-      <Stack spacing={1.5}>
+      <Divider sx={{ mt: 2.5, mb: 1 }} />
+
+      <Stack spacing={2.5} sx={{ mt: 1 }}>
         {questions.map((q, i) => (
           <QuestionCard key={i} q={q} index={i} solved={solved.has(i)} onOpen={() => setOpenQ(i)} />
         ))}
       </Stack>
 
-      <Typography variant="caption" color="text.disabled" sx={{ textAlign: 'center', mt: 1 }}>
+      <Typography variant="caption" color="text.disabled" sx={{ textAlign: 'center', mt: 2, mb: 1 }}>
         בתרגול אין ציון — אלפי כאן כדי לעזור לך להגיע לתשובה הנכונה בעצמך.
       </Typography>
     </Shell>
