@@ -182,16 +182,22 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
         }}
       >
-        {/* placeholder bot — same grey oval as the dashboard, mini, with eyes */}
+        {/* placeholder bot — mini friendly face: tinted circle, white eyes, smile */}
         <Box
           sx={{
-            width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-            bgcolor: (t) => alpha(t.palette.text.primary, 0.08),
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.6,
+            width: 46, height: 46, borderRadius: '50%', flexShrink: 0,
+            bgcolor: (t) => alpha(t.palette.primary.main, 0.16),
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px',
           }}
         >
-          <Box sx={{ width: 6, height: 9, borderRadius: '50%', bgcolor: 'text.secondary' }} />
-          <Box sx={{ width: 6, height: 9, borderRadius: '50%', bgcolor: 'text.secondary' }} />
+          <Box sx={{ display: 'flex', gap: '5px' }}>
+            {[0, 1].map((i) => (
+              <Box key={i} sx={{ width: 12, height: 13, borderRadius: '50%', bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 1 }}>
+                <Box sx={{ width: 5, height: 6, borderRadius: '50%', bgcolor: 'primary.dark' }} />
+              </Box>
+            ))}
+          </Box>
+          <Box sx={{ width: 12, height: 6, borderBottom: 2, borderColor: 'primary.dark', borderRadius: '0 0 12px 12px' }} />
         </Box>
         <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
       </Paper>
