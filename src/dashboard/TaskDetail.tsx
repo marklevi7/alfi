@@ -257,9 +257,8 @@ function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean;
         sx={{
           width: d, height: d, borderRadius: '50%', flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          bgcolor: (t) => solved ? alpha(t.palette.success.main, 0.14) : alpha(t.palette.primary.main, 0.1),
-          color: solved ? 'success.dark' : 'primary.dark',
-          fontWeight: 800, fontSize: size === 'h5' ? '1.35rem' : '1.1rem',
+          border: 2, borderColor: grey[400], color: 'text.primary',
+          fontWeight: 800, fontSize: size === 'h5' ? '1.6rem' : '1.3rem',
           fontFeatureSettings: '"tnum","lnum"',
         }}
       >
