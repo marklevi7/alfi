@@ -547,7 +547,6 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
             </Stack>
           )}
-          <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>#{task.id}</Typography>
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{task.to ? `להגשה עד ${task.to}${hebrewWeekday(task.to)}.` : 'להגשה עד סוף השנה.'}</Typography>
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mt: 1.5 }}>
