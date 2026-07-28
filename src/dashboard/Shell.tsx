@@ -20,6 +20,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Avatar from '@mui/material/Avatar';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -162,6 +164,30 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
           </Grid>
         </Grid>
+      </Paper>
+
+      {/* floating "got a question?" balloon — general questions, not tied to a task */}
+      <Paper
+        component="button"
+        elevation={6}
+        onClick={() => {}}
+        aria-label="שאלה כללית לאלפי"
+        sx={{
+          position: 'fixed', bottom: 28, insetInlineStart: 28,
+          zIndex: (t) => t.zIndex.appBar,
+          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25,
+          border: 0, cursor: 'pointer', font: 'inherit',
+          borderRadius: 999, py: 1, px: 1.25, paddingInlineEnd: 2.5,
+          bgcolor: 'background.paper',
+          transition: (t) => t.transitions.create(['box-shadow', 'transform']),
+          '&:hover': { boxShadow: 10, transform: 'translateY(-2px)' },
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+        }}
+      >
+        <Avatar sx={{ bgcolor: 'primary.main', width: 44, height: 44 }}>
+          <AutoAwesomeRoundedIcon />
+        </Avatar>
+        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לך שאלה?</Typography>
       </Paper>
 
       {/* Mobile bottom navigation */}
