@@ -273,13 +273,14 @@ function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean;
 function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNode }) {
   const isAi = from === 'ai';
   return (
-    <Stack direction="row" spacing={1} justifyContent={isAi ? 'flex-start' : 'flex-end'} sx={{ width: '100%' }}>
+    // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT
+    <Stack direction="row" spacing={1} justifyContent={isAi ? 'flex-end' : 'flex-start'} sx={{ width: '100%' }}>
       {isAi && <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeRoundedIcon sx={{ fontSize: 18 }} /></Avatar>}
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
         bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : t.palette.primary.main,
         color: isAi ? 'text.primary' : 'primary.contrastText',
-        borderStartStartRadius: isAi ? 4 : 24, borderStartEndRadius: isAi ? 24 : 4,
+        borderStartStartRadius: isAi ? 24 : 4, borderStartEndRadius: isAi ? 4 : 24,
       }}>
         {children}
       </Box>

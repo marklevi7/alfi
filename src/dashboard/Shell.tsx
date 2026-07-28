@@ -109,12 +109,13 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
           <Box
             key={i}
             sx={{
-              alignSelf: m.from === 'me' ? 'flex-end' : 'flex-start',
+              // RTL: my messages on the RIGHT (inline start), Alfi answers from the LEFT
+              alignSelf: m.from === 'me' ? 'flex-start' : 'flex-end',
               maxWidth: '85%',
               px: 1.5, py: 1, borderRadius: 3,
               ...(m.from === 'me'
-                ? { bgcolor: 'primary.main', color: 'primary.contrastText', borderStartEndRadius: 4 }
-                : { bgcolor: (t: Theme) => alpha(t.palette.primary.main, 0.08), borderStartStartRadius: 4 }),
+                ? { bgcolor: 'primary.main', color: 'primary.contrastText', borderStartStartRadius: 4 }
+                : { bgcolor: (t: Theme) => alpha(t.palette.primary.main, 0.08), borderStartEndRadius: 4 }),
             }}
           >
             <Typography variant="body2" sx={{ textAlign: 'start' }}>{m.text}</Typography>
