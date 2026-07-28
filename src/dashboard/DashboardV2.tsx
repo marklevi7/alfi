@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import { deepPurple, blue, cyan, teal, green, amber, orange, pink, red, common } from '@mui/material/colors';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell } from './Shell';
 import faceImg from './assets/magnific_43LDWx09Aa.png';
@@ -145,7 +145,7 @@ export function DashboardV2() {
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
               <Avatar variant="rounded" sx={{ bgcolor: alpha(teal[500], 0.16), color: teal[800], width: 34, height: 34 }}>
-                <AutoAwesomeRoundedIcon fontSize="small" />
+                <AutoAwesomeTwoToneIcon fontSize="small" />
               </Avatar>
               <Typography variant="h6" sx={{ fontWeight: 800 }}>הציון הממוצע שלי</Typography>
             </Stack>

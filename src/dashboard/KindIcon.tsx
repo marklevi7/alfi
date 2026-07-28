@@ -1,7 +1,7 @@
 import Avatar from '@mui/material/Avatar';
 import { alpha } from '@mui/material/styles';
-import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
-import TimerRoundedIcon from '@mui/icons-material/TimerRounded';
+import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
+import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
 
 export type Kind = 'תרגול' | 'בוחן';
 
@@ -24,7 +24,7 @@ export function KindIcon({ kind }: { kind: Kind }) {
         '& svg': { fontSize: 20 },
       }}
     >
-      {kind === 'בוחן' ? <TimerRoundedIcon /> : <MenuBookRoundedIcon />}
+      {kind === 'בוחן' ? <TimerTwoToneIcon /> : <MenuBookTwoToneIcon />}
     </Avatar>
   );
 }

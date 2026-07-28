@@ -24,16 +24,16 @@ import Grid from '@mui/material/Grid';
 import { deepPurple, blue, cyan, amber, green, red, pink, grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import FunctionsRoundedIcon from '@mui/icons-material/FunctionsRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
-import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
+import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
+import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
+import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
 import { Shell } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
@@ -201,8 +201,8 @@ const FINDER_FILES = [
   { name: 'חקירת_פונקציה.pdf', kind: 'pdf', when: 'שבוע שעבר' },
 ];
 const fileIcon = (k: string) => (k === 'pdf'
-  ? <PictureAsPdfRoundedIcon sx={{ color: red[400] }} />
-  : <ImageRoundedIcon sx={{ color: blue[400] }} />);
+  ? <PictureAsPdfTwoToneIcon sx={{ color: red[400] }} />
+  : <ImageTwoToneIcon sx={{ color: blue[400] }} />);
 
 function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () => void; onPick: (name: string) => void }) {
   const [sel, setSel] = useState(0);
@@ -222,7 +222,7 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
           <List dense>
             {FINDER_FAV.map((f, i) => (
               <ListItemButton key={f} selected={i === 1} sx={{ mx: 1, borderRadius: 1.5 }}>
-                <ListItemIcon sx={{ minWidth: 30 }}><FolderRoundedIcon fontSize="small" sx={{ color: amber[600] }} /></ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 30 }}><FolderTwoToneIcon fontSize="small" sx={{ color: amber[600] }} /></ListItemIcon>
                 <ListItemText primary={f} primaryTypographyProps={{ fontSize: '0.85rem', noWrap: true }} />
               </ListItemButton>
             ))}
@@ -264,7 +264,7 @@ function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean;
       >
         {index + 1}
       </Box>
-      {solved && <CheckCircleRoundedIcon sx={{ color: green[700] }} />}
+      {solved && <CheckCircleTwoToneIcon sx={{ color: green[700] }} />}
     </Stack>
   );
 }
@@ -275,7 +275,7 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
   return (
     // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT
     <Stack direction="row" spacing={1} justifyContent={isAi ? 'flex-end' : 'flex-start'} sx={{ width: '100%' }}>
-      {isAi && <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeRoundedIcon sx={{ fontSize: 18 }} /></Avatar>}
+      {isAi && <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 18 }} /></Avatar>}
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
         bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : t.palette.primary.main,
@@ -326,7 +326,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
       } else {
         setMsgs((m) => [...m, { from: 'ai', node: (
           <Stack direction="row" spacing={0.75} alignItems="center">
-            <CheckCircleRoundedIcon sx={{ color: 'success.main' }} />
+            <CheckCircleTwoToneIcon sx={{ color: 'success.main' }} />
             <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה!</Typography>
           </Stack>
         ) }]);
@@ -351,7 +351,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
         {msgs.map((m, i) => <Bubble key={i} from={m.from}>{m.node}</Bubble>)}
         {thinking && (
           <Stack direction="row" spacing={1} alignItems="center">
-            <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeRoundedIcon sx={{ fontSize: 18 }} /></Avatar>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 18 }} /></Avatar>
             <Box sx={{ minWidth: 200 }}>
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
@@ -420,7 +420,7 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
       {solved ? (
         <>
           <Paper variant="outlined" sx={{ borderRadius: 3, p: 3, textAlign: 'center', bgcolor: (t) => alpha(t.palette.success.main, 0.06), borderColor: 'success.light' }}>
-            <CheckCircleRoundedIcon sx={{ fontSize: 44, color: 'success.main' }} />
+            <CheckCircleTwoToneIcon sx={{ fontSize: 44, color: 'success.main' }} />
             <Typography sx={{ fontWeight: 800, mt: 1 }}>כל הכבוד! פתרת את השאלה</Typography>
             <Typography variant="body2" color="success.dark" sx={{ mt: 0.5 }}>התשובה נשמרה</Typography>
           </Paper>
