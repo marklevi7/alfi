@@ -426,7 +426,7 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
           </Paper>
           {/* the saved solution — read-only, numbered lines so a specific line can be referenced in chat */}
           <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2.5, md: 3 } }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1.5 }}>הפתרון שלי</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>הפתרון שלי</Typography>
             <Stack spacing={1}>
               {q.solution.map((line, i) => (
                 <Stack key={i} direction="row" spacing={1.5} alignItems="baseline">
