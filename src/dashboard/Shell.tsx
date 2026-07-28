@@ -90,7 +90,7 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
     <Paper
       elevation={8}
       sx={{
-        position: 'fixed', bottom: 92, insetInlineStart: 28,
+        position: 'fixed', bottom: 92, insetInlineEnd: 28,
         zIndex: (t) => t.zIndex.appBar + 1,
         width: 340, maxWidth: 'calc(100vw - 56px)', height: 460, maxHeight: '70vh',
         borderRadius: 4, display: 'flex', flexDirection: 'column', overflow: 'hidden',
@@ -148,7 +148,7 @@ export function AlfiWidget() {
         onClick={() => setChatOpen((v) => !v)}
         aria-label="שאלה כללית לאלפי"
         sx={{
-          position: 'fixed', bottom: 28, insetInlineStart: 28,
+          position: 'fixed', bottom: 28, insetInlineEnd: 28,
           zIndex: (t) => t.zIndex.appBar,
           display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25,
           border: 0, cursor: 'pointer', font: 'inherit',
