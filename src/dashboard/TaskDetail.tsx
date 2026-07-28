@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Card from '@mui/material/Card';
@@ -65,35 +64,35 @@ const Eq = ({ children }: { children: ReactNode }) => (
 );
 
 type Turn = { title?: string; body: ReactNode };
-type Question = { points: number; diff: 'קשה' | 'בינוני' | 'קל'; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode };
+type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode };
 
 const QUESTIONS: Question[] = [
   {
-    points: 20, diff: 'קשה', short: 'חקירת פונקציה מלאה',
+    points: 20, short: 'חקירת פונקציה מלאה',
     prompt: <>נתונה הפונקציה <Eq>y = <Frac n={<>√(x²−1)</>} d={<>x−2</>} /></Eq>. ערוך חקירה מלאה: תחום הגדרה, נגזרת, אסימפטוטות, נקודות קיצון, ותחומי עלייה וירידה.</>,
     guide: { title: 'חקירה מלאה כוללת 5 שלבים', body: <>1. תחום הגדרה  2. נגזרת  3. אסימפטוטות  4. נקודות קיצון  5. תחומי עלייה וירידה.<br />נתחיל מהתחלה — <b>מה תחום ההגדרה לדעתך?</b></> },
     solution: <><b>תחום הגדרה:</b> x²−1 ≥ 0 וגם x ≠ 2, לכן x ≤ −1 או x ≥ 1, x ≠ 2.<br /><b>אסימפטוטות:</b> אנכית x = 2; אופקיות y = 1 (כאשר x → ∞) ו-y = −1 (כאשר x → −∞).<br /><b>נגזרת ונקודות קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.<br /><b>עלייה וירידה:</b> הפונקציה יורדת בכל תחום ההגדרה.</>,
   },
   {
-    points: 20, diff: 'קל', short: 'תחום הגדרה',
+    points: 20, short: 'תחום הגדרה',
     prompt: <>מצא את תחום ההגדרה של הפונקציה <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq>.</>,
     guide: { body: <>לתחום צריך שני תנאים <b>בנפרד</b>: השורש חייב להיות ≥ 0, והמכנה ≠ 0. <b>מה יוצא מהתנאי הראשון?</b></> },
     solution: <>מהשורש: x ≥ 0. מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9.<br /><b>תחום ההגדרה:</b> x ≥ 0 וגם x ≠ 9.</>,
   },
   {
-    points: 20, diff: 'קל', short: 'אסימפטוטות',
+    points: 20, short: 'אסימפטוטות',
     prompt: <>מצא את האסימפטוטות של <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq> והסבר כיצד הפונקציה מתנהגת משני צידי האסימפטוטה האנכית.</>,
     guide: { body: <>האסימפטוטה האנכית נמצאת היכן שהמכנה מתאפס. <b>באיזה x זה קורה?</b></> },
     solution: <><b>אנכית:</b> x = 9 (המכנה מתאפס והמונה ≠ 0).<br /><b>אופקית:</b> y = 0 (המכנה גדל מהר מהמונה).<br /><b>התנהגות:</b> משמאל ל-9 הפונקציה שואפת ל-−∞, מימין ל-9 שואפת ל-+∞.</>,
   },
   {
-    points: 20, diff: 'בינוני', short: 'תחום, נגזרת וקיצון',
+    points: 20, short: 'תחום, נגזרת וקיצון',
     prompt: <>נתונה <Eq>y = <Frac n={<>x</>} d={<>√(x²−9)</>} /></Eq>. מצא את תחום ההגדרה, חשב את הנגזרת, ומצא נקודות קיצון אם קיימות.</>,
     guide: { body: <>נתחיל מהתחום: הביטוי תחת השורש חייב להיות חיובי <b>ממש</b>. <b>מה אי-השוויון שצריך לפתור?</b></> },
     solution: <><b>תחום הגדרה:</b> x²−9 &gt; 0 ולכן x &lt; −3 או x &gt; 3.<br /><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).<br /><b>קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
   },
   {
-    points: 20, diff: 'בינוני', short: 'תחום ונקודות חיתוך',
+    points: 20, short: 'תחום ונקודות חיתוך',
     prompt: <>נתונה <Eq>y = √(x²−4)</Eq>. מצא את תחום ההגדרה ואת נקודות החיתוך עם הצירים.</>,
     guide: { body: <>תחת השורש חייב להיות ≥ 0. <b>מה פתרון אי-השוויון x²−4 ≥ 0?</b></> },
     solution: <><b>תחום הגדרה:</b> x²−4 ≥ 0 ולכן x ≤ −2 או x ≥ 2.<br /><b>חיתוך עם ציר x:</b> (−2, 0) ו-(2, 0).<br /><b>חיתוך עם ציר y:</b> אין — x = 0 מחוץ לתחום.</>,
@@ -228,17 +227,27 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
 }
 
 /* ---------- shared header bits ---------- */
+// just the number, in a soft round badge — no "שאלה" label
 function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean; size?: 'h6' | 'h5' }) {
+  const d = size === 'h5' ? 44 : 36;
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      <Typography variant={size} sx={{ fontWeight: 800 }}>שאלה {index + 1}</Typography>
+      <Box
+        sx={{
+          width: d, height: d, borderRadius: '50%', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          bgcolor: (t) => solved ? alpha(t.palette.success.main, 0.14) : alpha(t.palette.primary.main, 0.1),
+          color: solved ? 'success.dark' : 'primary.dark',
+          fontWeight: 800, fontSize: size === 'h5' ? '1.35rem' : '1.1rem',
+          fontFeatureSettings: '"tnum","lnum"',
+        }}
+      >
+        {index + 1}
+      </Box>
       {solved && <CheckCircleRoundedIcon sx={{ color: green[700] }} />}
     </Stack>
   );
 }
-const DiffChip = ({ diff }: { diff: string }) => (
-  <Chip size="small" variant="outlined" label={diff} sx={{ fontWeight: 700, color: 'text.secondary', borderColor: 'divider' }} />
-);
 
 /* ---------- chat bubble ---------- */
 function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNode }) {
@@ -375,7 +384,6 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: 2.5 }}>
           <QMeta index={index} solved={solved} size="h5" />
           <Stack direction="row" spacing={1.5} alignItems="center">
-            <DiffChip diff={q.diff} />
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
           </Stack>
@@ -433,10 +441,7 @@ function QuestionCard({ q, index, solved, onOpen }: { q: Question; index: number
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
               <QMeta index={index} solved={solved} />
-              <Stack direction="row" spacing={1} alignItems="center">
-                <DiffChip diff={q.diff} />
-                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
-              </Stack>
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
             </Stack>
             <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8,
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
