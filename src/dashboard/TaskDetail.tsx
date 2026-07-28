@@ -373,9 +373,9 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
         sx={{ mb: 1 }}
       />
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
-        <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ }}>צרף קובץ</Button>
-        <Button size="small" variant="outlined" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen(true)} sx={{ }}>נוסחה</Button>
-        <Button size="small" variant="outlined" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ }}>צלם תשובה</Button>
+        <Button size="small" variant="outlined" color="inherit" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ color: 'text.secondary' }}>צרף קובץ</Button>
+        <Button size="small" variant="outlined" color="inherit" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen(true)} sx={{ color: 'text.secondary' }}>נוסחה</Button>
+        <Button size="small" variant="outlined" color="inherit" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ color: 'text.secondary' }}>צלם תשובה</Button>
       </Stack>
       <Button
         fullWidth variant="contained" onClick={send} disabled={thinking || !draft.trim()}
