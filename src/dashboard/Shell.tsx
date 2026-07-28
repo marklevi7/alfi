@@ -24,10 +24,10 @@ import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import { useNav, type Screen } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -38,9 +38,9 @@ export { robotImg };
 export const SHOW_BOT = false;
 
 export const NAV = [
-  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeRoundedIcon />, screen: 'dashboard' as const },
-  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentRoundedIcon />, screen: 'practice' as const },
-  { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryRoundedIcon />, screen: 'history' as const },
+  { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const },
+  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const },
+  { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
 ];
 
 // mini friendly bot face — placeholder until the real Alfi avatar lands
