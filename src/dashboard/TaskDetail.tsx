@@ -338,7 +338,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
   return (
     <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
       {confetti && <Confetti />}
-      <Typography sx={{ fontWeight: 800, color: 'primary.dark', mb: 1.5 }}>צ׳אט משוב עם הסוכן</Typography>
+      <Typography sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>צ׳אט משוב עם הסוכן</Typography>
 
       {msgs.length === 0 && !thinking && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
