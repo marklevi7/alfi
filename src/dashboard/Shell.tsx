@@ -168,7 +168,7 @@ export function AlfiWidget() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '95vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
