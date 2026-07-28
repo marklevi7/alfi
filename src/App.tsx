@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { VARIANTS } from './login/variants';
-import { VersionBar, DASH_VERSIONS } from './dashboard/MainScreen';
+import { VersionBar, DASH_VERSIONS, type Device } from './dashboard/MainScreen';
 import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
@@ -90,6 +90,7 @@ export function App() {
   const [ver, setVer] = useState(() => Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7')));
   const [sub, setSub] = useState(0);
   const [showBar, setShowBar] = useState(false);
+  const [device, setDevice] = useState<Device>('desktop');
   const active = DASH_VERSIONS[ver];
   const DashVariant = active.Comp;
   const variant = active.subs?.[sub]?.variant;
@@ -104,14 +105,28 @@ export function App() {
           aria-label="הצגת בקרות פיתוח"
           sx={{ position: 'fixed', top: 0, insetInlineStart: 0, width: 56, height: 56, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
         />
-        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} onClose={() => setShowBar(false)} />}
-        {screen === 'login' ? <LoginSwitcher />
-          : screen === 'analytics' ? <Analytics />
-          : screen === 'practice' ? <Practice />
-          : screen === 'history' ? <History />
-          : <DashVariant variant={variant} />}
-        {/* Alfi chat balloon — everywhere except login; App-level so chat survives navigation */}
-        {screen !== 'login' && <AlfiWidget />}
+        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} onClose={() => setShowBar(false)} device={device} onDeviceChange={setDevice} />}
+        {device === 'mobile' ? (
+          // real mobile viewport: the app runs inside a phone-sized iframe so xs breakpoints apply
+          <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.900', py: 3 }}>
+            <Box
+              component="iframe"
+              src={window.location.href}
+              title="תצוגת מובייל"
+              sx={{ width: 390, height: 'min(844px, 92vh)', border: 0, borderRadius: 6, boxShadow: 24, bgcolor: 'background.paper' }}
+            />
+          </Box>
+        ) : (
+          <>
+            {screen === 'login' ? <LoginSwitcher />
+              : screen === 'analytics' ? <Analytics />
+              : screen === 'practice' ? <Practice />
+              : screen === 'history' ? <History />
+              : <DashVariant variant={variant} />}
+            {/* Alfi chat balloon — everywhere except login; App-level so chat survives navigation */}
+            {screen !== 'login' && <AlfiWidget />}
+          </>
+        )}
       </ThemeProvider>
     </NavContext.Provider>
   );

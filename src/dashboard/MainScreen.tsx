@@ -6,6 +6,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import DesktopWindowsRoundedIcon from '@mui/icons-material/DesktopWindowsRounded';
+import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import { grey } from '@mui/material/colors';
 import { DashboardV5 } from './DashboardV5';
 import { DashboardV7 } from './DashboardV7';
@@ -52,7 +54,9 @@ const barBtnSx = (selected: boolean) => ({
 });
 
 /** Always-on-top switcher (dark, one line): version dropdown · divider · sub-dashboards. */
-export function VersionBar({ value, onChange, sub, onSubChange, onClose }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void }) {
+export type Device = 'desktop' | 'mobile';
+
+export function VersionBar({ value, onChange, sub, onSubChange, onClose, device, onDeviceChange }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void; device: Device; onDeviceChange: (d: Device) => void }) {
   const subs = DASH_VERSIONS[value].subs;
   return (
     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }}>
@@ -86,6 +90,14 @@ export function VersionBar({ value, onChange, sub, onSubChange, onClose }: { val
         </Button>
       ))}
       <Box sx={{ flex: 1 }} />
+      {/* device preview toggle — leftmost cluster, next to close */}
+      <IconButton size="small" onClick={() => onDeviceChange('desktop')} aria-label="תצוגת מחשב" sx={{ color: device === 'desktop' ? grey[100] : grey[500], '&:hover': { color: grey[100] } }}>
+        <DesktopWindowsRoundedIcon fontSize="small" />
+      </IconButton>
+      <IconButton size="small" onClick={() => onDeviceChange('mobile')} aria-label="תצוגת מובייל" sx={{ color: device === 'mobile' ? grey[100] : grey[500], '&:hover': { color: grey[100] } }}>
+        <SmartphoneRoundedIcon fontSize="small" />
+      </IconButton>
+      <Divider orientation="vertical" flexItem sx={{ borderColor: grey[700] }} />
       <IconButton size="small" onClick={onClose} aria-label="סגירת בקרות" sx={{ color: grey[400], '&:hover': { color: grey[100] } }}>
         <CloseRoundedIcon fontSize="small" />
       </IconButton>
