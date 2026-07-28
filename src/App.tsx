@@ -14,6 +14,7 @@ import { VersionBar, DASH_VERSIONS } from './dashboard/MainScreen';
 import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
+import { AlfiWidget } from './dashboard/Shell';
 import { NavContext, type Screen } from './nav';
 import { theme, greenTheme } from './theme';
 
@@ -109,6 +110,8 @@ export function App() {
           : screen === 'practice' ? <Practice />
           : screen === 'history' ? <History />
           : <DashVariant variant={variant} />}
+        {/* Alfi chat balloon — everywhere except login; App-level so chat survives navigation */}
+        {screen !== 'login' && <AlfiWidget />}
       </ThemeProvider>
     </NavContext.Provider>
   );

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -20,6 +21,9 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import TextField from '@mui/material/TextField';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -38,6 +42,130 @@ export const NAV = [
   { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentRoundedIcon />, screen: 'practice' as const },
   { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryRoundedIcon />, screen: 'history' as const },
 ];
+
+// mini friendly bot face — placeholder until the real Alfi avatar lands
+function BotFace({ size = 46 }: { size?: number }) {
+  return (
+    <Box
+      sx={{
+        width: size, height: size, borderRadius: '50%', flexShrink: 0,
+        bgcolor: (t) => alpha(t.palette.primary.main, 0.16),
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px',
+      }}
+    >
+      <Box sx={{ display: 'flex', gap: '5px' }}>
+        {[0, 1].map((i) => (
+          <Box key={i} sx={{ width: 12, height: 13, borderRadius: '50%', bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 1 }}>
+            <Box sx={{ width: 5, height: 6, borderRadius: '50%', bgcolor: 'primary.dark' }} />
+          </Box>
+        ))}
+      </Box>
+      <Box sx={{ width: 12, height: 6, borderBottom: 2, borderColor: 'primary.dark', borderRadius: '0 0 12px 12px' }} />
+    </Box>
+  );
+}
+
+// popout chat with Alfi — reachable from every screen via the floating balloon
+type ChatMsg = { from: 'me' | 'alfi'; text: string };
+const ALFI_REPLIES = [
+  'שאלה מעולה! בוא נחשוב על זה יחד — מה כבר ניסית?',
+  'כיוון טוב! נסה לפרק את הבעיה לשלבים קטנים. מה השלב הראשון לדעתך?',
+  'אני כאן איתך 🙂 תסביר לי מה לא ברור ונפתור את זה יחד.',
+];
+
+function AlfiChat({ onClose }: { onClose: () => void }) {
+  const [msgs, setMsgs] = useState<ChatMsg[]>([{ from: 'alfi', text: 'היי! אני אלפי 👋 אפשר לשאול אותי כל שאלה — במתמטיקה או על המערכת.' }]);
+  const [draft, setDraft] = useState('');
+  const endRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'nearest' }); }, [msgs]);
+  const send = () => {
+    const text = draft.trim();
+    if (!text) return;
+    setDraft('');
+    setMsgs((m) => [...m, { from: 'me', text }]);
+    const reply = ALFI_REPLIES[msgs.filter((m) => m.from === 'me').length % ALFI_REPLIES.length];
+    setTimeout(() => setMsgs((m) => [...m, { from: 'alfi', text: reply }]), 700);
+  };
+  return (
+    <Paper
+      elevation={8}
+      sx={{
+        position: 'fixed', bottom: 92, insetInlineStart: 28,
+        zIndex: (t) => t.zIndex.appBar + 1,
+        width: 340, maxWidth: 'calc(100vw - 56px)', height: 460, maxHeight: '70vh',
+        borderRadius: 4, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+      }}
+    >
+      <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 1.5, bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }}>
+        <BotFace size={38} />
+        <Box sx={{ flex: 1 }}>
+          <Typography sx={{ fontWeight: 800, lineHeight: 1.2 }}>אלפי</Typography>
+          <Typography variant="caption" color="text.secondary">כאן לכל שאלה</Typography>
+        </Box>
+        <IconButton size="small" onClick={onClose} aria-label="סגירת הצ׳אט"><CloseRoundedIcon fontSize="small" /></IconButton>
+      </Stack>
+      <Stack spacing={1} sx={{ flex: 1, overflowY: 'auto', p: 1.5 }}>
+        {msgs.map((m, i) => (
+          <Box
+            key={i}
+            sx={{
+              alignSelf: m.from === 'me' ? 'flex-end' : 'flex-start',
+              maxWidth: '85%',
+              px: 1.5, py: 1, borderRadius: 3,
+              ...(m.from === 'me'
+                ? { bgcolor: 'primary.main', color: 'primary.contrastText', borderStartEndRadius: 4 }
+                : { bgcolor: (t: Theme) => alpha(t.palette.primary.main, 0.08), borderStartStartRadius: 4 }),
+            }}
+          >
+            <Typography variant="body2" sx={{ textAlign: 'start' }}>{m.text}</Typography>
+          </Box>
+        ))}
+        <Box ref={endRef} />
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ p: 1.5, pt: 0.5 }}>
+        <TextField
+          fullWidth size="small" value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }}
+          placeholder="כתוב לאלפי…"
+        />
+        <IconButton color="primary" onClick={send} disabled={!draft.trim()} aria-label="שליחה">
+          <SendRoundedIcon className="dir-icon" />
+        </IconButton>
+      </Stack>
+    </Paper>
+  );
+}
+
+/** Floating balloon + popout chat. Lives at App level so the chat survives screen changes. */
+export function AlfiWidget() {
+  const [chatOpen, setChatOpen] = useState(false);
+  return (
+    <>
+      <Paper
+        component="button"
+        elevation={6}
+        onClick={() => setChatOpen((v) => !v)}
+        aria-label="שאלה כללית לאלפי"
+        sx={{
+          position: 'fixed', bottom: 28, insetInlineStart: 28,
+          zIndex: (t) => t.zIndex.appBar,
+          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25,
+          border: 0, cursor: 'pointer', font: 'inherit',
+          borderRadius: 999, py: 1, px: 1.25, paddingInlineEnd: 2.5,
+          bgcolor: 'background.paper',
+          transition: (t) => t.transitions.create(['box-shadow', 'transform']),
+          '&:hover': { boxShadow: 10, transform: 'translateY(-2px)' },
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+        }}
+      >
+        <BotFace />
+        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
+      </Paper>
+      {chatOpen && <AlfiChat onClose={() => setChatOpen(false)} />}
+    </>
+  );
+}
 
 export function Shell({ active, title, children, hideSidebarRobot = false, minH = '95vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
   const navTo = useNav();
@@ -162,44 +290,6 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
           </Grid>
         </Grid>
-      </Paper>
-
-      {/* floating "got a question?" balloon — general questions, not tied to a task */}
-      <Paper
-        component="button"
-        elevation={6}
-        onClick={() => {}}
-        aria-label="שאלה כללית לאלפי"
-        sx={{
-          position: 'fixed', bottom: 28, insetInlineStart: 28,
-          zIndex: (t) => t.zIndex.appBar,
-          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25,
-          border: 0, cursor: 'pointer', font: 'inherit',
-          borderRadius: 999, py: 1, px: 1.25, paddingInlineEnd: 2.5,
-          bgcolor: 'background.paper',
-          transition: (t) => t.transitions.create(['box-shadow', 'transform']),
-          '&:hover': { boxShadow: 10, transform: 'translateY(-2px)' },
-          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-        }}
-      >
-        {/* placeholder bot — mini friendly face: tinted circle, white eyes, smile */}
-        <Box
-          sx={{
-            width: 46, height: 46, borderRadius: '50%', flexShrink: 0,
-            bgcolor: (t) => alpha(t.palette.primary.main, 0.16),
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px',
-          }}
-        >
-          <Box sx={{ display: 'flex', gap: '5px' }}>
-            {[0, 1].map((i) => (
-              <Box key={i} sx={{ width: 12, height: 13, borderRadius: '50%', bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 1 }}>
-                <Box sx={{ width: 5, height: 6, borderRadius: '50%', bgcolor: 'primary.dark' }} />
-              </Box>
-            ))}
-          </Box>
-          <Box sx={{ width: 12, height: 6, borderBottom: 2, borderColor: 'primary.dark', borderRadius: '0 0 12px 12px' }} />
-        </Box>
-        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
       </Paper>
 
       {/* Mobile bottom navigation */}
