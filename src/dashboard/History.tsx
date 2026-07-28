@@ -12,6 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { type Kind } from './KindIcon';
 import { TaskCard, type TaskStatus } from './Practice';
+import { TaskDetail } from './TaskDetail';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red, deepOrange, blue } from '@mui/material/colors';
@@ -83,6 +84,8 @@ export function History() {
   const [unit] = useState('');
   const [subTopic, setSubTopic] = useState('');
   const [kind, setKind] = useState<'all' | Kind>('all');
+  // a fully-completed test can be opened read-only, like a regular task
+  const [openItem, setOpenItem] = useState<Item | null>(null);
 
   const items = useMemo(
     () => ITEMS.filter((it) =>
@@ -94,6 +97,15 @@ export function History() {
     ),
     [q, topic, unit, subTopic, kind]
   );
+
+  if (openItem) {
+    return (
+      <TaskDetail
+        task={{ id: ITEMS.indexOf(openItem) + 440, title: openItem.title, total: openItem.total, solved: openItem.solved, from: '', to: null, grade: openItem.score }}
+        onBack={() => setOpenItem(null)}
+      />
+    );
+  }
 
   return (
     <Shell active="history" title="תמונת מצב">
@@ -208,7 +220,7 @@ export function History() {
                 grade: it.score,
               }}
               dateLabel={it.when}
-              onOpen={() => nav.go('practice')}
+              onOpen={() => (it.status === 'done' ? setOpenItem(it) : nav.go('practice'))}
             />
           </Box>
           );

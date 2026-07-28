@@ -38,7 +38,7 @@ import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import { Shell } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
-export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null };
+export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number };
 
 // '29 ביוני 2026' → ', יום שני' (empty string when the date can't be parsed)
 const HE_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
@@ -494,6 +494,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       <Box sx={{ mt: 2 }}>
         <Stack direction="row" alignItems="baseline" spacing={1}>
           <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
+          {/* finished test: the grade pill sits right by the title, same style as the list card */}
+          {task.grade != null && (
+            <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, alignSelf: 'center' }}>
+              <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{task.grade}</Typography>
+              <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
+            </Box>
+          )}
           {/* new until the first question is solved — same rule as the task list */}
           {done === 0 && (
             <Stack direction="row" spacing={0.5} alignItems="center" sx={{ alignSelf: 'center' }}>
