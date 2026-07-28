@@ -20,8 +20,6 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -184,10 +182,18 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
         }}
       >
-        <Avatar sx={{ bgcolor: 'primary.main', width: 44, height: 44 }}>
-          <AutoAwesomeRoundedIcon />
-        </Avatar>
-        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לך שאלה?</Typography>
+        {/* placeholder bot — same grey oval as the dashboard, mini, with eyes */}
+        <Box
+          sx={{
+            width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+            bgcolor: (t) => alpha(t.palette.text.primary, 0.08),
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.6,
+          }}
+        >
+          <Box sx={{ width: 6, height: 9, borderRadius: '50%', bgcolor: 'text.secondary' }} />
+          <Box sx={{ width: 6, height: 9, borderRadius: '50%', bgcolor: 'text.secondary' }} />
+        </Box>
+        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
       </Paper>
 
       {/* Mobile bottom navigation */}

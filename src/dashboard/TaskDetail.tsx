@@ -64,38 +64,59 @@ const Eq = ({ children }: { children: ReactNode }) => (
 );
 
 type Turn = { title?: string; body: ReactNode };
-type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode };
+// solution is an array of lines — each gets a grey number so the AI can be asked about a specific line
+type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[] };
 
 const QUESTIONS: Question[] = [
   {
     points: 20, short: 'חקירת פונקציה מלאה',
     prompt: <>נתונה הפונקציה <Eq>y = <Frac n={<>√(x²−1)</>} d={<>x−2</>} /></Eq>. ערוך חקירה מלאה: תחום הגדרה, נגזרת, אסימפטוטות, נקודות קיצון, ותחומי עלייה וירידה.</>,
     guide: { title: 'חקירה מלאה כוללת 5 שלבים', body: <>1. תחום הגדרה  2. נגזרת  3. אסימפטוטות  4. נקודות קיצון  5. תחומי עלייה וירידה.<br />נתחיל מהתחלה — <b>מה תחום ההגדרה לדעתך?</b></> },
-    solution: <><b>תחום הגדרה:</b> x²−1 ≥ 0 וגם x ≠ 2, לכן x ≤ −1 או x ≥ 1, x ≠ 2.<br /><b>אסימפטוטות:</b> אנכית x = 2; אופקיות y = 1 (כאשר x → ∞) ו-y = −1 (כאשר x → −∞).<br /><b>נגזרת ונקודות קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.<br /><b>עלייה וירידה:</b> הפונקציה יורדת בכל תחום ההגדרה.</>,
+    solution: [
+      <><b>תחום הגדרה:</b> x²−1 ≥ 0 וגם x ≠ 2, לכן x ≤ −1 או x ≥ 1, x ≠ 2.</>,
+      <><b>אסימפטוטות:</b> אנכית x = 2; אופקיות y = 1 (כאשר x → ∞) ו-y = −1 (כאשר x → −∞).</>,
+      <><b>נגזרת ונקודות קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
+      <><b>עלייה וירידה:</b> הפונקציה יורדת בכל תחום ההגדרה.</>,
+    ],
   },
   {
     points: 20, short: 'תחום הגדרה',
     prompt: <>מצא את תחום ההגדרה של הפונקציה <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq>.</>,
     guide: { body: <>לתחום צריך שני תנאים <b>בנפרד</b>: השורש חייב להיות ≥ 0, והמכנה ≠ 0. <b>מה יוצא מהתנאי הראשון?</b></> },
-    solution: <>מהשורש: x ≥ 0. מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9.<br /><b>תחום ההגדרה:</b> x ≥ 0 וגם x ≠ 9.</>,
+    solution: [
+      <>מהשורש: x ≥ 0. מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9.</>,
+      <><b>תחום ההגדרה:</b> x ≥ 0 וגם x ≠ 9.</>,
+    ],
   },
   {
     points: 20, short: 'אסימפטוטות',
     prompt: <>מצא את האסימפטוטות של <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq> והסבר כיצד הפונקציה מתנהגת משני צידי האסימפטוטה האנכית.</>,
     guide: { body: <>האסימפטוטה האנכית נמצאת היכן שהמכנה מתאפס. <b>באיזה x זה קורה?</b></> },
-    solution: <><b>אנכית:</b> x = 9 (המכנה מתאפס והמונה ≠ 0).<br /><b>אופקית:</b> y = 0 (המכנה גדל מהר מהמונה).<br /><b>התנהגות:</b> משמאל ל-9 הפונקציה שואפת ל-−∞, מימין ל-9 שואפת ל-+∞.</>,
+    solution: [
+      <><b>אנכית:</b> x = 9 (המכנה מתאפס והמונה ≠ 0).</>,
+      <><b>אופקית:</b> y = 0 (המכנה גדל מהר מהמונה).</>,
+      <><b>התנהגות:</b> משמאל ל-9 הפונקציה שואפת ל-−∞, מימין ל-9 שואפת ל-+∞.</>,
+    ],
   },
   {
     points: 20, short: 'תחום, נגזרת וקיצון',
     prompt: <>נתונה <Eq>y = <Frac n={<>x</>} d={<>√(x²−9)</>} /></Eq>. מצא את תחום ההגדרה, חשב את הנגזרת, ומצא נקודות קיצון אם קיימות.</>,
     guide: { body: <>נתחיל מהתחום: הביטוי תחת השורש חייב להיות חיובי <b>ממש</b>. <b>מה אי-השוויון שצריך לפתור?</b></> },
-    solution: <><b>תחום הגדרה:</b> x²−9 &gt; 0 ולכן x &lt; −3 או x &gt; 3.<br /><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).<br /><b>קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
+    solution: [
+      <><b>תחום הגדרה:</b> x²−9 &gt; 0 ולכן x &lt; −3 או x &gt; 3.</>,
+      <><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).</>,
+      <><b>קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
+    ],
   },
   {
     points: 20, short: 'תחום ונקודות חיתוך',
     prompt: <>נתונה <Eq>y = √(x²−4)</Eq>. מצא את תחום ההגדרה ואת נקודות החיתוך עם הצירים.</>,
     guide: { body: <>תחת השורש חייב להיות ≥ 0. <b>מה פתרון אי-השוויון x²−4 ≥ 0?</b></> },
-    solution: <><b>תחום הגדרה:</b> x²−4 ≥ 0 ולכן x ≤ −2 או x ≥ 2.<br /><b>חיתוך עם ציר x:</b> (−2, 0) ו-(2, 0).<br /><b>חיתוך עם ציר y:</b> אין — x = 0 מחוץ לתחום.</>,
+    solution: [
+      <><b>תחום הגדרה:</b> x²−4 ≥ 0 ולכן x ≤ −2 או x ≥ 2.</>,
+      <><b>חיתוך עם ציר x:</b> (−2, 0) ו-(2, 0).</>,
+      <><b>חיתוך עם ציר y:</b> אין — x = 0 מחוץ לתחום.</>,
+    ],
   },
 ];
 
@@ -278,6 +299,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [fileOpen, setFileOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -339,8 +361,11 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: () => void }) {
         <Box ref={endRef} />
       </Stack>
 
+      {/* grows when tapped so there's room to write a full solution */}
       <TextField
         fullWidth multiline minRows={2} value={draft}
+        onFocus={() => setExpanded(true)}
+        {...(expanded && { minRows: 6 })}
         inputRef={inputRef}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
@@ -399,12 +424,21 @@ function QuestionPage({ q, index, total, solved, onBack, onSolved, onNext }: {
             <Typography sx={{ fontWeight: 800, mt: 1 }}>כל הכבוד! פתרת את השאלה</Typography>
             <Typography variant="body2" color="success.dark" sx={{ mt: 0.5 }}>התשובה נשמרה</Typography>
           </Paper>
-          {/* the saved solution — read-only */}
+          {/* the saved solution — read-only, numbered lines so a specific line can be referenced in chat */}
           <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2.5, md: 3 } }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 1.5 }}>הפתרון שלי</Typography>
-            <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary' }}>
-              {q.solution}
-            </Typography>
+            <Stack spacing={1}>
+              {q.solution.map((line, i) => (
+                <Stack key={i} direction="row" spacing={1.5} alignItems="baseline">
+                  <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700, minWidth: 16, textAlign: 'center', fontFeatureSettings: '"tnum","lnum"', flexShrink: 0 }}>
+                    {i + 1}
+                  </Typography>
+                  <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary' }}>
+                    {line}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
           </Paper>
         </>
       ) : (
