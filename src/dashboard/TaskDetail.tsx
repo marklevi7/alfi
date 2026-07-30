@@ -410,7 +410,7 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
 
       {msgs.length === 0 && !thinking && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          כתוב את הפתרון שלך ואלפי ילווה אותך צעד־צעד עד לתשובה הנכונה.
+          כתוב כאן את הפתרון שלך.
         </Typography>
       )}
 
