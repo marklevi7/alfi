@@ -35,7 +35,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v58',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v59',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
