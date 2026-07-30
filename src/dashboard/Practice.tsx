@@ -8,12 +8,9 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
-import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { KindIcon, type Kind } from './KindIcon';
 import { Shell } from './Shell';
 import { TaskDetail } from './TaskDetail';
@@ -61,9 +58,13 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   return (
     <Card
       variant="outlined"
+      // the WHOLE card opens the task — click or tab anywhere on it
+      component="button"
+      type="button"
+      onClick={onOpen}
       sx={{
         borderRadius: 3,
-        // done tasks get the green tint but stay full-strength — the grade is the headline
+        display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: 'pointer', p: 0,
         ...(t.status === 'done' && { bgcolor: green[50] }),
         transition: (th) => th.transitions.create(['box-shadow', 'border-color']),
         '&:hover': { boxShadow: 4, borderColor: `${kind}.main` },
@@ -72,16 +73,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     >
       <CardHeader
         sx={{ pb: 1, alignItems: 'flex-start', '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }}
-        avatar={
-          // icon always stays; the grade lives on the count line below, never replaces the icon
-          t.status === 'done' ? (
-            <Avatar variant="rounded" sx={{ bgcolor: alpha(green[600], 0.14), color: green[700], width: 36, height: 36, '& svg': { fontSize: 20 } }}>
-              <CheckRoundedIcon />
-            </Avatar>
-          ) : (
-            <KindIcon kind={t.kind} />
-          )
-        }
+        // the kind icon (תרגול / בוחן) always stays, in every state — never swapped for a checkmark
+        avatar={<KindIcon kind={t.kind} />}
         action={
           // no deadline = open-ended; say so plainly instead of leaving a gap
           <Typography sx={{ ...META, display: 'block', whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
@@ -156,11 +149,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end', px: 2.5, py: 1.25 }}>
         <Button
-          onClick={onOpen}
+          component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={locked ? 'inherit' : kind}
-          endIcon={locked ? undefined : <PlayArrowRoundedIcon className="dir-icon" />}
-          sx={{ fontWeight: 800 }}
+          sx={{ fontWeight: 800, pointerEvents: 'none' }}
         >
           {cta}
         </Button>
