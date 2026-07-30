@@ -39,7 +39,7 @@ export const SHOW_BOT = false;
 
 export const NAV = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const },
-  { label: 'תרגילים ובחנים', short: 'תרגילים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const },
+  { label: 'תרגולים ובחנים', short: 'תרגולים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const },
   { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
 ];
 

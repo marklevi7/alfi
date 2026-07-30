@@ -13,7 +13,7 @@ import { Shell } from './Shell';
 
 const stats = [
   { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentRoundedIcon />, tone: 'primary' as const },
-  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 תרגילים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
+  { label: 'תרגולים השבוע', value: '5', total: 12, sub: '5 מתוך 12 תרגולים', icon: <TaskAltRoundedIcon />, tone: 'warning' as const },
   { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <EmojiEventsRoundedIcon />, tone: 'primary' as const },
 ];
 

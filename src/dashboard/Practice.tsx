@@ -45,7 +45,7 @@ const KIND: Record<Kind, 'primary'> = { תרגול: 'primary', בוחן: 'primar
 // One shared style for all the small meta text in a card (date, topic, count).
 const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as const;
 
-// The one task card, shared by תרגילים and the תמונת מצב timeline.
+// The one task card, shared by תרגולים and the תמונת מצב timeline.
 // dateLabel overrides the deadline text (the timeline shows "היום" etc.).
 export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void; dateLabel?: string }) {
   const kind = KIND[t.kind];
@@ -180,7 +180,7 @@ export function Practice() {
   }
 
   return (
-    <Shell active="practice" title="תרגילים ובחנים">
+    <Shell active="practice" title="תרגולים ובחנים">
       {/* task list */}
       <Stack spacing={2}>
         {tasks.map((t) => <TaskCard key={t.id} t={t} onOpen={() => setOpenId(t.id)} />)}

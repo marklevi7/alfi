@@ -24,7 +24,7 @@ import { Shell } from './Shell';
 
 const STATS = [
   { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentTwoToneIcon sx={{ color: deepOrange[500] }} />, tone: 'primary' as const },
-  { label: 'תרגולים השבוע', value: '2', total: 3, sub: '2 מתוך 3 תרגילים', icon: <TaskAltTwoToneIcon sx={{ color: green[600] }} />, tone: 'warning' as const },
+  { label: 'תרגולים השבוע', value: '2', total: 3, sub: '2 מתוך 3 תרגולים', icon: <TaskAltTwoToneIcon sx={{ color: green[600] }} />, tone: 'warning' as const },
   { label: 'בוחנים השבוע', value: '2', total: 0, sub: 'בוחנים הושלמו', icon: <TimerTwoToneIcon sx={{ color: blue[500] }} />, tone: 'primary' as const },
 ];
 
@@ -48,7 +48,7 @@ const ITEMS: Item[] = [
   { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 5 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית', solved: 5, total: 5 },
   { title: 'תרגול הסתברות', kind: 'תרגול', when: 'בשבוע שעבר', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית', solved: 2, total: 4 },
   { title: 'בוחן באלגברה', kind: 'בוחן', when: 'בשבוע שעבר', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות', solved: 6, total: 6 },
-  // moved here from the תרגילים list — finished tasks live on the timeline
+  // moved here from the תרגולים list — finished tasks live on the timeline
   { title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 88, topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 6, total: 6 },
   { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 76, topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'משוואות טריגונומטריות', solved: 5, total: 5 },
   { title: 'בוחן בחקירת פונקציות', kind: 'בוחן', when: 'לפני שלושה שבועות', status: 'done', score: 94, topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'אסימפטוטות', solved: 8, total: 8 },

@@ -204,7 +204,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
-              {variant === 'noNext' ? 'אין תרגילים חדשים כרגע' : 'התרגיל הבא שלי'}
+              {variant === 'noNext' ? 'אין תרגולים חדשים כרגע' : 'התרגול הבא שלי'}
             </Typography>
             {variant === 'noNext' ? (
               <>
@@ -216,13 +216,13 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
                   onClick={() => nav.go('practice')}
                   sx={{ alignSelf: 'flex-start', fontWeight: 800 }}
                 >
-                  לכל התרגילים
+                  לכל התרגולים
                 </Button>
               </>
             ) : (
               <>
                 <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
-                  יש לי 2 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
+                  יש לי 2 תרגולים חדשים מהמורה. בוא נתחיל עם אלגברה!
                 </Typography>
                 <Button
                   variant="contained"

@@ -188,9 +188,9 @@ export function DashboardV6() {
         {/* Next task CTA card — simple white card, green primary CTA */}
         <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגיל הבא שלי</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגול הבא שלי</Typography>
             <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
-              יש לי 2 תרגילים חדשים מהמורה. בוא נתחיל עם אלגברה!
+              יש לי 2 תרגולים חדשים מהמורה. בוא נתחיל עם אלגברה!
             </Typography>
             <Button
               variant="contained"
