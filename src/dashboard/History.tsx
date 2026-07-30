@@ -101,7 +101,7 @@ export function History() {
   if (openItem) {
     return (
       <TaskDetail
-        task={{ id: ITEMS.indexOf(openItem) + 440, title: openItem.title, total: openItem.total, solved: openItem.solved, from: '', to: null, grade: openItem.score }}
+        task={{ id: ITEMS.indexOf(openItem) + 440, title: openItem.title, total: openItem.total, solved: openItem.solved, from: '', to: null, grade: openItem.score, kind: openItem.kind }}
         onBack={() => setOpenItem(null)}
       />
     );

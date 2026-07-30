@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { alpha, useTheme } from '@mui/material/styles';
+import { alpha, keyframes, useTheme } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
 import Box from '@mui/material/Box';
@@ -138,30 +138,37 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Floating balloon + popout chat. Lives at App level so the chat survives screen changes. */
+const balloonBob = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+`;
+
+/** "יש לי שאלה" balloon + popout chat — the teaching-assistant, shown only inside תרגול. */
 export function AlfiWidget() {
   const [chatOpen, setChatOpen] = useState(false);
   return (
     <>
       <Paper
         component="button"
-        elevation={6}
+        elevation={8}
         onClick={() => setChatOpen((v) => !v)}
         aria-label="שאלה כללית לאלפי"
         sx={{
           position: 'fixed', bottom: 28, insetInlineEnd: 28,
           zIndex: (t) => t.zIndex.appBar,
-          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25,
-          border: 0, cursor: 'pointer', font: 'inherit',
-          borderRadius: 999, py: 1, px: 1.25, paddingInlineEnd: 2.5,
+          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5,
+          cursor: 'pointer', font: 'inherit',
+          borderRadius: 999, py: 1.25, px: 1.5, paddingInlineEnd: 3,
           bgcolor: 'background.paper',
+          border: 2, borderColor: 'primary.main',
+          animation: chatOpen ? 'none' : `${balloonBob} 2.6s ease-in-out infinite`,
           transition: (t) => t.transitions.create(['box-shadow', 'transform']),
-          '&:hover': { boxShadow: 10, transform: 'translateY(-2px)' },
-          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+          '&:hover': { boxShadow: 12, animationPlayState: 'paused' },
+          '@media (prefers-reduced-motion: reduce)': { animation: 'none', transition: 'none' },
         }}
       >
-        <BotFace />
-        <Typography sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
+        <BotFace size={54} />
+        <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap', color: 'primary.dark' }}>יש לי שאלה</Typography>
       </Paper>
       {chatOpen && <AlfiChat onClose={() => setChatOpen(false)} />}
     </>

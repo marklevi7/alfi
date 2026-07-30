@@ -34,10 +34,10 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell } from './Shell';
+import { Shell, AlfiWidget } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
-export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number };
+export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number; kind?: 'תרגול' | 'בוחן' };
 
 // '29 ביוני 2026' → ', יום שני' (empty string when the date can't be parsed)
 const HE_MONTHS = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
@@ -506,10 +506,14 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
     return null;
   };
 
+  // "יש לי שאלה" — the teaching-assistant balloon lives ONLY inside תרגול (never בוחן)
+  const alfi = task.kind === 'תרגול' ? <AlfiWidget /> : null;
+
   if (openQ !== null) {
     const nx = nextUnsolved(openQ);
     return (
       <Shell active="practice" title="">
+        {alfi}
         <QuestionPage
           q={questions[openQ]}
           index={openQ}
@@ -525,6 +529,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
   return (
     <Shell active="practice" title="">
+      {alfi}
       <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
         חזרה לרשימת המשימות
       </Button>
