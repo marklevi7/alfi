@@ -120,25 +120,31 @@ const QUESTIONS: Question[] = [
   },
 ];
 
-/* ---------- confetti (MUI only, reduced-motion aware) ---------- */
-const CONFETTI = [deepPurple[400], blue[400], cyan[400], amber[400], green[400], pink[400]];
+/* ---------- confetti: ONE shared component for every celebration in the app ---------- */
+const CONFETTI = [deepPurple[400], blue[400], cyan[400], amber[400], green[400], pink[400], red[400], amber[600]];
 const burst = keyframes`
-  0%   { transform: translate(0,0) rotate(0deg); opacity: 1; }
-  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+  0%   { transform: translate(0,0) rotate(0deg) scale(0.6); opacity: 1; }
+  15%  { transform: translate(calc(var(--dx) * 0.25), calc(var(--dy) * 0.55)) rotate(calc(var(--rot) * 0.3)) scale(1.2); opacity: 1; }
+  100% { transform: translate(var(--dx), calc(var(--dy) * -0.4)) rotate(var(--rot)) scale(1); opacity: 0; }
 `;
-function Confetti() {
+/** Big game-style confetti burst. Fills its positioned parent; harmless when reduced-motion is on. */
+export function Confetti({ pieces = 80 }: { pieces?: number }) {
   return (
-    <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 4 }}>
-      {Array.from({ length: 32 }).map((_, i) => {
-        const dx = (i % 2 ? 1 : -1) * (30 + (i * 13) % 240);
-        const dy = -70 - (i * 29) % 200;
-        const rot = 180 + (i * 47) % 360;
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 4 }}>
+      {Array.from({ length: pieces }).map((_, i) => {
+        const dx = (i % 2 ? 1 : -1) * (60 + (i * 37) % 520);
+        const dy = -180 - (i * 53) % 420;
+        const rot = 360 + (i * 97) % 900;
         const c = CONFETTI[i % CONFETTI.length];
+        const w = 14 + (i % 4) * 6;
+        const h = i % 3 === 0 ? w : Math.round(w * 0.5);
+        const round = i % 4 === 1;
         return (
           <Box key={i} sx={{
-            position: 'absolute', top: '42%', left: '50%', width: 9, height: 9, borderRadius: 0.5, bgcolor: c,
+            position: 'absolute', top: '45%', left: '50%',
+            width: w, height: h, borderRadius: round ? '50%' : 0.75, bgcolor: c,
             ['--dx' as string]: `${dx}px`, ['--dy' as string]: `${dy}px`, ['--rot' as string]: `${rot}deg`,
-            animation: `${burst} ${900 + (i % 5) * 120}ms cubic-bezier(0.16,1,0.3,1) forwards`,
+            animation: `${burst} ${1600 + (i % 6) * 220}ms cubic-bezier(0.18, 0.9, 0.3, 1) ${(i % 5) * 70}ms forwards`,
             '@media (prefers-reduced-motion: reduce)': { display: 'none' },
           }} />
         );
@@ -393,7 +399,7 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
         </Stack>
       ) }]);
       setConfetti(true);
-      window.setTimeout(() => { setConfetti(false); onSolved(); }, 1800);
+      window.setTimeout(() => { setConfetti(false); onSolved(); }, 3200);
     }, 1400);
   };
 
@@ -566,6 +572,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const [openQ, setOpenQ] = useState<number | null>(null);
   const [hoverQ, setHoverQ] = useState<number | null>(null);
   const done = solved.size;
+  // coming back into a fully finished task is a celebration too — confetti on entry
+  const [entryConfetti, setEntryConfetti] = useState(done === questions.length);
+  useEffect(() => {
+    if (!entryConfetti) return;
+    const id = window.setTimeout(() => setEntryConfetti(false), 1800);
+    return () => window.clearTimeout(id);
+  }, [entryConfetti]);
 
   const markSolved = (i: number) => setSolved((s) => new Set(s).add(i));
   const nextUnsolved = (from: number) => {
@@ -600,6 +613,12 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   return (
     <Shell active="practice" title="">
       {alfi}
+      {/* re-entering a finished task celebrates again */}
+      {entryConfetti && (
+        <Box sx={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: (t) => t.zIndex.modal }}>
+          <Confetti />
+        </Box>
+      )}
       <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
         חזרה לרשימת המשימות
       </Button>
