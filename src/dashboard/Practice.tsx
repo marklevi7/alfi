@@ -5,11 +5,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
 import { KindIcon, type Kind } from './KindIcon';
 import { Shell } from './Shell';
@@ -71,17 +67,11 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
-      <CardHeader
-        sx={{ pb: 1, alignItems: 'flex-start', '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }}
-        // the kind icon (תרגול / בוחן) always stays, in every state — never swapped for a checkmark
-        avatar={<KindIcon kind={t.kind} />}
-        action={
-          // no deadline = open-ended; say so plainly instead of leaving a gap
-          <Typography sx={{ ...META, display: 'block', whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
-            {dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה')}
-          </Typography>
-        }
-        title={
+      {/* one compact row: kind icon · content · CTA on the far (inline-end) side */}
+      <Stack direction="row" spacing={2} alignItems="center" sx={{ px: 2.5, py: 1.75 }}>
+        <KindIcon kind={t.kind} />
+
+        <Box sx={{ flex: 1, minWidth: 0 }}>
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>{t.title}</Typography>
             {/* only NEW gets the notification dot; solving even 1 question removes it */}
@@ -91,7 +81,6 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
               </Stack>
             )}
-            {/* closed states read as states, not alarms: same dot pattern, status color */}
             {t.status === 'expired' && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
@@ -110,53 +99,45 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'text.secondary' }}>טרם התחלתי</Typography>
               </Stack>
             )}
-            {/* the grade is the point of a finished card — solid green, white, title-scale.
-                Same row, same card size; weight comes from contrast, not from footprint. */}
             {t.status === 'done' && t.grade != null && (
               <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                 <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
+            <Box sx={{ flex: 1 }} />
+            {/* deadline sits at the end of the title row instead of taking its own line */}
+            <Typography sx={{ ...META, whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
+              {dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה')}
+            </Typography>
           </Stack>
-        }
-        subheader={
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-            <Typography sx={META}>{t.topic} · {t.subTopic}</Typography>
+
+          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 0.75 }}>
+            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
+            <LinearProgress
+              variant="determinate"
+              value={pct}
+              sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+            />
+            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
           </Stack>
-        }
-      />
 
-      <CardContent sx={{ pt: 1, pb: 2 }}>
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <LinearProgress
-            variant="determinate"
-            value={pct}
-            sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
-          />
-          <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>
-            {t.solved}/{t.total} שאלות
-          </Typography>
-        </Stack>
-        {/* say what expiring actually cost the student, and what's still open */}
-        {t.status === 'expired' && (
-          <Typography sx={{ ...META, mt: 1 }}>
-            המועד להגשה חלף, אז המשימה הזאת כבר לא נספרת לציון.
-          </Typography>
-        )}
-      </CardContent>
+          {t.status === 'expired' && (
+            <Typography sx={{ ...META, mt: 0.75 }}>
+              המועד להגשה חלף, אז המשימה הזאת כבר לא נספרת לציון.
+            </Typography>
+          )}
+        </Box>
 
-      <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end', px: 2.5, py: 1.25 }}>
         <Button
           component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={locked ? 'inherit' : kind}
-          sx={{ fontWeight: 800, pointerEvents: 'none' }}
+          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap' }}
         >
           {cta}
         </Button>
-      </CardActions>
+      </Stack>
     </Card>
   );
 }
