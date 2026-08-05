@@ -20,7 +20,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
-import Grid from '@mui/material/Grid';
 import { deepPurple, blue, cyan, amber, green, red, pink, grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
@@ -249,27 +248,54 @@ export function Confetti({ pieces = 80 }: { pieces?: number }) {
 }
 
 /* ---------- formula picker + QR dialogs ---------- */
-const SYMBOLS = ['√', 'x²', 'xⁿ', '≤', '≥', '≠', '∞', 'π', '·', '±', "f′", "f″"];
-function MathDialog({ open, onClose, onPick }: { open: boolean; onClose: () => void; onPick: (s: string) => void }) {
+// A real math keypad: opens beside the answer box and STAYS open, so the student can
+// type on the keyboard and tap symbols at the same time. No modal, nothing blocked.
+const PAD_ROWS: string[][] = [
+  ['7', '8', '9', '÷', '(', ')'],
+  ['4', '5', '6', '×', '√', 'π'],
+  ['1', '2', '3', '−', 'x²', 'xⁿ'],
+  ['0', '.', '=', '+', '≤', '≥'],
+  ['x', 'y', '≠', '±', '∞', '·'],
+  ["f′", "f″", '∫', 'Σ', 'lim', '→'],
+];
+
+function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: () => void }) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle sx={{ fontWeight: 800, pr: 6 }}>
-        הוספת נוסחה
-        <IconButton onClick={onClose} sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}><CloseRoundedIcon /></IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>הנוסחה תתווסף במיקום הסמן.</Typography>
-        <Grid container spacing={1}>
-          {SYMBOLS.map((s) => (
-            <Grid item xs={3} key={s}>
-              <Button fullWidth variant="outlined" onClick={() => { onPick(s); onClose(); }} sx={{ minHeight: 48, fontSize: '1.1rem' }}>{s}</Button>
-            </Grid>
-          ))}
-        </Grid>
-      </DialogContent>
-    </Dialog>
+    <Paper variant="outlined" sx={{ borderRadius: 3, p: 1.5, width: { xs: '100%', md: 300 }, flexShrink: 0, alignSelf: 'flex-start' }}>
+      <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
+        <Typography sx={{ fontWeight: 800, flex: 1 }}>מחשבון מתמטי</Typography>
+        <IconButton size="small" onClick={onClose} aria-label="סגירת המחשבון"><CloseRoundedIcon fontSize="small" /></IconButton>
+      </Stack>
+      <Stack spacing={0.75}>
+        {PAD_ROWS.map((row, r) => (
+          <Stack key={r} direction="row" spacing={0.75}>
+            {row.map((k) => (
+              <Button
+                key={k}
+                onClick={() => onPick(k)}
+                variant="outlined"
+                color="inherit"
+                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, color: 'text.primary', borderColor: 'divider' }}
+              >
+                {k}
+              </Button>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+      <Button
+        fullWidth
+        variant="outlined"
+        color="inherit"
+        onClick={() => onPick('\n')}
+        sx={{ mt: 0.75, minHeight: 40, fontWeight: 700, color: 'text.secondary', borderColor: 'divider' }}
+      >
+        שורה חדשה
+      </Button>
+    </Paper>
   );
 }
+
 function QrDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
@@ -518,6 +544,18 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
   useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' }); }, [msgs.length, thinking]);
 
+  // symbols land where the cursor is, and the caret stays put so typing continues naturally
+  const insertAtCursor = (sym: string) => {
+    const el = inputRef.current;
+    const start = el ? el.selectionStart ?? draft.length : draft.length;
+    const end = el ? el.selectionEnd ?? start : start;
+    setDraft(draft.slice(0, start) + sym + draft.slice(end));
+    window.setTimeout(() => {
+      el?.focus();
+      el?.setSelectionRange(start + sym.length, start + sym.length);
+    }, 0);
+  };
+
   const send = () => {
     if (!draft.trim() || thinking) return;
     const answer = draft.trim();
@@ -592,19 +630,21 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
       </Stack>
 
       {!locked && <>
-      {/* starts at 2 lines and grows as the student writes */}
-      <TextField
-        fullWidth multiline minRows={2} value={draft}
-        inputRef={inputRef}
-        onChange={(e) => setDraft(e.target.value)}
-        onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
-        placeholder="כתוב כאן את התשובה שלך…"
-        disabled={thinking}
-        sx={{ mb: 1 }}
-      />
+      {/* starts at 2 lines and grows as the student writes; the keypad sits alongside it */}
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
+        <TextField
+          fullWidth multiline minRows={mathOpen ? 8 : 2} value={draft}
+          inputRef={inputRef}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
+          placeholder="כתוב כאן את התשובה שלך…"
+          disabled={thinking}
+        />
+        {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
+      </Stack>
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
         <Button size="small" variant="outlined" color="inherit" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ color: 'text.secondary' }}>צרף קובץ</Button>
-        <Button size="small" variant="outlined" color="inherit" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen(true)} sx={{ color: 'text.secondary' }}>נוסחה</Button>
+        <Button size="small" variant="outlined" color="inherit" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ color: 'text.secondary', ...(mathOpen && { borderColor: 'primary.main', color: 'primary.dark' }) }}>מחשבון</Button>
         <Button size="small" variant="outlined" color="inherit" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ color: 'text.secondary' }}>צלם תשובה</Button>
       </Stack>
       <Button
@@ -616,7 +656,6 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
       </Button>
       </>}
 
-      <MathDialog open={mathOpen} onClose={() => setMathOpen(false)} onPick={(s) => setDraft((d) => d + s)} />
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
       <FinderDialog open={fileOpen} onClose={() => setFileOpen(false)} onPick={(name) => setDraft((d) => (d ? d + '\n' : '') + `📎 ${name}`)} />
     </Paper>
