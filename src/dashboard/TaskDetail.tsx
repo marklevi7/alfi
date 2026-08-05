@@ -68,6 +68,8 @@ const Eq = ({ children }: { children: ReactNode }) => (
 type Turn = { title?: string; body: ReactNode };
 // solution is an array of lines — each gets a grey number so the AI can be asked about a specific line
 type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[]; sampleAnswer?: string;
+  // plain-text full solution — the secret click drops it straight into the answer box
+  solutionText?: string;
   // demo: the first submission is treated as wrong and Alfi replies with this hint
   wrongHint?: ReactNode };
 
@@ -82,6 +84,13 @@ const QUESTIONS: Question[] = [
       <><b>נגזרת ונקודות קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
       <><b>עלייה וירידה:</b> הפונקציה יורדת בכל תחום ההגדרה.</>,
     ],
+    solutionText: [
+      'תחום הגדרה: x²−1 ≥ 0 וגם x ≠ 2, לכן x ≤ −1 או x ≥ 1, x ≠ 2',
+      'אסימפטוטה אנכית: x = 2',
+      'אסימפטוטות אופקיות: y = 1 כאשר x → ∞, ו-y = −1 כאשר x → −∞',
+      'הנגזרת שלילית בכל התחום, לכן אין נקודות קיצון',
+      'הפונקציה יורדת בכל תחום ההגדרה',
+    ].join('\n'),
   },
   {
     points: 20, short: 'תחום הגדרה',
@@ -91,6 +100,11 @@ const QUESTIONS: Question[] = [
       <>מהשורש: x ≥ 0. מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9.</>,
       <><b>תחום ההגדרה:</b> x ≥ 0 וגם x ≠ 9.</>,
     ],
+    solutionText: [
+      'מהשורש: x ≥ 0',
+      'מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9',
+      'תחום ההגדרה: x ≥ 0 וגם x ≠ 9',
+    ].join('\n'),
   },
   {
     points: 30, short: 'חקירה מלאה עם אסימפטוטות',
@@ -126,6 +140,7 @@ const QUESTIONS: Question[] = [
       'לכן הפונקציה עולה בכל אחד משלושת הקטעים',
       'הסקיצה: שני ענפים עולים בין האסימפטוטות ועוד ענף עולה מימין ל-x=3',
     ].join('\n'),
+    get solutionText() { return this.sampleAnswer; },
   },
   {
     points: 20, short: 'תחום, נגזרת וקיצון',
@@ -138,6 +153,11 @@ const QUESTIONS: Question[] = [
       <><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).</>,
       <><b>קיצון:</b> הנגזרת שלילית בכל התחום — אין נקודות קיצון.</>,
     ],
+    solutionText: [
+      'תחום הגדרה: x²−9 > 0 ולכן x < −3 או x > 3',
+      'נגזרת: y′ = −9 / (x²−9)^(3/2)',
+      'הנגזרת שלילית בכל התחום, לכן אין נקודות קיצון',
+    ].join('\n'),
   },
   {
     points: 40, short: 'שאלה מורכבת — בעיית תנועה וחקירה',
@@ -178,6 +198,20 @@ const QUESTIONS: Question[] = [
       <><b>ז.</b> 1200/(x−10) + 8 ≤ 20 → x ≥ 110. צריך לפחות 110 נוסעים.</>,
       <><b>ח.</b> הגרף יורד מהאסימפטוטה x=10 ומתקרב ל-P=8; הנקודה (110, 20) מסומנת על הגרף.</>,
     ],
+    solutionText: [
+      'א. זמן האוטובוס: 240/x שעות',
+      'מהירות הרכב: x+20, זמן הרכב: 240/(x+20) שעות',
+      'ב. הרכב יצא שעה אחרי והגיע שעה לפני, לכן 240/x − 240/(x+20) = 2',
+      'x² + 20x − 2400 = 0 ולכן x = 40',
+      'מהירות האוטובוס 40 קמ״ש, מהירות הרכב 60 קמ״ש',
+      'ג. האוטובוס נסע 6 שעות, הרכב נסע 4 שעות',
+      'ד. תחום ההגדרה: x > 10, כי מספר הנוסעים גדול מ-10 והמכנה לא מתאפס',
+      'ה. אסימפטוטה אנכית x = 10 — ככל שמתקרבים ל-10 נוסעים המחיר מזנק',
+      'אסימפטוטה אופקית P = 8 — המחיר המינימלי לנוסע',
+      'ו. P′(x) = −1200/(x−10)² < 0, הפונקציה יורדת: יותר נוסעים = מחיר נמוך יותר',
+      'ז. 1200/(x−10) + 8 ≤ 20 ולכן x ≥ 110, צריך לפחות 110 נוסעים',
+      'ח. הגרף יורד מהאסימפטוטה x=10 ומתקרב ל-P=8, והנקודה (110, 20) מסומנת עליו',
+    ].join('\n'),
   },
 ];
 
@@ -326,6 +360,12 @@ const cheer = keyframes`
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.14); }
 `;
+// solved + more questions ahead → the next-question button nudges the student on
+const nudge = keyframes`
+  0%, 70%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+  78%           { transform: scale(1.07); }
+  85%           { transform: scale(1.02); }
+`;
 const railFill = keyframes`
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
@@ -435,10 +475,11 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
     // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT.
     // Alfi's avatar comes AFTER the bubble in DOM order so it lands on the far left, hugging the edge.
     <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent={isAi ? 'flex-end' : 'flex-start'} sx={{ width: '100%' }}>
+      {/* the student's own bubble is blue so it never reads as a system "correct" state */}
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
-        bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : t.palette.primary.main,
-        color: isAi ? 'text.primary' : 'primary.contrastText',
+        bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : blue[700],
+        color: isAi ? 'text.primary' : 'common.white',
         borderStartStartRadius: isAi ? 24 : 4, borderStartEndRadius: isAi ? 4 : 24,
       }}>
         {children}
@@ -450,8 +491,18 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
 
 /* ---------- the AI chat / answer panel ---------- */
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
-function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) => void }) {
-  const [msgs, setMsgs] = useState<Msg[]>([]);
+const approvedNode = (
+  <Stack direction="row" spacing={0.75} alignItems="center">
+    <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
+    <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה! 🎉</Typography>
+  </Stack>
+);
+
+function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved: (answer: string) => void; savedAnswer?: string; locked?: boolean }) {
+  // re-entering a solved question replays the saved conversation instead of an empty box
+  const [msgs, setMsgs] = useState<Msg[]>(savedAnswer
+    ? [{ from: 'student', node: <NumberedAnswer text={savedAnswer} /> }, { from: 'ai', node: approvedNode }]
+    : []);
   // some questions ship with a full worked answer already typed in, ready to send
   const [draft, setDraft] = useState(q.sampleAnswer ?? '');
   const [thinking, setThinking] = useState(false);
@@ -473,26 +524,34 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
     setMsgs((m) => [...m, { from: 'student', node: <NumberedAnswer text={answer} /> }]);
     setDraft('');
     setThinking(true);
-    // questions with a wrongHint demo the correction flow: first try is wrong, second is accepted
-    const isWrong = !!q.wrongHint && tries === 0;
+    // demo checking: the answer is compared line by line against the stored solution,
+    // so editing any number in the pre-typed answer produces a real correction.
+    const expected = q.solutionText;
+    const norm = (t: string) => t.replace(/\s+/g, ' ').trim();
+    let badLine = 0; // 1-based; 0 = nothing wrong
+    if (expected) {
+      const mine = answer.split('\n');
+      const right = expected.split('\n');
+      for (let i = 0; i < Math.max(mine.length, right.length); i++) {
+        if (norm(mine[i] ?? '') !== norm(right[i] ?? '')) { badLine = i + 1; break; }
+      }
+    }
+    const scripted = !!q.wrongHint && tries === 0 && badLine > 0;
     setTries((n) => n + 1);
     window.setTimeout(() => {
       setThinking(false);
-      if (isWrong) {
+      if (badLine > 0) {
         setMsgs((m) => [...m, { from: 'ai', node: (
           <Stack direction="row" spacing={0.75} alignItems="flex-start">
             <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />
-            <Typography component="div">{q.wrongHint}</Typography>
+            <Typography component="div">
+              {scripted ? q.wrongHint : <>כמעט! יש טעות ב<b>שורה {badLine}</b>. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.</>}
+            </Typography>
           </Stack>
         ) }]);
         return;
       }
-      setMsgs((m) => [...m, { from: 'ai', node: (
-        <Stack direction="row" spacing={0.75} alignItems="center">
-          <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
-          <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה! 🎉</Typography>
-        </Stack>
-      ) }]);
+      setMsgs((m) => [...m, { from: 'ai', node: approvedNode }]);
       setConfetti(true);
       window.setTimeout(() => { setConfetti(false); onSolved(answer); }, 3200);
     }, 1400);
@@ -503,9 +562,18 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
       {confetti && <Confetti />}
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
 
-      {msgs.length === 0 && !thinking && !draft && (
+      {!locked && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          כתוב כאן את הפתרון שלך.
+          כתוב כאן את{' '}
+          {/* secret: clicking this word drops the full solution into the box */}
+          <Box
+            component="span"
+            onClick={() => q.solutionText && setDraft(q.solutionText)}
+            sx={{ cursor: 'text' }}
+          >
+            הפתרון
+          </Box>{' '}
+          שלך.
         </Typography>
       )}
 
@@ -523,6 +591,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
         <Box ref={endRef} />
       </Stack>
 
+      {!locked && <>
       {/* starts at 2 lines and grows as the student writes */}
       <TextField
         fullWidth multiline minRows={2} value={draft}
@@ -545,6 +614,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
       >
         {thinking ? 'שולח…' : 'שלח תשובה'}
       </Button>
+      </>}
 
       <MathDialog open={mathOpen} onClose={() => setMathOpen(false)} onPick={(s) => setDraft((d) => d + s)} />
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
@@ -578,7 +648,8 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         elevation={2}
         sx={{
           borderRadius: 3, p: { xs: 3, md: 4.5 },
-          position: 'sticky', top: 0, zIndex: 2,
+          // sticky only once collapsed — a full-height question has nothing to stick to
+          ...(collapsed && { position: 'sticky', top: 0, zIndex: 2 }),
           transition: (t) => t.transitions.create(['padding', 'box-shadow']),
           '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
           ...(collapsed && { py: { xs: 1.5, md: 2 }, boxShadow: 6 }),
@@ -587,6 +658,13 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: collapsed ? 0 : 2.5 }}>
           <QMeta index={index} solved={solved} size="h5" />
           <Stack direction="row" spacing={1.5} alignItems="center">
+            {/* solved questions get a stamp instead of a whole different layout */}
+            {solved && (
+              <Stack direction="row" spacing={0.5} alignItems="center" sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, border: 2, borderColor: 'primary.main', color: 'primary.dark', transform: 'rotate(-4deg)' }}>
+                <CheckRoundedIcon sx={{ fontSize: 18 }} />
+                <Typography sx={{ fontWeight: 900, fontSize: '0.9rem', letterSpacing: '0.04em' }}>נפתר</Typography>
+              </Stack>
+            )}
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
             {/* only long questions get the collapse control */}
@@ -606,54 +684,35 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         {!collapsed && (
           <>
             <Divider sx={{ mb: 3 }} />
-            {/* a long question scrolls inside its own card, so the answer area below stays visible */}
-            <Typography
-              component="div"
-              sx={{
-                fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start',
-                ...(isLong && { maxHeight: '45vh', overflowY: 'auto', pl: 1 }),
-              }}
-            >
+            {/* the whole question is always shown in full — never scrolls inside the card */}
+            <Typography component="div" sx={{ fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start' }}>
               {q.prompt}
             </Typography>
           </>
         )}
       </Paper>
 
-      {solved ? (
-        <>
-          <Paper variant="outlined" sx={{ borderRadius: 3, p: 3, textAlign: 'center', bgcolor: (t) => alpha(t.palette.success.main, 0.06), borderColor: 'success.light' }}>
-            <CheckCircleTwoToneIcon sx={{ fontSize: 44, color: 'success.main' }} />
-            <Typography sx={{ fontWeight: 800, mt: 1 }}>כל הכבוד! פתרת את השאלה</Typography>
-            <Typography variant="body2" color="success.dark" sx={{ mt: 0.5 }}>התשובה נשמרה</Typography>
-          </Paper>
-          {/* the saved solution — read-only, numbered lines so a specific line can be referenced in chat */}
-          <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2.5, md: 3 } }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>הפתרון שלי</Typography>
-            <Stack spacing={1}>
-              {/* what the student actually wrote, if we have it — otherwise the stored solution */}
-              {(savedAnswer ? savedAnswer.split('\n') : q.solution).map((line, i) => (
-                <Stack key={i} direction="row" spacing={1.5} alignItems="baseline">
-                  <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700, minWidth: 16, textAlign: 'center', fontFeatureSettings: '"tnum","lnum"', flexShrink: 0 }}>
-                    {i + 1}
-                  </Typography>
-                  <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary', whiteSpace: 'pre-wrap' }}>
-                    {line}
-                  </Typography>
-                </Stack>
-              ))}
-            </Stack>
-          </Paper>
-        </>
-      ) : (
-        <ChatPanel q={q} onSolved={onSolved} />
-      )}
+      <ChatPanel q={q} onSolved={onSolved} savedAnswer={savedAnswer} locked={solved} />
 
       {/* always reachable at the bottom — solved styles it as the primary action */}
       {(onNext || solved) && (
         <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
           {onNext
-            ? <Button variant="contained" onClick={onNext} endIcon={<ArrowForwardRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800 }}>לשאלה הבאה</Button>
+            ? <Button
+                variant="contained"
+                onClick={onNext}
+                endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
+                sx={{
+                  fontWeight: 800,
+                  ...(solved && {
+                    animation: `${nudge} 2.2s ease-in-out infinite`,
+                    '&:hover': { animationPlayState: 'paused' },
+                    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+                  }),
+                }}
+              >
+                לשאלה הבאה
+              </Button>
             : <Button variant="contained" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
         </Stack>
       )}
