@@ -31,6 +31,7 @@ import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
@@ -65,7 +66,9 @@ const Eq = ({ children }: { children: ReactNode }) => (
 
 type Turn = { title?: string; body: ReactNode };
 // solution is an array of lines — each gets a grey number so the AI can be asked about a specific line
-type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[]; sampleAnswer?: string };
+type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[]; sampleAnswer?: string;
+  // demo: the first submission is treated as wrong and Alfi replies with this hint
+  wrongHint?: ReactNode };
 
 const QUESTIONS: Question[] = [
   {
@@ -127,6 +130,8 @@ const QUESTIONS: Question[] = [
     points: 20, short: 'תחום, נגזרת וקיצון',
     prompt: <>נתונה <Eq>y = <Frac n={<>x</>} d={<>√(x²−9)</>} /></Eq>. מצא את תחום ההגדרה, חשב את הנגזרת, ומצא נקודות קיצון אם קיימות.</>,
     guide: { body: <>נתחיל מהתחום: הביטוי תחת השורש חייב להיות חיובי <b>ממש</b>. <b>מה אי-השוויון שצריך לפתור?</b></> },
+    sampleAnswer: ['תחום הגדרה: x²−9 ≥ 0', 'לכן x ≤ −3 או x ≥ 3'].join('\n'),
+    wrongHint: <>כמעט! שים לב לשורה <b>1</b>: כתבת x²−9 ≥ 0, אבל השורש נמצא <b>במכנה</b> — אסור שהוא יתאפס.<br />לכן צריך <b>אי-שוויון חזק</b>: x²−9 &gt; 0. <b>מה יוצא עכשיו בשורה 2?</b></>,
     solution: [
       <><b>תחום הגדרה:</b> x²−9 &gt; 0 ולכן x &lt; −3 או x &gt; 3.</>,
       <><b>נגזרת:</b> y′ = −9 / (x²−9)^(3/2).</>,
@@ -418,6 +423,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
   // some questions ship with a full worked answer already typed in, ready to send
   const [draft, setDraft] = useState(q.sampleAnswer ?? '');
   const [thinking, setThinking] = useState(false);
+  const [tries, setTries] = useState(0);
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
@@ -436,9 +442,20 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
     setMsgs((m) => [...m, { from: 'student', node: <NumberedAnswer text={answer} /> }]);
     setDraft('');
     setThinking(true);
+    // questions with a wrongHint demo the correction flow: first try is wrong, second is accepted
+    const isWrong = !!q.wrongHint && tries === 0;
+    setTries((n) => n + 1);
     window.setTimeout(() => {
       setThinking(false);
-      // demo flow: any answer counts as correct — approve, confetti, mark solved
+      if (isWrong) {
+        setMsgs((m) => [...m, { from: 'ai', node: (
+          <Stack direction="row" spacing={0.75} alignItems="flex-start">
+            <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />
+            <Typography component="div">{q.wrongHint}</Typography>
+          </Stack>
+        ) }]);
+        return;
+      }
       setMsgs((m) => [...m, { from: 'ai', node: (
         <Stack direction="row" spacing={0.75} alignItems="center">
           <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
