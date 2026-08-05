@@ -346,6 +346,27 @@ function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean;
   );
 }
 
+/* ---------- a sent answer, numbered line by line so Alfi can point at "שורה 3" ---------- */
+function NumberedAnswer({ text }: { text: string }) {
+  const lines = text.split('\n').filter((l, i, arr) => l.trim() !== '' || i < arr.length - 1);
+  return (
+    <Stack spacing={0.25}>
+      {lines.map((line, i) => (
+        <Stack key={i} direction="row" spacing={1.25} alignItems="baseline">
+          <Typography
+            component="span"
+            variant="caption"
+            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, opacity: 0.55, fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
+          >
+            {i + 1}
+          </Typography>
+          <Typography component="span" sx={{ textAlign: 'start', whiteSpace: 'pre-wrap' }}>{line || ' '}</Typography>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+
 /* ---------- chat bubble ---------- */
 function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNode }) {
   const isAi = from === 'ai';
@@ -386,7 +407,7 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
   const send = () => {
     if (!draft.trim() || thinking) return;
     const answer = draft.trim();
-    setMsgs((m) => [...m, { from: 'student', node: answer }]);
+    setMsgs((m) => [...m, { from: 'student', node: <NumberedAnswer text={answer} /> }]);
     setDraft('');
     setThinking(true);
     window.setTimeout(() => {
