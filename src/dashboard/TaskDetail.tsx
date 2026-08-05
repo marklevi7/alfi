@@ -606,7 +606,16 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         {!collapsed && (
           <>
             <Divider sx={{ mb: 3 }} />
-            <Typography component="div" sx={{ fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start' }}>{q.prompt}</Typography>
+            {/* a long question scrolls inside its own card, so the answer area below stays visible */}
+            <Typography
+              component="div"
+              sx={{
+                fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start',
+                ...(isLong && { maxHeight: '45vh', overflowY: 'auto', pl: 1 }),
+              }}
+            >
+              {q.prompt}
+            </Typography>
           </>
         )}
       </Paper>
