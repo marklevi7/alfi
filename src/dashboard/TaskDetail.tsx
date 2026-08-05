@@ -32,6 +32,7 @@ import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
+import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
@@ -139,13 +140,43 @@ const QUESTIONS: Question[] = [
     ],
   },
   {
-    points: 20, short: 'תחום ונקודות חיתוך',
-    prompt: <>נתונה <Eq>y = √(x²−4)</Eq>. מצא את תחום ההגדרה ואת נקודות החיתוך עם הצירים.</>,
-    guide: { body: <>תחת השורש חייב להיות ≥ 0. <b>מה פתרון אי-השוויון x²−4 ≥ 0?</b></> },
+    points: 40, short: 'שאלה מורכבת — בעיית תנועה וחקירה',
+    // the A4-length edge case: a full-page, multi-part question
+    prompt: <>
+      חברת הסעות מפעילה קו בין שתי ערים. המרחק בין הערים הוא 240 ק״מ.
+      אוטובוס יצא מהעיר א׳ לעיר ב׳ במהירות קבועה. שעה לאחר מכן יצא מהעיר א׳ רכב פרטי באותו מסלול,
+      במהירות הגדולה ב-20 קמ״ש ממהירות האוטובוס. הרכב הגיע לעיר ב׳ שעה אחת לפני האוטובוס.
+      <br /><br />
+      א. סמן ב-<Eq>x</Eq> את מהירות האוטובוס בקמ״ש, ובטא באמצעות <Eq>x</Eq> את זמן הנסיעה של האוטובוס ואת זמן הנסיעה של הרכב.
+      <br />
+      ב. הרכב את המשוואה המתאימה לנתוני השאלה ופתור אותה. מצא את מהירות האוטובוס ואת מהירות הרכב.
+      <br />
+      ג. כמה זמן נסע כל אחד מכלי הרכב? הצג את התשובה בשעות ובדקות.
+      <br /><br />
+      בהמשך, מחיר ההסעה לנוסע יחיד מתואר על ידי הפונקציה <Eq>P(x) = <Frac n={<>1200</>} d={<>x − 10</>} /> + 8</Eq>,
+      כאשר <Eq>x</Eq> הוא מספר הנוסעים באוטובוס (<Eq>x &gt; 10</Eq>), ו-<Eq>P</Eq> הוא המחיר בשקלים.
+      <br /><br />
+      ד. מצא את תחום ההגדרה של הפונקציה <Eq>P(x)</Eq> בהקשר של הבעיה, והסבר מדוע.
+      <br />
+      ה. מצא את האסימפטוטות של הפונקציה והסבר את המשמעות שלהן במונחים של הבעיה.
+      <br />
+      ו. חשב את הנגזרת <Eq>P′(x)</Eq> וקבע האם הפונקציה עולה או יורדת בתחום ההגדרה.
+      <br />
+      ז. כמה נוסעים צריכים להיות באוטובוס כדי שמחיר ההסעה לנוסע יהיה לכל היותר 20 ש״ח?
+      <br />
+      ח. סרטט סקיצה של גרף הפונקציה בתחום הרלוונטי, וסמן עליה את התשובה לסעיף ז׳.
+    </>,
+    guide: { body: <>נתחיל מסעיף א׳: סמן את מהירות האוטובוס ב-<Eq>x</Eq>. <b>מה זמן הנסיעה של האוטובוס במונחי x?</b></> },
     solution: [
-      <><b>תחום הגדרה:</b> x²−4 ≥ 0 ולכן x ≤ −2 או x ≥ 2.</>,
-      <><b>חיתוך עם ציר x:</b> (−2, 0) ו-(2, 0).</>,
-      <><b>חיתוך עם ציר y:</b> אין — x = 0 מחוץ לתחום.</>,
+      <><b>א.</b> זמן האוטובוס: 240/x שעות. מהירות הרכב: x+20, זמן הרכב: 240/(x+20) שעות.</>,
+      <><b>ב.</b> הרכב יצא שעה אחרי והגיע שעה לפני, לכן 240/x − 240/(x+20) = 2.</>,
+      <><b>ב. פתרון:</b> x² + 20x − 2400 = 0 → x = 40. מהירות האוטובוס 40 קמ״ש, הרכב 60 קמ״ש.</>,
+      <><b>ג.</b> האוטובוס נסע 6 שעות, הרכב נסע 4 שעות.</>,
+      <><b>ד.</b> תחום ההגדרה: x &gt; 10, כי מספר הנוסעים חייב להיות גדול מ-10 והמכנה לא מתאפס.</>,
+      <><b>ה.</b> אסימפטוטה אנכית x = 10 (ככל שמתקרבים ל-10 נוסעים המחיר מזנק), אופקית P = 8 (המחיר המינימלי לנוסע).</>,
+      <><b>ו.</b> P′(x) = −1200/(x−10)² &lt; 0 — הפונקציה יורדת: ככל שיש יותר נוסעים המחיר יורד.</>,
+      <><b>ז.</b> 1200/(x−10) + 8 ≤ 20 → x ≥ 110. צריך לפחות 110 נוסעים.</>,
+      <><b>ח.</b> הגרף יורד מהאסימפטוטה x=10 ומתקרב ל-P=8; הנקודה (110, 20) מסומנת על הגרף.</>,
     ],
   },
 ];
@@ -527,6 +558,10 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
   q: Question; index: number; total: number; solved: boolean; solvedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
+  // a question counts as "long" when its solution runs past ~6 steps (the A4-page case)
+  const isLong = q.solution.length >= 6;
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => { setCollapsed(false); }, [index]);
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
@@ -537,17 +572,43 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         <QuestProgress total={total} solved={solvedSet} current={index} onPick={onPick} />
       </Stack>
 
-      {/* the question, as one page-like sheet: numbering, meta, and prompt together */}
-      <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: 2.5 }}>
+      {/* The question sheet. Long questions stick to the top and can be collapsed to one line,
+          so the student keeps the question in view while the answer area scrolls under it. */}
+      <Paper
+        elevation={2}
+        sx={{
+          borderRadius: 3, p: { xs: 3, md: 4.5 },
+          position: 'sticky', top: 0, zIndex: 2,
+          transition: (t) => t.transitions.create(['padding', 'box-shadow']),
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+          ...(collapsed && { py: { xs: 1.5, md: 2 }, boxShadow: 6 }),
+        }}
+      >
+        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: collapsed ? 0 : 2.5 }}>
           <QMeta index={index} solved={solved} size="h5" />
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
+            {/* only long questions get the collapse control */}
+            {isLong && (
+              <Button
+                size="small"
+                color="inherit"
+                onClick={() => setCollapsed((v) => !v)}
+                endIcon={<ExpandLessRoundedIcon sx={{ transition: '200ms', transform: collapsed ? 'rotate(180deg)' : 'none' }} />}
+                sx={{ fontWeight: 700, color: 'text.secondary' }}
+              >
+                {collapsed ? 'הצג שאלה מלאה' : 'כווץ שאלה'}
+              </Button>
+            )}
           </Stack>
         </Stack>
-        <Divider sx={{ mb: 3 }} />
-        <Typography component="div" sx={{ fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start' }}>{q.prompt}</Typography>
+        {!collapsed && (
+          <>
+            <Divider sx={{ mb: 3 }} />
+            <Typography component="div" sx={{ fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start' }}>{q.prompt}</Typography>
+          </>
+        )}
       </Paper>
 
       {solved ? (
