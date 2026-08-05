@@ -68,7 +68,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       }}
     >
       {/* one compact row: kind icon · content · CTA on the far (inline-end) side */}
-      <Stack direction="row" spacing={2} alignItems="center" sx={{ px: 2.5, py: 1.75 }}>
+      <Stack direction="row" spacing={3} alignItems="center" sx={{ px: 3.5, py: 3 }}>
         <KindIcon kind={t.kind} />
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -112,7 +112,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mt: 0.75 }}>
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1.5 }}>
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
             <LinearProgress
               variant="determinate"
@@ -163,7 +163,7 @@ export function Practice() {
   return (
     <Shell active="practice" title="תרגולים ובחנים">
       {/* task list */}
-      <Stack spacing={2}>
+      <Stack spacing={2.5}>
         {tasks.map((t) => <TaskCard key={t.id} t={t} onOpen={() => setOpenId(t.id)} />)}
         {tasks.length === 0 && (
           <Box sx={{ textAlign: 'center', py: 8 }}>
