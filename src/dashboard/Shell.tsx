@@ -90,8 +90,9 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
     <Paper
       elevation={8}
       sx={{
-        position: 'fixed', bottom: 92, insetInlineStart: 28,
-        zIndex: (t) => t.zIndex.appBar + 1,
+        // opens next to the sidebar balloon, just clear of the sidebar edge
+        position: 'fixed', bottom: 28, insetInlineStart: 'calc(25% + 24px)',
+        zIndex: (t) => t.zIndex.modal,
         width: 340, maxWidth: 'calc(100vw - 56px)', height: 460, maxHeight: '70vh',
         borderRadius: 4, display: 'flex', flexDirection: 'column', overflow: 'hidden',
       }}
@@ -154,9 +155,7 @@ export function AlfiWidget() {
         onClick={() => setChatOpen((v) => !v)}
         aria-label="שאלה כללית לאלפי"
         sx={{
-          position: 'fixed', bottom: 28, insetInlineStart: 28,
-          zIndex: (t) => t.zIndex.appBar,
-          display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5,
+          display: { xs: 'none', md: 'flex' }, width: '100%', alignItems: 'center', gap: 1.5,
           cursor: 'pointer', font: 'inherit',
           borderRadius: 999, py: 1.25, px: 1.5, paddingInlineEnd: 3,
           bgcolor: 'background.paper',
@@ -175,7 +174,7 @@ export function AlfiWidget() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean }) {
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
@@ -248,6 +247,13 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                   </ListItemButton>
                 ))}
               </List>
+
+              {/* "יש לי שאלה" lives at the bottom of the sidebar, part of the chrome */}
+              {alfi && (
+                <Box sx={{ mt: 'auto', flexShrink: 0, pt: 3 }}>
+                  <AlfiWidget />
+                </Box>
+              )}
 
               {SHOW_BOT && !hideSidebarRobot && (
                 <Box sx={{ mt: 'auto', flexShrink: 0, pb: 3 }}>

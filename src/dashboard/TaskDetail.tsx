@@ -35,7 +35,7 @@ import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell, AlfiWidget } from './Shell';
+import { Shell } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
 export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number; kind?: 'תרגול' | 'בוחן' };
@@ -401,9 +401,9 @@ function NumberedAnswer({ text }: { text: string }) {
 function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNode }) {
   const isAi = from === 'ai';
   return (
-    // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT
-    <Stack direction="row" spacing={1} justifyContent={isAi ? 'flex-end' : 'flex-start'} sx={{ width: '100%' }}>
-      {isAi && <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 18 }} /></Avatar>}
+    // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT.
+    // Alfi's avatar comes AFTER the bubble in DOM order so it lands on the far left, hugging the edge.
+    <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent={isAi ? 'flex-end' : 'flex-start'} sx={{ width: '100%' }}>
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
         bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : t.palette.primary.main,
@@ -412,6 +412,7 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
       }}>
         {children}
       </Box>
+      {isAi && <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', flexShrink: 0 }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 22 }} /></Avatar>}
     </Stack>
   );
 }
@@ -428,7 +429,6 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [fileOpen, setFileOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -470,7 +470,7 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
   return (
     <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
       {confetti && <Confetti />}
-      <Typography sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
 
       {msgs.length === 0 && !thinking && !draft && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -481,22 +481,20 @@ function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) =>
       <Stack spacing={1.5} sx={{ mb: msgs.length || thinking ? 2 : 0 }}>
         {msgs.map((m, i) => <Bubble key={i} from={m.from}>{m.node}</Bubble>)}
         {thinking && (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 18 }} /></Avatar>
+          <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
             <Box sx={{ minWidth: 200 }}>
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
             </Box>
+            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', flexShrink: 0 }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 22 }} /></Avatar>
           </Stack>
         )}
         <Box ref={endRef} />
       </Stack>
 
-      {/* grows when tapped so there's room to write a full solution */}
+      {/* starts at 2 lines and grows as the student writes */}
       <TextField
         fullWidth multiline minRows={2} value={draft}
-        onFocus={() => setExpanded(true)}
-        {...(expanded && { minRows: 6 })}
         inputRef={inputRef}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
@@ -657,14 +655,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
     return null;
   };
 
-  // "יש לי שאלה" — the teaching-assistant balloon lives ONLY inside תרגול (never בוחן)
-  const alfi = task.kind === 'תרגול' ? <AlfiWidget /> : null;
+  // "יש לי שאלה" — the teaching-assistant lives ONLY inside תרגול (never בוחן), in the sidebar
+  const alfi = task.kind === 'תרגול';
 
   if (openQ !== null) {
     const nx = nextUnsolved(openQ);
     return (
-      <Shell active="practice" title="">
-        {alfi}
+      <Shell active="practice" title="" alfi={alfi}>
         <QuestionPage
           q={questions[openQ]}
           index={openQ}
@@ -682,8 +679,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   }
 
   return (
-    <Shell active="practice" title="">
-      {alfi}
+    <Shell active="practice" title="" alfi={alfi}>
       {/* re-entering a finished task celebrates again */}
       {entryConfetti && (
         <Box sx={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: (t) => t.zIndex.modal }}>
