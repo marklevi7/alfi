@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import Avatar from '@mui/material/Avatar';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Card from '@mui/material/Card';
@@ -22,7 +21,6 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import { deepPurple, blue, cyan, amber, green, red, pink, grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import FunctionsRoundedIcon from '@mui/icons-material/FunctionsRounded';
@@ -35,7 +33,7 @@ import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell } from './Shell';
+import { Shell, AlfiAvatar } from './Shell';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
 export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number; kind?: 'תרגול' | 'בוחן' };
@@ -504,13 +502,14 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
       {/* the student's own bubble is blue so it never reads as a system "correct" state */}
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
-        bgcolor: (t) => isAi ? alpha(t.palette.primary.main, 0.07) : blue[700],
+        // Alfi speaks on a neutral grey surface — colour is reserved for real states
+        bgcolor: isAi ? 'grey.100' : blue[700],
         color: isAi ? 'text.primary' : 'common.white',
         borderStartStartRadius: isAi ? 24 : 4, borderStartEndRadius: isAi ? 4 : 24,
       }}>
         {children}
       </Box>
-      {isAi && <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', flexShrink: 0 }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 22 }} /></Avatar>}
+      {isAi && <AlfiAvatar size={40} />}
     </Stack>
   );
 }
@@ -623,7 +622,7 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
             </Box>
-            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', flexShrink: 0 }}><AutoAwesomeTwoToneIcon sx={{ fontSize: 22 }} /></Avatar>
+            <AlfiAvatar size={40} />
           </Stack>
         )}
         <Box ref={endRef} />

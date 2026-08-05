@@ -22,6 +22,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
+import Avatar from '@mui/material/Avatar';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
@@ -62,6 +63,21 @@ function BotFace({ size = 46 }: { size?: number }) {
       </Box>
       <Box sx={{ width: 12, height: 6, borderBottom: 2, borderColor: 'primary.dark', borderRadius: '0 0 12px 12px' }} />
     </Box>
+  );
+}
+
+// the real Alfi avatar — head shot, per theme version (green v7 / purple v5).
+// neutral circle behind it: the PNG is transparent, and a tinted disc would read as a state color.
+export function AlfiAvatar({ size = 40 }: { size?: number }) {
+  const theme = useTheme();
+  const src = theme.palette.primary.main === green[700] ? 'alfi-green-head.png' : 'alfi.png';
+  // the source art has a lot of air around the head — zoom in so the face fills the circle
+  return (
+    <Avatar
+      src={src}
+      alt="אלפי"
+      sx={{ width: size, height: size, flexShrink: 0, bgcolor: 'grey.100', '& .MuiAvatar-img': { transform: 'scale(1.7)', transformOrigin: '50% 40%' } }}
+    />
   );
 }
 
