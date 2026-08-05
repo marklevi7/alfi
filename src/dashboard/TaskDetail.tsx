@@ -65,7 +65,7 @@ const Eq = ({ children }: { children: ReactNode }) => (
 
 type Turn = { title?: string; body: ReactNode };
 // solution is an array of lines — each gets a grey number so the AI can be asked about a specific line
-type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[] };
+type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[]; sampleAnswer?: string };
 
 const QUESTIONS: Question[] = [
   {
@@ -89,14 +89,39 @@ const QUESTIONS: Question[] = [
     ],
   },
   {
-    points: 20, short: 'אסימפטוטות',
-    prompt: <>מצא את האסימפטוטות של <Eq>y = <Frac n={<>√x</>} d={<>x−9</>} /></Eq> והסבר כיצד הפונקציה מתנהגת משני צידי האסימפטוטה האנכית.</>,
-    guide: { body: <>האסימפטוטה האנכית נמצאת היכן שהמכנה מתאפס. <b>באיזה x זה קורה?</b></> },
+    points: 30, short: 'חקירה מלאה עם אסימפטוטות',
+    prompt: <>נתונה הפונקציה <Eq>y = <Frac n={<>x² − 4x</>} d={<>x² − 9</>} /></Eq>.<br />א. מצא את תחום ההגדרה.<br />ב. מצא את נקודות החיתוך עם הצירים.<br />ג. מצא את כל האסימפטוטות (אנכיות ואופקית) והסבר כיצד הפונקציה מתנהגת משני צידי כל אסימפטוטה אנכית.<br />ד. חשב את הנגזרת ומצא נקודות קיצון.<br />ה. קבע את תחומי העלייה והירידה וסרטס סקיצה של הגרף.</>,
+    guide: { body: <>נתחיל בסדר: קודם תחום הגדרה (המכנה ≠ 0), אחר כך חיתוכים, ואז אסימפטוטות. <b>מה תחום ההגדרה?</b></> },
     solution: [
-      <><b>אנכית:</b> x = 9 (המכנה מתאפס והמונה ≠ 0).</>,
-      <><b>אופקית:</b> y = 0 (המכנה גדל מהר מהמונה).</>,
-      <><b>התנהגות:</b> משמאל ל-9 הפונקציה שואפת ל-−∞, מימין ל-9 שואפת ל-+∞.</>,
+      <><b>תחום הגדרה:</b> x² − 9 ≠ 0 ולכן x ≠ 3 וגם x ≠ −3.</>,
+      <><b>חיתוך עם ציר x:</b> x² − 4x = 0 → x(x−4) = 0 → (0, 0) ו-(4, 0).</>,
+      <><b>חיתוך עם ציר y:</b> x = 0 נותן y = 0, כלומר אותה נקודה (0, 0).</>,
+      <><b>אסימפטוטות אנכיות:</b> x = 3 ו-x = −3 (המכנה מתאפס והמונה שונה מאפס).</>,
+      <><b>התנהגות סביב x = 3:</b> משמאל y → +∞, מימין y → −∞.</>,
+      <><b>התנהגות סביב x = −3:</b> משמאל y → +∞, מימין y → −∞.</>,
+      <><b>אסימפטוטה אופקית:</b> מקדמי x² שווים, לכן y = 1.</>,
+      <><b>נגזרת:</b> y′ = (4x² − 18x + 36) / (x² − 9)².</>,
+      <><b>נקודות קיצון:</b> המונה 4x² − 18x + 36 חסר שורשים ממשיים, לכן אין נקודות קיצון.</>,
+      <><b>עלייה וירידה:</b> y′ &gt; 0 בכל תחום ההגדרה — הפונקציה עולה בכל אחד משלושת הקטעים.</>,
     ],
+    sampleAnswer: [
+      'א. תחום הגדרה: המכנה x²−9 מתאפס כאשר x=3 או x=−3',
+      'לכן תחום ההגדרה: כל x ממשי פרט ל-x=3 ו-x=−3',
+      'ב. חיתוך עם ציר x: המונה x²−4x=0',
+      'x(x−4)=0 ולכן x=0 או x=4',
+      'הנקודות: (0,0) ו-(4,0)',
+      'חיתוך עם ציר y: מציבים x=0 ומקבלים y=0, אותה נקודה (0,0)',
+      'ג. אסימפטוטות אנכיות: x=3 ו-x=−3',
+      'סביב x=3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
+      'סביב x=−3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
+      'אסימפטוטה אופקית: מקדמי x² שווים במונה ובמכנה, לכן y=1',
+      'ד. נגזרת: y′ = (4x²−18x+36)/(x²−9)²',
+      'הדיסקרימינטה של המונה שלילית, לכן המונה לא מתאפס',
+      'מכאן שאין נקודות קיצון',
+      'ה. y′ חיובית בכל תחום ההגדרה',
+      'לכן הפונקציה עולה בכל אחד משלושת הקטעים',
+      'הסקיצה: שני ענפים עולים בין האסימפטוטות ועוד ענף עולה מימין ל-x=3',
+    ].join('\n'),
   },
   {
     points: 20, short: 'תחום, נגזרת וקיצון',
@@ -388,9 +413,10 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
 
 /* ---------- the AI chat / answer panel ---------- */
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
-function ChatPanel({ onSolved }: { onSolved: () => void }) {
+function ChatPanel({ q, onSolved }: { q: Question; onSolved: (answer: string) => void }) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [draft, setDraft] = useState('');
+  // some questions ship with a full worked answer already typed in, ready to send
+  const [draft, setDraft] = useState(q.sampleAnswer ?? '');
   const [thinking, setThinking] = useState(false);
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
@@ -420,7 +446,7 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
         </Stack>
       ) }]);
       setConfetti(true);
-      window.setTimeout(() => { setConfetti(false); onSolved(); }, 3200);
+      window.setTimeout(() => { setConfetti(false); onSolved(answer); }, 3200);
     }, 1400);
   };
 
@@ -429,7 +455,7 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
       {confetti && <Confetti />}
       <Typography sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
 
-      {msgs.length === 0 && !thinking && (
+      {msgs.length === 0 && !thinking && !draft && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           כתוב כאן את הפתרון שלך.
         </Typography>
@@ -482,8 +508,8 @@ function ChatPanel({ onSolved }: { onSolved: () => void }) {
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, onNext, onPick }: {
-  q: Question; index: number; total: number; solved: boolean; solvedSet: Set<number>; onBack: () => void; onSolved: () => void; onNext: (() => void) | null; onPick: (i: number) => void;
+function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, onNext, onPick, savedAnswer }: {
+  q: Question; index: number; total: number; solved: boolean; solvedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
   return (
@@ -520,12 +546,13 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
           <Paper variant="outlined" sx={{ borderRadius: 3, p: { xs: 2.5, md: 3 } }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>הפתרון שלי</Typography>
             <Stack spacing={1}>
-              {q.solution.map((line, i) => (
+              {/* what the student actually wrote, if we have it — otherwise the stored solution */}
+              {(savedAnswer ? savedAnswer.split('\n') : q.solution).map((line, i) => (
                 <Stack key={i} direction="row" spacing={1.5} alignItems="baseline">
                   <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 700, minWidth: 16, textAlign: 'center', fontFeatureSettings: '"tnum","lnum"', flexShrink: 0 }}>
                     {i + 1}
                   </Typography>
-                  <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary' }}>
+                  <Typography component="div" sx={{ textAlign: 'start', lineHeight: 2, color: 'text.primary', whiteSpace: 'pre-wrap' }}>
                     {line}
                   </Typography>
                 </Stack>
@@ -534,7 +561,7 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
           </Paper>
         </>
       ) : (
-        <ChatPanel onSolved={onSolved} />
+        <ChatPanel q={q} onSolved={onSolved} />
       )}
 
       {/* always reachable at the bottom — solved styles it as the primary action */}
@@ -592,6 +619,8 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: Math.min(task.solved, questions.length) }, (_, i) => i)));
   const [openQ, setOpenQ] = useState<number | null>(null);
   const [hoverQ, setHoverQ] = useState<number | null>(null);
+  // the student's own text per question — kept so the solved view still shows it
+  const [answers, setAnswers] = useState<Record<number, string>>({});
   const done = solved.size;
   // coming back into a fully finished task is a celebration too — confetti on entry
   const [entryConfetti, setEntryConfetti] = useState(done === questions.length);
@@ -601,7 +630,10 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
     return () => window.clearTimeout(id);
   }, [entryConfetti]);
 
-  const markSolved = (i: number) => setSolved((s) => new Set(s).add(i));
+  const markSolved = (i: number, answer?: string) => {
+    setSolved((s) => new Set(s).add(i));
+    if (answer) setAnswers((a) => ({ ...a, [i]: answer }));
+  };
   const nextUnsolved = (from: number) => {
     for (let j = from + 1; j < questions.length; j++) if (!solved.has(j)) return j;
     for (let j = 0; j < questions.length; j++) if (j !== from && !solved.has(j)) return j;
@@ -624,7 +656,8 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           solvedSet={solved}
           onPick={setOpenQ}
           onBack={() => setOpenQ(null)}
-          onSolved={() => markSolved(openQ)}
+          onSolved={(answer) => markSolved(openQ, answer)}
+          savedAnswer={answers[openQ]}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
       </Shell>
