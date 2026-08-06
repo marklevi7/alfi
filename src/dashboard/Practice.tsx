@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { green, amber, red, brown } from '@mui/material/colors';
+import { green, amber, brown } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -23,6 +23,7 @@ export type Task = { id: number; title: string; kind: Kind; topic: string; subTo
 const TASKS: Task[] = [
   { id: 448, title: 'חקירת פונקציה — מנה עם שורש', kind: 'תרגול', topic: 'חקירת פונקציות', subTopic: 'נגזרות', unit: '5 יח"ל', total: 5, solved: 1, status: 'inProgress', from: '10 ביוני 2026', to: '29 ביוני 2026' },
   { id: 449, title: 'בוחן באלגברה', kind: 'בוחן', topic: 'אלגברה', subTopic: 'משוואות ריבועיות', unit: '5 יח"ל', total: 8, solved: 0, status: 'new', from: '12 ביוני 2026', to: '30 ביוני 2026' },
+  { id: 459, title: 'טריגונומטריה — זהויות ומשוואות', kind: 'תרגול', topic: 'טריגונומטריה', subTopic: 'זהויות', unit: '5 יח"ל', total: 5, solved: 4, status: 'inProgress', from: '11 ביוני 2026', to: '2 ביולי 2026' },
   { id: 458, title: 'תרגול חופשי — שברים אלגבריים', kind: 'תרגול', topic: 'אלגברה', subTopic: 'שברים אלגבריים', unit: '5 יח"ל', total: 6, solved: 0, status: 'new', from: '14 ביוני 2026', to: null },
   // exactly one example per open state: in-progress, new, new without a deadline.
   // done / expired tasks live on the תמונת מצב timeline (History.tsx ITEMS)
@@ -46,8 +47,8 @@ const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as
 export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void; dateLabel?: string }) {
   const kind = KIND[t.kind];
   const pct = t.total ? Math.round((t.solved / t.total) * 100) : 0;
-  // progress reads like the gauge: low = red, mid = yellow, high = green
-  const barColor = pct >= 67 ? green[600] : pct >= 34 ? amber[600] : red[500];
+  // work in progress is yellow, exactly like a half-solved question; green is reserved for finished
+  const barColor = amber[600];
   // closed history states are locked: summary only
   const locked = t.status === 'done' || t.status === 'expired' || t.status === 'partial' || t.status === 'notStarted';
   const cta = locked ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';
@@ -133,7 +134,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={locked ? 'inherit' : kind}
-          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap' }}
+          // one fixed width for every card, so the CTAs line up in a single column
+          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: 160 }}
         >
           {cta}
         </Button>
