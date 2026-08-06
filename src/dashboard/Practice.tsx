@@ -79,7 +79,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         sx={{ px: { xs: 2.5, md: 3.5 }, py: { xs: 2.5, md: 3 } }}
       >
         <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems={{ xs: 'flex-start', md: 'center' }} sx={{ flex: 1, minWidth: 0 }}>
-        <KindIcon kind={t.kind} />
+        {/* the 36px icon is centred on the title's first line (h6 line box = 24px), whatever the title wraps to */}
+        <Box sx={{ mt: { xs: '-6px', md: 0 }, flexShrink: 0 }}>
+          <KindIcon kind={t.kind} />
+        </Box>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5 }}>
@@ -128,7 +131,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             <LinearProgress
               variant="determinate"
               value={pct}
-              sx={{ flex: 1, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+              sx={{ flexGrow: 1, flexBasis: 0, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
             />
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
             </Box>
