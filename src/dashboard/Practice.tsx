@@ -52,6 +52,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // closed history states are locked: summary only
   const locked = t.status === 'done' || t.status === 'expired' || t.status === 'partial' || t.status === 'notStarted';
   const cta = locked ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';
+  const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
+  const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   return (
     <Card
       variant="outlined"
@@ -76,7 +78,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         alignItems={{ xs: 'stretch', md: 'center' }}
         sx={{ px: { xs: 2.5, md: 3.5 }, py: { xs: 2.5, md: 3 } }}
       >
-        <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
+        <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems={{ xs: 'flex-start', md: 'center' }} sx={{ flex: 1, minWidth: 0 }}>
         <KindIcon kind={t.kind} />
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -113,21 +115,23 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
-            <Box sx={{ flex: 1 }} />
-            {/* deadline sits at the end of the title row instead of taking its own line */}
-            <Typography sx={{ ...META, whiteSpace: 'nowrap', ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) }}>
-              {dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה')}
-            </Typography>
+            <Box sx={{ flex: 1, display: { xs: 'none', md: 'block' } }} />
+            {/* deadline sits at the end of the title row on desktop, and with the meta on a phone */}
+            <Typography sx={{ ...dateSx, display: { xs: 'none', md: 'block' } }}>{dateText}</Typography>
           </Stack>
 
           <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, rowGap: 1 }}>
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
+            <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' } }}>{dateText}</Typography>
+            {/* phone: the bar and the count get their own full-width line under the meta */}
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ width: { xs: '100%', md: 'auto' }, flex: { md: 1 }, display: { xs: 'flex', md: 'contents' } }}>
             <LinearProgress
               variant="determinate"
               value={pct}
               sx={{ flex: 1, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
             />
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
+            </Stack>
           </Stack>
 
           {t.status === 'expired' && (
