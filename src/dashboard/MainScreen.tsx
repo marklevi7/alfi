@@ -56,10 +56,12 @@ const barBtnSx = (selected: boolean) => ({
 /** Always-on-top switcher (dark, one line): version dropdown · divider · sub-dashboards. */
 export type Device = 'desktop' | 'mobile';
 
-export function VersionBar({ value, onChange, sub, onSubChange, onClose, device, onDeviceChange, screens }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void; device: Device; onDeviceChange: (d: Device) => void;
+export function VersionBar({ value, onChange, sub, onSubChange, onClose, device, onDeviceChange, screens, hideSubs }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void; device: Device; onDeviceChange: (d: Device) => void;
   // when the login screen is up, its own states replace the dashboard sub-screens
-  screens?: { items: { label: string }[]; active: number; onPick: (i: number) => void } }) {
-  const subs = screens ? undefined : DASH_VERSIONS[value].subs;
+  screens?: { items: { label: string }[]; active: number; onPick: (i: number) => void };
+  // the dashboard sub-screens mean nothing on תרגולים / תמונת מצב
+  hideSubs?: boolean }) {
+  const subs = screens || hideSubs ? undefined : DASH_VERSIONS[value].subs;
   return (
     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }}>
       <Select

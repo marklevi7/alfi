@@ -68,8 +68,15 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
-      {/* one compact row: kind icon · content · CTA on the far (inline-end) side */}
-      <Stack direction="row" spacing={3} alignItems="center" sx={{ px: 3.5, py: 3 }}>
+      {/* desktop: one row — icon · content · CTA at the inline end.
+          phone: the CTA drops under the content, full width. */}
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={{ xs: 2, md: 3 }}
+        alignItems={{ xs: 'stretch', md: 'center' }}
+        sx={{ px: { xs: 2.5, md: 3.5 }, py: { xs: 2.5, md: 3 } }}
+      >
+        <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
         <KindIcon kind={t.kind} />
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -113,12 +120,12 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1.5 }}>
+          <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, rowGap: 1 }}>
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
             <LinearProgress
               variant="determinate"
               value={pct}
-              sx={{ flex: 1, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+              sx={{ flex: 1, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
             />
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
           </Stack>
@@ -129,13 +136,14 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             </Typography>
           )}
         </Box>
+        </Stack>
 
         <Button
           component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={kind}
-          // one fixed width for every card, so the CTAs line up in a single column
-          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: 160 }}
+          // one fixed width on desktop so the CTAs line up in a single column; full width on a phone
+          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 } }}
         >
           {cta}
         </Button>

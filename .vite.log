@@ -786,3 +786,6 @@
 1:42:56 PM [vite] hmr update /src/login/parts.tsx
 1:43:30 PM [vite] hmr update /src/login/parts.tsx
 1:45:11 PM [vite] page reload dist/index.html
+1:48:06 PM [vite] hmr update /src/App.tsx
+1:50:21 PM [vite] hmr update /src/login/parts.tsx
+1:50:27 PM [vite] page reload dist/index.html

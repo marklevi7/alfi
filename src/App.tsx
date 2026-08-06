@@ -117,6 +117,7 @@ export function App() {
           <VersionBar
             value={ver} onChange={setVer} sub={sub} onSubChange={setSub}
             onClose={() => setShowBar(false)} device={device} onDeviceChange={setDevice}
+            hideSubs={screen !== 'dashboard' && screen !== 'login'}
             screens={screen === 'login'
               ? { items: AUTH_VIEWS, active: AUTH_VIEWS.findIndex((v) => v.view === authView), onPick: (i) => setAuthView(AUTH_VIEWS[i].view) }
               : undefined}
