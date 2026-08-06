@@ -35,7 +35,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v84',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v85',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -264,7 +264,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
         </Button>
 
         {reset !== 'done' && (
-          <Button onClick={() => setReset(null)} size="large" fullWidth sx={{ fontWeight: 700, color: 'text.secondary' }}>
+          <Button onClick={() => setReset(null)} variant="outlined" size="large" fullWidth sx={{ py: 1.25, fontWeight: 700 }}>
             חזרה להתחברות
           </Button>
         )}
