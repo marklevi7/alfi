@@ -7,6 +7,7 @@ import Tab from '@mui/material/Tab';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
+import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -35,7 +36,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v93',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v94',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -160,9 +161,10 @@ export function Footer() {
 type ResetStep = 'email' | 'code' | 'password' | 'done';
 
 // every state the auth card can be in — the dev control bar drives it from outside
-export type AuthView = 'login' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
+export type AuthView = 'login' | 'login-timeout' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
 export const AUTH_VIEWS: { label: string; view: AuthView }[] = [
   { label: 'log in', view: 'login' },
+  { label: 'timed out', view: 'login-timeout' },
   { label: 'sign up', view: 'signup' },
   { label: 'reset 1', view: 'reset-email' },
   { label: 'reset 2', view: 'reset-code' },
@@ -179,6 +181,8 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
   const view = ctx?.view ?? localView;
   const setView = ctx?.setView ?? setLocalView;
   const tab = view === 'signup' ? 1 : 0;
+  // the session expired on its own — tell the student why they're back here
+  const timedOut = view === 'login-timeout';
   const setTab = (i: number) => setView(i === 1 ? 'signup' : 'login');
   const reset: ResetStep | null =
     view === 'reset-email' ? 'email'
@@ -289,6 +293,12 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
             {COPY.welcomeSubtitle}
           </Typography>
         </Stack>
+      )}
+
+      {timedOut && (
+        <Alert severity="info" sx={{ mb: 2.5, fontWeight: 600 }}>
+          נותקת מהמערכת עקב חוסר שימוש
+        </Alert>
       )}
 
       <Tabs
