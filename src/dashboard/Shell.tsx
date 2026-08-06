@@ -323,6 +323,10 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
       >
         <BottomNavigation showLabels value={NAV.findIndex((n) => n.screen === active)} sx={{
           borderRadius: 3,
+          // full nav names, same as desktop — they need to fit three across a phone
+          '& .MuiBottomNavigationAction-root': { minWidth: 0, px: 0.5 },
+          '& .MuiBottomNavigationAction-label': { fontSize: '0.72rem', whiteSpace: 'nowrap' },
+          '& .MuiBottomNavigationAction-label.Mui-selected': { fontSize: '0.72rem' },
           '& .MuiBottomNavigationAction-root.Mui-selected': {
             bgcolor: 'primary.main',
             color: 'primary.contrastText',
@@ -332,7 +336,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           },
         }}>
           {NAV.map((item) => (
-            <BottomNavigationAction key={item.label} label={item.short} icon={item.icon} onClick={() => item.screen && navTo.go(item.screen)} />
+            <BottomNavigationAction key={item.label} label={item.label} icon={item.icon} onClick={() => item.screen && navTo.go(item.screen)} />
           ))}
         </BottomNavigation>
       </Paper>
