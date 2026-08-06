@@ -15,6 +15,7 @@ import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
 import { NavContext, type Screen } from './nav';
+import { AuthViewContext, AUTH_VIEWS, type AuthView } from './login/parts';
 import { theme, greenTheme } from './theme';
 
 function LoginSwitcher() {
@@ -86,6 +87,7 @@ function LoginSwitcher() {
 
 export function App() {
   const [screen, setScreen] = useState<Screen>('dashboard');
+  const [authView, setAuthView] = useState<AuthView>('login');
   const [ver, setVer] = useState(() => Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7')));
   const [sub, setSub] = useState(0);
   const [showBar, setShowBar] = useState(false);
@@ -104,7 +106,15 @@ export function App() {
           aria-label="הצגת בקרות פיתוח"
           sx={{ position: 'fixed', top: 0, insetInlineStart: 0, width: 56, height: 56, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
         />
-        {showBar && <VersionBar value={ver} onChange={setVer} sub={sub} onSubChange={setSub} onClose={() => setShowBar(false)} device={device} onDeviceChange={setDevice} />}
+        {showBar && (
+          <VersionBar
+            value={ver} onChange={setVer} sub={sub} onSubChange={setSub}
+            onClose={() => setShowBar(false)} device={device} onDeviceChange={setDevice}
+            screens={screen === 'login'
+              ? { items: AUTH_VIEWS, active: AUTH_VIEWS.findIndex((v) => v.view === authView), onPick: (i) => setAuthView(AUTH_VIEWS[i].view) }
+              : undefined}
+          />
+        )}
         {device === 'mobile' ? (
           // real mobile viewport: the app runs inside a phone-sized iframe so xs breakpoints apply
           <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.900', py: 3 }}>
@@ -117,7 +127,7 @@ export function App() {
           </Box>
         ) : (
           <>
-            {screen === 'login' ? <LoginSwitcher />
+            {screen === 'login' ? <AuthViewContext.Provider value={{ view: authView, setView: setAuthView }}><LoginSwitcher /></AuthViewContext.Provider>
               : screen === 'analytics' ? <Analytics />
               : screen === 'practice' ? <Practice />
               : screen === 'history' ? <History />

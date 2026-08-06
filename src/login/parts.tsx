@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, createContext, useContext } from 'react';
 import { alpha } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -35,7 +35,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v83',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v84',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -159,10 +159,34 @@ export function Footer() {
 // the four steps of "שכחתי סיסמה", inside the same card so nothing jumps
 type ResetStep = 'email' | 'code' | 'password' | 'done';
 
+// every state the auth card can be in — the dev control bar drives it from outside
+export type AuthView = 'login' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
+export const AUTH_VIEWS: { label: string; view: AuthView }[] = [
+  { label: 'log in', view: 'login' },
+  { label: 'sign up', view: 'signup' },
+  { label: 'reset 1', view: 'reset-email' },
+  { label: 'reset 2', view: 'reset-code' },
+  { label: 'reset 3', view: 'reset-password' },
+  { label: 'reset 4', view: 'reset-done' },
+];
+export const AuthViewContext = createContext<{ view: AuthView; setView: (v: AuthView) => void } | null>(null);
+
 export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: boolean; showFooter?: boolean }) {
-  const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-  const [reset, setReset] = useState<ResetStep | null>(null);
+  // the control bar owns the view when it's mounted; otherwise the card keeps its own
+  const ctx = useContext(AuthViewContext);
+  const [localView, setLocalView] = useState<AuthView>('login');
+  const view = ctx?.view ?? localView;
+  const setView = ctx?.setView ?? setLocalView;
+  const tab = view === 'signup' ? 1 : 0;
+  const setTab = (i: number) => setView(i === 1 ? 'signup' : 'login');
+  const reset: ResetStep | null =
+    view === 'reset-email' ? 'email'
+    : view === 'reset-code' ? 'code'
+    : view === 'reset-password' ? 'password'
+    : view === 'reset-done' ? 'done'
+    : null;
+  const setReset = (step: ResetStep | null) => setView(step ? (`reset-${step}` as AuthView) : 'login');
   const nav = useNav();
 
   if (reset) return (
@@ -188,7 +212,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
           if (reset === 'email') setReset('code');
           else if (reset === 'code') setReset('password');
           else if (reset === 'password') setReset('done');
-          else { setReset(null); setTab(0); }
+          else setReset(null);
         }}
       >
         {reset === 'email' && (

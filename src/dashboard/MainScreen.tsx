@@ -56,8 +56,10 @@ const barBtnSx = (selected: boolean) => ({
 /** Always-on-top switcher (dark, one line): version dropdown · divider · sub-dashboards. */
 export type Device = 'desktop' | 'mobile';
 
-export function VersionBar({ value, onChange, sub, onSubChange, onClose, device, onDeviceChange }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void; device: Device; onDeviceChange: (d: Device) => void }) {
-  const subs = DASH_VERSIONS[value].subs;
+export function VersionBar({ value, onChange, sub, onSubChange, onClose, device, onDeviceChange, screens }: { value: number; onChange: (i: number) => void; sub: number; onSubChange: (i: number) => void; onClose: () => void; device: Device; onDeviceChange: (d: Device) => void;
+  // when the login screen is up, its own states replace the dashboard sub-screens
+  screens?: { items: { label: string }[]; active: number; onPick: (i: number) => void } }) {
+  const subs = screens ? undefined : DASH_VERSIONS[value].subs;
   return (
     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ bgcolor: grey[900], px: 2, py: 1, position: 'sticky', top: 0, zIndex: (t) => t.zIndex.modal + 1 }}>
       <Select
@@ -77,7 +79,18 @@ export function VersionBar({ value, onChange, sub, onSubChange, onClose, device,
           <MenuItem key={ver.label} value={i} sx={{ fontWeight: 700 }}>{ver.label}</MenuItem>
         ))}
       </Select>
-      {subs && <Divider orientation="vertical" flexItem sx={{ borderColor: grey[700] }} />}
+      {(subs || screens) && <Divider orientation="vertical" flexItem sx={{ borderColor: grey[700] }} />}
+      {screens?.items.map((s, i) => (
+        <Button
+          key={s.label}
+          size="small"
+          variant={i === screens.active ? 'contained' : 'outlined'}
+          onClick={() => screens.onPick(i)}
+          sx={barBtnSx(i === screens.active)}
+        >
+          {s.label}
+        </Button>
+      ))}
       {subs?.map((s, i) => (
         <Button
           key={s.label}
