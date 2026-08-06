@@ -190,7 +190,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
                 <Box sx={{ width: 118, flexShrink: 0 }}>
                   <ScoreGauge value={78} />
                   <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>
-                    הציון הממוצע שלי
+                    הממוצע שלי
                   </Typography>
                 </Box>
               )}
