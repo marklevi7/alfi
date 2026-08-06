@@ -319,15 +319,15 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
       {/* Mobile bottom navigation */}
       <Paper
         elevation={3}
-        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.appBar, borderRadius: 3 }}
+        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.appBar, borderRadius: 3, overflow: 'hidden' }}
       >
         <BottomNavigation showLabels value={NAV.findIndex((n) => n.screen === active)} sx={{
           borderRadius: 3,
           '& .MuiBottomNavigationAction-root.Mui-selected': {
             bgcolor: 'primary.main',
             color: 'primary.contrastText',
+            // fills its slot edge to edge — the paper's own radius clips the corners
             borderRadius: 3,
-            mx: 0.5,
             '& .MuiSvgIcon-root': { color: 'primary.contrastText' },
           },
         }}>

@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -81,7 +82,7 @@ function MathSigns() {
 }
 
 // Semicircle score gauge: red -> amber -> green, marker at value
-function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
+function ScoreGauge({ value, max = 100, showMax = true }: { value: number; max?: number; showMax?: boolean }) {
   const cx = 100, cy = 100, r = 84;
   const deg = 180 - (value / max) * 180;
   const rad = (deg * Math.PI) / 180;
@@ -105,7 +106,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
         <Typography sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3rem' }, lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
           {value}
         </Typography>
-        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>מתוך {max}</Typography>
+        {showMax && <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>מתוך {max}</Typography>}
       </Box>
     </Box>
   );
@@ -185,10 +186,10 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
       {variant !== 'empty' && phone && (
         <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack direction="row" spacing={2} alignItems="center" divider={<Divider orientation="vertical" flexItem />}>
               {variant !== 'noGrade' && (
                 <Box sx={{ width: 118, flexShrink: 0 }}>
-                  <ScoreGauge value={78} />
+                  <ScoreGauge value={78} showMax={false} />
                   <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>
                     הממוצע שלי
                   </Typography>
