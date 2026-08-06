@@ -86,7 +86,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   const mx = cx + r * Math.cos(rad);
   const my = cy - r * Math.sin(rad);
   return (
-    <Box sx={{ position: 'relative', width: '100%', maxWidth: 220, mx: 'auto' }}>
+    <Box sx={{ position: 'relative', width: '100%', maxWidth: { xs: 150, md: 220 }, mx: 'auto' }}>
       <Box component="svg" viewBox="0 0 200 120" sx={{ width: '100%', display: 'block', overflow: 'visible' }}>
         <defs>
           <linearGradient id="alfiGaugeV7" x1="0" y1="0" x2="1" y2="0">
@@ -100,7 +100,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
         <circle cx={mx} cy={my} r={11} fill={common.white} stroke={green[500]} strokeWidth={5} />
       </Box>
       <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>
-        <Typography sx={{ fontWeight: 900, fontSize: '3rem', lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
+        <Typography sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3rem' }, lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
           {value}
         </Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>מתוך {max}</Typography>
@@ -119,7 +119,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
       {/* main screen 5: first-login terms-of-use popup over the full dashboard */}
       {variant === 'terms' && <TermsDialog />}
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 260, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 150, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
         {/* speech bubble — always greets; oval marks where Alfi will stand */}
         <Box
           sx={{
@@ -141,12 +141,12 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.25rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>
         {!SHOW_BOT && (
-          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 220, md: 340 }, height: { xs: 300, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
+          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 150, md: 340 }, height: { xs: 170, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
         )}
         <MathSigns />
         {/* colorful glow halo behind ALFI */}
@@ -182,8 +182,8 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
-        <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
-          <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Card sx={{ minHeight: { xs: 0, md: 220 }, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
+          <CardContent sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* empty state mirrors the task card: headline as title, start-aligned body */}
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
               {variant === 'noGrade' ? 'עדיין אין ציון ממוצע' : 'הציון הממוצע שלי'}
@@ -201,14 +201,14 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         </Card>
 
         {/* Next task CTA card — simple white card, green primary CTA */}
-        <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8] }}>
-          <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+        <Card sx={{ minHeight: { xs: 0, md: 220 }, borderRadius: 4, boxShadow: theme.shadows[8] }}>
+          <CardContent sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
               {variant === 'noNext' ? 'אין תרגולים חדשים כרגע' : 'התרגול הבא שלי'}
             </Typography>
             {variant === 'noNext' ? (
               <>
-                <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
+                <Typography sx={{ textAlign: 'start', mb: { xs: 1.5, md: 2.5 }, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
                   כשהמורה תשלח משימה, היא תופיע כאן.
                 </Typography>
                 <Button
@@ -221,7 +221,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
               </>
             ) : (
               <>
-                <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
+                <Typography sx={{ textAlign: 'start', mb: { xs: 1.5, md: 2.5 }, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
                   יש לי 2 תרגולים חדשים מהמורה. בוא נתחיל עם אלגברה!
                 </Typography>
                 <Button
