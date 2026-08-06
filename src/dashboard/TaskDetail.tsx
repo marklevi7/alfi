@@ -68,7 +68,9 @@ type Question = { points: number; short: string; prompt: ReactNode; guide: Turn;
   // plain-text full solution — the secret click drops it straight into the answer box
   solutionText?: string;
   // demo: the first submission is treated as wrong and Alfi replies with this hint
-  wrongHint?: ReactNode };
+  wrongHint?: ReactNode;
+  // a half-solved question opens with this earlier attempt already in the chat, plus Alfi's correction
+  priorAttempt?: string };
 
 const QUESTIONS: Question[] = [
   {
@@ -101,6 +103,11 @@ const QUESTIONS: Question[] = [
       'מהשורש: x ≥ 0',
       'מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9',
       'תחום ההגדרה: x ≥ 0 וגם x ≠ 9',
+    ].join('\n'),
+    priorAttempt: [
+      'מהשורש: x > 0',
+      'מהמכנה: x − 9 ≠ 0 ולכן x ≠ 9',
+      'תחום ההגדרה: x > 0 וגם x ≠ 9',
     ].join('\n'),
   },
   {
@@ -537,17 +544,45 @@ const approvedNode = (
   </Stack>
 );
 
-function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked }: { q: Question; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean }) {
+// first line that differs from the stored solution; 0 = the whole answer matches
+function firstBadLine(answer: string, expected?: string) {
+  if (!expected) return 0;
+  const norm = (t: string) => t.replace(/\s+/g, ' ').trim();
+  const mine = answer.split('\n');
+  const right = expected.split('\n');
+  for (let i = 0; i < Math.max(mine.length, right.length); i++) {
+    if (norm(mine[i] ?? '') !== norm(right[i] ?? '')) return i + 1;
+  }
+  return 0;
+}
+
+const hintNode = (body: ReactNode) => (
+  <Stack direction="row" spacing={0.75} alignItems="flex-start">
+    <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />
+    <Typography component="div">{body}</Typography>
+  </Stack>
+);
+
+function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q: Question; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean }) {
   // re-entering a solved question replays the conversation instead of an empty box.
   // questions that were already solved before this session have no saved text — show the solution itself.
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
-  const [msgs, setMsgs] = useState<Msg[]>(shown
-    ? [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }]
-    : []);
+  const [msgs, setMsgs] = useState<Msg[]>(() => {
+    if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }];
+    // half-solved: the earlier attempt and Alfi's correction are already on screen
+    if (started && q.priorAttempt) {
+      const bad = firstBadLine(q.priorAttempt, q.solutionText);
+      return [
+        { from: 'student', node: <NumberedAnswer text={q.priorAttempt} /> },
+        { from: 'ai', node: hintNode(<>כמעט! יש טעות ב<b>שורה {bad}</b>. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.</>) },
+      ];
+    }
+    return [];
+  });
   // some questions ship with a full worked answer already typed in, ready to send
   const [draft, setDraft] = useState(q.sampleAnswer ?? '');
   const [thinking, setThinking] = useState(false);
-  const [tries, setTries] = useState(0);
+  const [tries, setTries] = useState(started && q.priorAttempt ? 1 : 0);
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
@@ -579,29 +614,15 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked }: { q: Questio
     setThinking(true);
     // demo checking: the answer is compared line by line against the stored solution,
     // so editing any number in the pre-typed answer produces a real correction.
-    const expected = q.solutionText;
-    const norm = (t: string) => t.replace(/\s+/g, ' ').trim();
-    let badLine = 0; // 1-based; 0 = nothing wrong
-    if (expected) {
-      const mine = answer.split('\n');
-      const right = expected.split('\n');
-      for (let i = 0; i < Math.max(mine.length, right.length); i++) {
-        if (norm(mine[i] ?? '') !== norm(right[i] ?? '')) { badLine = i + 1; break; }
-      }
-    }
+    const badLine = firstBadLine(answer, q.solutionText); // 1-based; 0 = nothing wrong
     const scripted = !!q.wrongHint && tries === 0 && badLine > 0;
     if (tries === 0) onStarted?.(); // first submission marks the question as started
     setTries((n) => n + 1);
     window.setTimeout(() => {
       setThinking(false);
       if (badLine > 0) {
-        setMsgs((m) => [...m, { from: 'ai', node: (
-          <Stack direction="row" spacing={0.75} alignItems="flex-start">
-            <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />
-            <Typography component="div">
-              {scripted ? q.wrongHint : <>כמעט! יש טעות ב<b>שורה {badLine}</b>. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.</>}
-            </Typography>
-          </Stack>
+        setMsgs((m) => [...m, { from: 'ai', node: hintNode(
+          scripted ? q.wrongHint : <>כמעט! יש טעות ב<b>שורה {badLine}</b>. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.</>
         ) }]);
         return;
       }
@@ -747,7 +768,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
         )}
       </Paper>
 
-      <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} />
+      <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />
 
       {/* always reachable at the bottom — solved styles it as the primary action */}
       {(onNext || solved) && (
@@ -816,9 +837,14 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered }: {
 export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => void }) {
   const questions = QUESTIONS.slice(0, Math.max(1, Math.min(task.total, QUESTIONS.length)));
   // the task's solved count seeds the page: those questions arrive already solved
-  const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: Math.min(task.solved, questions.length) }, (_, i) => i)));
+  // the task's solved count seeds the page: those questions arrive already solved,
+  // and the very next one is the half-solved one the student already tried once.
+  const seedSolved = Math.min(task.solved, questions.length);
+  const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: seedSolved }, (_, i) => i)));
   // opened and answered at least once, but not solved yet — half-filled dot
-  const [started, setStarted] = useState<Set<number>>(() => new Set());
+  const [started, setStarted] = useState<Set<number>>(() => new Set(
+    seedSolved > 0 && seedSolved < questions.length && questions[seedSolved].priorAttempt ? [seedSolved] : []
+  ));
   const [openQ, setOpenQ] = useState<number | null>(null);
   const [hoverQ, setHoverQ] = useState<number | null>(null);
   // the student's own text per question — kept so the solved view still shows it

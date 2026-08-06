@@ -21,7 +21,7 @@ export type Task = { id: number; title: string; kind: Kind; topic: string; subTo
 
 // Most-urgent first. Placeholder data (mirrors the teacher-sent tasks).
 const TASKS: Task[] = [
-  { id: 448, title: 'חקירת פונקציה — מנה עם שורש', kind: 'תרגול', topic: 'חקירת פונקציות', subTopic: 'נגזרות', unit: '5 יח"ל', total: 5, solved: 2, status: 'inProgress', from: '10 ביוני 2026', to: '29 ביוני 2026' },
+  { id: 448, title: 'חקירת פונקציה — מנה עם שורש', kind: 'תרגול', topic: 'חקירת פונקציות', subTopic: 'נגזרות', unit: '5 יח"ל', total: 5, solved: 1, status: 'inProgress', from: '10 ביוני 2026', to: '29 ביוני 2026' },
   { id: 449, title: 'בוחן באלגברה', kind: 'בוחן', topic: 'אלגברה', subTopic: 'משוואות ריבועיות', unit: '5 יח"ל', total: 8, solved: 0, status: 'new', from: '12 ביוני 2026', to: '30 ביוני 2026' },
   { id: 458, title: 'תרגול חופשי — שברים אלגבריים', kind: 'תרגול', topic: 'אלגברה', subTopic: 'שברים אלגבריים', unit: '5 יח"ל', total: 6, solved: 0, status: 'new', from: '14 ביוני 2026', to: null },
   // exactly one example per open state: in-progress, new, new without a deadline.
