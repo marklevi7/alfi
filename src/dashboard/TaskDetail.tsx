@@ -458,7 +458,7 @@ function QuestProgress({ total, solved, started, current, size = 44, onPick, onH
 // just the number, in a soft round badge — no "שאלה" label
 function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved: boolean; started?: boolean; size?: 'h6' | 'h5' }) {
   const d = size === 'h5' ? 44 : 36;
-  // half-filled amber = opened and answered, not solved yet (same language as תמונת מצב)
+  // half-filled amber dot = opened and answered, not solved yet (same language as תמונת מצב)
   const half = !solved && !!started;
   return (
     <Stack direction="row" spacing={1} alignItems="center">
@@ -466,8 +466,7 @@ function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved:
         sx={{
           width: d, height: d, borderRadius: '50%', flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          border: 2, borderColor: half ? amber[700] : grey[400], color: half ? brown[900] : 'text.primary',
-          ...(half && { bgcolor: 'background.paper', backgroundImage: `linear-gradient(to left, ${amber[300]} 50%, transparent 50%)` }),
+          border: 2, borderColor: grey[400], color: 'text.primary',
           fontWeight: 800, fontSize: size === 'h5' ? '1.6rem' : '1.3rem',
           fontFeatureSettings: '"tnum","lnum"',
         }}
@@ -475,7 +474,13 @@ function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved:
         {index + 1}
       </Box>
       {solved && <CheckCircleTwoToneIcon sx={{ color: green[700] }} />}
-      {half && <Typography variant="caption" sx={{ fontWeight: 700, color: brown[900], whiteSpace: 'nowrap' }}>התחלתי</Typography>}
+      {half && (
+        <Box sx={{
+          width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+          border: 2, borderColor: amber[700],
+          backgroundImage: `linear-gradient(to left, ${amber[300]} 50%, transparent 50%)`,
+        }} />
+      )}
     </Stack>
   );
 }
@@ -799,6 +804,7 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered }: {
               {q.prompt}
             </Typography>
             {solved && <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700, display: 'block', mt: 1 }}>סיכום צ׳אט · התשובה נשמרה</Typography>}
+            {!solved && started && <Typography variant="caption" sx={{ color: brown[900], fontWeight: 700, display: 'block', mt: 1 }}>התחלתי · עוד לא נפתר</Typography>}
           </Box>
         </Stack>
       </CardActionArea>
