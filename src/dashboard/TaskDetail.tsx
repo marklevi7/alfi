@@ -19,7 +19,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
-import { deepPurple, blue, cyan, amber, green, red, pink, grey } from '@mui/material/colors';
+import { deepPurple, blue, cyan, amber, brown, green, red, pink, grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -395,7 +395,7 @@ const railFill = keyframes`
   to   { transform: scaleX(1); }
 `;
 
-function QuestProgress({ total, solved, current, size = 44, onPick, onHover, hovered }: { total: number; solved: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
+function QuestProgress({ total, solved, started, current, size = 44, onPick, onHover, hovered }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
   const done = solved.size;
   return (
     <Stack direction="row" spacing={2} alignItems="center">
@@ -412,6 +412,8 @@ function QuestProgress({ total, solved, current, size = 44, onPick, onHover, hov
         }} />
         {Array.from({ length: total }, (_, i) => {
           const isSolved = solved.has(i);
+          // started but not finished — same half-filled amber dot as the תמונת מצב timeline
+          const isStarted = !isSolved && !!started?.has(i);
           const isCurrent = current === i;
           return (
             <Box
@@ -429,6 +431,9 @@ function QuestProgress({ total, solved, current, size = 44, onPick, onHover, hov
                 ...(hovered === i && { transform: 'scale(1.18)', boxShadow: 6 }),
                 ...(isSolved
                   ? { bgcolor: 'primary.main', color: 'primary.contrastText', boxShadow: 3 }
+                  : isStarted
+                  ? { border: 2, borderColor: amber[700], color: brown[900], bgcolor: 'background.paper',
+                      backgroundImage: `linear-gradient(to left, ${amber[300]} 50%, transparent 50%)` }
                   : { bgcolor: 'background.paper', border: 2, borderColor: isCurrent ? 'primary.main' : grey[400], color: isCurrent ? 'primary.dark' : 'text.secondary' }),
                 // pop in one by one, then solved ones keep cheering for ~2.5s
                 animation: isSolved
@@ -451,15 +456,18 @@ function QuestProgress({ total, solved, current, size = 44, onPick, onHover, hov
 
 /* ---------- shared header bits ---------- */
 // just the number, in a soft round badge — no "שאלה" label
-function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean; size?: 'h6' | 'h5' }) {
+function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved: boolean; started?: boolean; size?: 'h6' | 'h5' }) {
   const d = size === 'h5' ? 44 : 36;
+  // half-filled amber = opened and answered, not solved yet (same language as תמונת מצב)
+  const half = !solved && !!started;
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <Box
         sx={{
           width: d, height: d, borderRadius: '50%', flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          border: 2, borderColor: grey[400], color: 'text.primary',
+          border: 2, borderColor: half ? amber[700] : grey[400], color: half ? brown[900] : 'text.primary',
+          ...(half && { bgcolor: 'background.paper', backgroundImage: `linear-gradient(to left, ${amber[300]} 50%, transparent 50%)` }),
           fontWeight: 800, fontSize: size === 'h5' ? '1.6rem' : '1.3rem',
           fontFeatureSettings: '"tnum","lnum"',
         }}
@@ -467,6 +475,7 @@ function QMeta({ index, solved, size = 'h6' }: { index: number; solved: boolean;
         {index + 1}
       </Box>
       {solved && <CheckCircleTwoToneIcon sx={{ color: green[700] }} />}
+      {half && <Typography variant="caption" sx={{ fontWeight: 700, color: brown[900], whiteSpace: 'nowrap' }}>התחלתי</Typography>}
     </Stack>
   );
 }
@@ -523,10 +532,12 @@ const approvedNode = (
   </Stack>
 );
 
-function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved: (answer: string) => void; savedAnswer?: string; locked?: boolean }) {
-  // re-entering a solved question replays the saved conversation instead of an empty box
-  const [msgs, setMsgs] = useState<Msg[]>(savedAnswer
-    ? [{ from: 'student', node: <NumberedAnswer text={savedAnswer} /> }, { from: 'ai', node: approvedNode }]
+function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked }: { q: Question; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean }) {
+  // re-entering a solved question replays the conversation instead of an empty box.
+  // questions that were already solved before this session have no saved text — show the solution itself.
+  const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
+  const [msgs, setMsgs] = useState<Msg[]>(shown
+    ? [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }]
     : []);
   // some questions ship with a full worked answer already typed in, ready to send
   const [draft, setDraft] = useState(q.sampleAnswer ?? '');
@@ -574,6 +585,7 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
       }
     }
     const scripted = !!q.wrongHint && tries === 0 && badLine > 0;
+    if (tries === 0) onStarted?.(); // first submission marks the question as started
     setTries((n) => n + 1);
     window.setTimeout(() => {
       setThinking(false);
@@ -662,8 +674,8 @@ function ChatPanel({ q, onSolved, savedAnswer, locked }: { q: Question; onSolved
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, onNext, onPick, savedAnswer }: {
-  q: Question; index: number; total: number; solved: boolean; solvedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
+function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer }: {
+  q: Question; index: number; total: number; solved: boolean; started: boolean; solvedSet: Set<number>; startedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
   // a question counts as "long" when its solution runs past ~6 steps (the A4-page case)
@@ -677,7 +689,7 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
           חזרה לשאלות
         </Button>
         {/* same quest track as the task page, so progress feels continuous */}
-        <QuestProgress total={total} solved={solvedSet} current={index} onPick={onPick} />
+        <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
       </Stack>
 
       {/* The question sheet. Long questions stick to the top and can be collapsed to one line,
@@ -694,7 +706,7 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         }}
       >
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: collapsed ? 0 : 2.5 }}>
-          <QMeta index={index} solved={solved} size="h5" />
+          <QMeta index={index} solved={solved} started={started} size="h5" />
           <Stack direction="row" spacing={1.5} alignItems="center">
             {/* solved questions get a stamp instead of a whole different layout */}
             {solved && (
@@ -730,7 +742,7 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
         )}
       </Paper>
 
-      <ChatPanel q={q} onSolved={onSolved} savedAnswer={savedAnswer} locked={solved} />
+      <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} />
 
       {/* always reachable at the bottom — solved styles it as the primary action */}
       {(onNext || solved) && (
@@ -759,7 +771,7 @@ function QuestionPage({ q, index, total, solved, solvedSet, onBack, onSolved, on
 }
 
 /* ---------- question list card ---------- */
-function QuestionCard({ q, index, solved, onOpen, onHover, hovered }: { q: Question; index: number; solved: boolean; onOpen: () => void; onHover: (i: number | null) => void; hovered: number | null }) {
+function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered }: { q: Question; index: number; solved: boolean; started?: boolean; onOpen: () => void; onHover: (i: number | null) => void; hovered: number | null }) {
   return (
     <Card
       variant="outlined"
@@ -779,7 +791,7 @@ function QuestionCard({ q, index, solved, onOpen, onHover, hovered }: { q: Quest
         <Stack direction="row" alignItems="center" spacing={1.5}>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-              <QMeta index={index} solved={solved} />
+              <QMeta index={index} solved={solved} started={started} />
               <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
             </Stack>
             <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8,
@@ -799,6 +811,8 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const questions = QUESTIONS.slice(0, Math.max(1, Math.min(task.total, QUESTIONS.length)));
   // the task's solved count seeds the page: those questions arrive already solved
   const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: Math.min(task.solved, questions.length) }, (_, i) => i)));
+  // opened and answered at least once, but not solved yet — half-filled dot
+  const [started, setStarted] = useState<Set<number>>(() => new Set());
   const [openQ, setOpenQ] = useState<number | null>(null);
   const [hoverQ, setHoverQ] = useState<number | null>(null);
   // the student's own text per question — kept so the solved view still shows it
@@ -834,10 +848,13 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           index={openQ}
           total={questions.length}
           solved={solved.has(openQ)}
+          started={started.has(openQ)}
           solvedSet={solved}
+          startedSet={started}
           onPick={setOpenQ}
           onBack={() => setOpenQ(null)}
           onSolved={(answer) => markSolved(openQ, answer)}
+          onStarted={() => setStarted((s) => new Set(s).add(openQ))}
           savedAnswer={answers[openQ]}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
@@ -878,7 +895,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{task.to ? `להגשה עד ${task.to}${hebrewWeekday(task.to)}.` : 'להגשה עד סוף השנה.'}</Typography>
         <Box sx={{ mt: 2 }}>
-          <QuestProgress total={questions.length} solved={solved} onPick={setOpenQ} onHover={setHoverQ} hovered={hoverQ} />
+          <QuestProgress total={questions.length} solved={solved} started={started} onPick={setOpenQ} onHover={setHoverQ} hovered={hoverQ} />
         </Box>
       </Box>
 
@@ -886,7 +903,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
       <Stack spacing={2.5} sx={{ mt: 1 }}>
         {questions.map((q, i) => (
-          <QuestionCard key={i} q={q} index={i} solved={solved.has(i)} onOpen={() => setOpenQ(i)} onHover={setHoverQ} hovered={hoverQ} />
+          <QuestionCard key={i} q={q} index={i} solved={solved.has(i)} started={started.has(i)} onOpen={() => setOpenQ(i)} onHover={setHoverQ} hovered={hoverQ} />
         ))}
       </Stack>
 

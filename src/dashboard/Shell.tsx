@@ -165,26 +165,38 @@ export function AlfiWidget() {
   const [chatOpen, setChatOpen] = useState(false);
   return (
     <>
-      <Paper
+      {/* same shape as the main screen greeting: a speech bubble with a tail, and Alfi under it */}
+      <Box
         component="button"
-        elevation={8}
         onClick={() => setChatOpen((v) => !v)}
         aria-label="שאלה כללית לאלפי"
         sx={{
-          display: { xs: 'none', md: 'flex' }, width: '100%', alignItems: 'center', gap: 1.5,
-          cursor: 'pointer', font: 'inherit',
-          borderRadius: 999, py: 1.25, px: 1.5, paddingInlineEnd: 3,
-          bgcolor: 'background.paper',
-          border: 2, borderColor: 'primary.main',
+          display: { xs: 'none', md: 'block' }, width: '100%',
+          cursor: 'pointer', font: 'inherit', textAlign: 'start',
+          bgcolor: 'transparent', border: 0, p: 0,
           animation: chatOpen ? 'none' : `${balloonBob} 2.6s ease-in-out infinite`,
-          transition: (t) => t.transitions.create(['box-shadow', 'transform']),
-          '&:hover': { boxShadow: 12, animationPlayState: 'paused' },
-          '@media (prefers-reduced-motion: reduce)': { animation: 'none', transition: 'none' },
+          '&:hover .alfi-bubble': { boxShadow: 12 },
+          '&:hover': { animationPlayState: 'paused' },
+          '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
         }}
       >
-        <BotFace size={54} />
-        <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap', color: 'primary.dark' }}>יש לי שאלה</Typography>
-      </Paper>
+        <Paper
+          className="alfi-bubble"
+          elevation={6}
+          sx={{
+            position: 'relative', borderRadius: 3, px: 2.5, py: 1.25, mb: 2,
+            transition: (t) => t.transitions.create('box-shadow'),
+            '&::after': {
+              content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
+              borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
+              borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
+            },
+          }}
+        >
+          <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
+        </Paper>
+        <Box sx={{ paddingInlineStart: 1.25 }}><AlfiAvatar size={64} /></Box>
+      </Box>
       {chatOpen && <AlfiChat onClose={() => setChatOpen(false)} />}
     </>
   );
