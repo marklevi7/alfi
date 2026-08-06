@@ -36,7 +36,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v95',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v96',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -161,9 +161,10 @@ export function Footer() {
 type ResetStep = 'email' | 'code' | 'password' | 'done';
 
 // every state the auth card can be in — the dev control bar drives it from outside
-export type AuthView = 'login' | 'login-timeout' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
+export type AuthView = 'login' | 'login-error' | 'login-timeout' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
 export const AUTH_VIEWS: { label: string; view: AuthView }[] = [
   { label: 'log in', view: 'login' },
+  { label: 'wrong details', view: 'login-error' },
   { label: 'timed out', view: 'login-timeout' },
   { label: 'sign up', view: 'signup' },
   { label: 'reset 1', view: 'reset-email' },
@@ -183,6 +184,8 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
   const tab = view === 'signup' ? 1 : 0;
   // the session expired on its own — tell the student why they're back here
   const timedOut = view === 'login-timeout';
+  // wrong email or password — the card says what happened and both fields turn red
+  const loginError = view === 'login-error';
   const setTab = (i: number) => setView(i === 1 ? 'signup' : 'login');
   const reset: ResetStep | null =
     view === 'reset-email' ? 'email'
@@ -300,6 +303,11 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
           נותקת מהמערכת עקב חוסר שימוש
         </Alert>
       )}
+      {loginError && (
+        <Alert severity="error" sx={{ mb: 2.5, fontWeight: 600 }}>
+          האימייל או הסיסמה שגויים. בדקו ונסו שוב.
+        </Alert>
+      )}
 
       <Tabs
         value={tab}
@@ -326,14 +334,22 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
         {tab === 1 && (
           <TextField label="שם מלא" placeholder="הזינו שם מלא" fullWidth autoComplete="name" />
         )}
-        <TextField label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email" />
         <TextField
+          key={`email-${view}`}
+          label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email"
+          error={loginError}
+          {...(loginError && { defaultValue: 'mark@school.co.il' })}
+        />
+        <TextField
+          key={`password-${view}`}
           label="סיסמה"
           type={showPassword ? 'text' : 'password'}
           placeholder={tab === 0 ? 'הזינו סיסמה' : 'בחרו סיסמה'}
           fullWidth
           autoComplete={tab === 0 ? 'current-password' : 'new-password'}
-          helperText={tab === 1 ? 'לפחות 8 תווים' : undefined}
+          error={loginError}
+          {...(loginError && { defaultValue: '12345678' })}
+          helperText={loginError ? 'שכחתם את הסיסמה? אפשר לאפס אותה כאן למטה.' : tab === 1 ? 'לפחות 8 תווים' : undefined}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
