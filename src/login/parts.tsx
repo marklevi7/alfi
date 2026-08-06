@@ -36,7 +36,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v97',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v98',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -161,11 +161,12 @@ export function Footer() {
 type ResetStep = 'email' | 'code' | 'password' | 'done';
 
 // every state the auth card can be in — the dev control bar drives it from outside
-export type AuthView = 'login' | 'login-error' | 'login-timeout' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
+export type AuthView = 'login' | 'login-error' | 'login-timeout' | 'new-password' | 'signup' | 'reset-email' | 'reset-code' | 'reset-password' | 'reset-done';
 export const AUTH_VIEWS: { label: string; view: AuthView }[] = [
   { label: 'log in', view: 'login' },
   { label: 'wrong details', view: 'login-error' },
   { label: 'timed out', view: 'login-timeout' },
+  { label: 'new password', view: 'new-password' },
   { label: 'sign up', view: 'signup' },
   { label: 'reset 1', view: 'reset-email' },
   { label: 'reset 2', view: 'reset-code' },
@@ -195,6 +196,52 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
     : null;
   const setReset = (step: ResetStep | null) => setView(step ? (`reset-${step}` as AuthView) : 'login');
   const nav = useNav();
+
+  // signed in with a temporary password — a permanent one has to be set before anything else
+  if (view === 'new-password') return (
+    <Box sx={{ width: '100%' }}>
+      <Stack spacing={1} sx={{ mb: 3 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
+          בחירת סיסמה חדשה
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          התחברתם עם סיסמה זמנית. בחרו סיסמה קבועה כדי להמשיך.
+        </Typography>
+      </Stack>
+
+      <Stack
+        component="form"
+        spacing={2.5}
+        sx={{ minHeight: 355 }}
+        onSubmit={(e) => { e.preventDefault(); nav.go('dashboard'); }}
+      >
+        <TextField
+          label="סיסמה חדשה" type={showPassword ? 'text' : 'password'} placeholder="בחרו סיסמה" fullWidth autoFocus
+          autoComplete="new-password" helperText="לפחות 8 תווים"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton aria-label={showPassword ? 'הסתר סיסמה' : 'הצג סיסמה'} onClick={() => setShowPassword((v) => !v)} edge="end">
+                  {showPassword ? <VisibilityOffRounded /> : <VisibilityRounded />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField label="אימות סיסמה" type={showPassword ? 'text' : 'password'} placeholder="הזינו שוב את הסיסמה" fullWidth autoComplete="new-password" />
+
+        <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700 }}>
+          שמירה והמשך
+        </Button>
+      </Stack>
+
+      {showFooter && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
+          {COPY.footer}
+        </Typography>
+      )}
+    </Box>
+  );
 
   if (reset) return (
     <Box sx={{ width: '100%' }}>
