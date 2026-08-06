@@ -35,7 +35,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v82',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v83',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -156,10 +156,104 @@ export function Footer() {
   );
 }
 
+// the four steps of "שכחתי סיסמה", inside the same card so nothing jumps
+type ResetStep = 'email' | 'code' | 'password' | 'done';
+
 export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: boolean; showFooter?: boolean }) {
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [reset, setReset] = useState<ResetStep | null>(null);
   const nav = useNav();
+
+  if (reset) return (
+    <Box sx={{ width: '100%' }}>
+      <Stack spacing={1} sx={{ mb: 3 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
+          {reset === 'done' ? 'הסיסמה הוחלפה 🎉' : 'איפוס סיסמה'}
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          {reset === 'email' && 'הזינו את כתובת האימייל שלכם ונשלח אליכם קוד אימות.'}
+          {reset === 'code' && 'שלחנו קוד בן 6 ספרות לאימייל שלכם. הזינו אותו כאן.'}
+          {reset === 'password' && 'בחרו סיסמה חדשה, לפחות 8 תווים.'}
+          {reset === 'done' && 'אפשר להתחבר עכשיו עם הסיסמה החדשה.'}
+        </Typography>
+      </Stack>
+
+      <Stack
+        component="form"
+        spacing={2.5}
+        sx={{ minHeight: 355 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (reset === 'email') setReset('code');
+          else if (reset === 'code') setReset('password');
+          else if (reset === 'password') setReset('done');
+          else { setReset(null); setTab(0); }
+        }}
+      >
+        {reset === 'email' && (
+          <TextField label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email" autoFocus />
+        )}
+
+        {reset === 'code' && (
+          <>
+            <TextField
+              label="קוד אימות" placeholder="6 ספרות" fullWidth autoFocus autoComplete="one-time-code"
+              inputProps={{ inputMode: 'numeric', maxLength: 6, style: { letterSpacing: '0.5em', fontWeight: 700 } }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              לא הגיע קוד? <Link component="button" type="button" underline="hover" variant="body2" sx={{ fontWeight: 700 }}>שליחה מחדש</Link>
+            </Typography>
+          </>
+        )}
+
+        {reset === 'password' && (
+          <>
+            <TextField
+              label="סיסמה חדשה" type={showPassword ? 'text' : 'password'} placeholder="בחרו סיסמה" fullWidth autoFocus
+              autoComplete="new-password" helperText="לפחות 8 תווים"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton aria-label={showPassword ? 'הסתר סיסמה' : 'הצג סיסמה'} onClick={() => setShowPassword((v) => !v)} edge="end">
+                      {showPassword ? <VisibilityOffRounded /> : <VisibilityRounded />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField label="אימות סיסמה" type={showPassword ? 'text' : 'password'} placeholder="הזינו שוב את הסיסמה" fullWidth autoComplete="new-password" />
+          </>
+        )}
+
+        {reset === 'done' && (
+          <Stack spacing={1.5} alignItems="center" sx={{ py: 3 }}>
+            <CheckCircleRoundedIcon color="primary" sx={{ fontSize: 72 }} />
+            <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center' }}>
+              הסיסמה שלכם עודכנה בהצלחה.
+            </Typography>
+          </Stack>
+        )}
+
+        <Button type="submit" variant="contained" size="large" fullWidth disableElevation sx={{ py: 1.25, fontWeight: 700 }}>
+          {reset === 'email' ? 'שליחת קוד' : reset === 'code' ? 'אימות הקוד' : reset === 'password' ? 'שמירת הסיסמה' : 'התחברות'}
+        </Button>
+
+        {reset !== 'done' && (
+          <Button onClick={() => setReset(null)} size="large" fullWidth sx={{ fontWeight: 700, color: 'text.secondary' }}>
+            חזרה להתחברות
+          </Button>
+        )}
+      </Stack>
+
+      {showFooter && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 4, textAlign: 'center' }}>
+          {COPY.footer}
+        </Typography>
+      )}
+    </Box>
+  );
+
   return (
     <Box sx={{ width: '100%' }}>
       {showTitle && (
@@ -226,7 +320,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
               control={<Checkbox size="small" defaultChecked />}
               label={<Typography variant="body2">זכור אותי</Typography>}
             />
-            <Link href="#" variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
+            <Link component="button" type="button" onClick={() => setReset('email')} variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
               שכחת את הסיסמה?
             </Link>
           </Stack>
