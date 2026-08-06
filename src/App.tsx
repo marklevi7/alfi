@@ -85,11 +85,18 @@ function LoginSwitcher() {
   );
 }
 
+// the mobile preview runs the app inside an iframe, so the current selection travels in the URL
+const params = new URLSearchParams(window.location.search);
+const numParam = (key: string, fallback: number) => {
+  const raw = Number(params.get(key));
+  return Number.isFinite(raw) && params.has(key) ? raw : fallback;
+};
+
 export function App() {
-  const [screen, setScreen] = useState<Screen>('dashboard');
-  const [authView, setAuthView] = useState<AuthView>('login');
-  const [ver, setVer] = useState(() => Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7')));
-  const [sub, setSub] = useState(0);
+  const [screen, setScreen] = useState<Screen>((params.get('screen') as Screen) || 'dashboard');
+  const [authView, setAuthView] = useState<AuthView>((params.get('authView') as AuthView) || 'login');
+  const [ver, setVer] = useState(() => numParam('ver', Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7'))));
+  const [sub, setSub] = useState(() => numParam('sub', 0));
   const [showBar, setShowBar] = useState(false);
   const [device, setDevice] = useState<Device>('desktop');
   const active = DASH_VERSIONS[ver];
@@ -120,7 +127,7 @@ export function App() {
           <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.900', py: 3 }}>
             <Box
               component="iframe"
-              src={window.location.href}
+              src={`${window.location.pathname}?ver=${ver}&sub=${sub}&screen=${screen}&authView=${authView}`}
               title="תצוגת מובייל"
               sx={{ width: 390, height: 'min(844px, 92vh)', border: 0, borderRadius: 6, boxShadow: 24, bgcolor: 'background.paper' }}
             />
