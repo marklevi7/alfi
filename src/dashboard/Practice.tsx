@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { green, amber, brown } from '@mui/material/colors';
+import { green, amber, red, brown } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -47,8 +47,8 @@ const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as
 export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void; dateLabel?: string }) {
   const kind = KIND[t.kind];
   const pct = t.total ? Math.round((t.solved / t.total) * 100) : 0;
-  // work in progress is yellow, exactly like a half-solved question; green is reserved for finished
-  const barColor = amber[600];
+  // barely started is red, work in progress is yellow; green is reserved for a finished task
+  const barColor = pct < 34 ? red[500] : amber[600];
   // closed history states are locked: summary only
   const locked = t.status === 'done' || t.status === 'expired' || t.status === 'partial' || t.status === 'notStarted';
   const cta = locked ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';

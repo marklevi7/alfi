@@ -5,6 +5,11 @@ import { deepPurple, green, teal } from '@mui/material/colors';
 const base = {
   direction: 'rtl' as const,
   shape: { borderRadius: 8 },
+  // subtitle1 is the label token — nav items and other actionable labels use it,
+  // so the size lives here instead of being hardcoded per screen.
+  typography: {
+    subtitle1: { fontSize: '1.25rem', fontWeight: 700 },
+  },
   components: {
     // RTL at the design-system level. Layout/spacing already flip via
     // stylis-plugin-rtl + logical props. Directional glyphs (arrows, chevrons)

@@ -249,8 +249,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     <ListItemText
                       primary={item.label}
                       primaryTypographyProps={{
-                        fontWeight: 700,
-                        fontSize: '1.25rem',
+                        variant: 'subtitle1',
                         textAlign: 'start',
                         sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
                       }}
