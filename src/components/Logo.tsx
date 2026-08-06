@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { green, lightGreen } from '@mui/material/colors';
 import Box from '@mui/material/Box';
@@ -26,7 +27,9 @@ const heights = {
 export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }: Props) {
   const isLight = variant === 'light';
   const s = heights[size];
-  const fill = isLight ? 'var(--alfi-p)' : 'url(#alfiGrad)';
+  // every instance needs its own gradient id — duplicates make later logos paint nothing
+  const gradId = `alfiGrad-${useId().replace(/:/g, '')}`;
+  const fill = isLight ? 'var(--alfi-p)' : `url(#${gradId})`;
   return (
     <Stack spacing={1} alignItems="center" sx={sx}>
       <Box
@@ -44,7 +47,7 @@ export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }:
         <defs>
           {/* Brand-locked gradient (matches the Figma logo): green 500 → lightGreen 500.
               MUI palette variables only — identical in every theme/version. */}
-          <linearGradient id="alfiGrad" gradientUnits="userSpaceOnUse" x1="4" y1="10" x2="236" y2="97">
+          <linearGradient id={gradId} gradientUnits="userSpaceOnUse" x1="4" y1="10" x2="236" y2="97">
             <stop offset="7%" stopColor={green[500]} />
             <stop offset="87%" stopColor={lightGreen[500]} />
           </linearGradient>

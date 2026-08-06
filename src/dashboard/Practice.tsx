@@ -52,6 +52,14 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // closed history states are locked: summary only
   const locked = t.status === 'done' || t.status === 'expired' || t.status === 'partial' || t.status === 'notStarted';
   const cta = locked ? 'צפה בסיכום' : t.status === 'inProgress' ? 'המשך תרגול' : 'בוא נתרגל!';
+  const STATUS_TAG: Partial<Record<Status, { label: string; dot: string; text: string }>> = {
+    new: { label: 'חדש', dot: 'info.main', text: 'info.dark' },
+    expired: { label: 'פג תוקף', dot: 'error.main', text: 'error.dark' },
+    partial: { label: 'בוצע חלקית', dot: amber[600], text: brown[900] },
+    notStarted: { label: 'טרם התחלתי', dot: 'grey.500', text: 'text.secondary' },
+  };
+  // NEW only counts before the first solved question
+  const tag = t.status === 'new' && t.solved > 0 ? undefined : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   return (
@@ -80,38 +88,21 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       >
         <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems={{ xs: 'flex-start', md: 'center' }} sx={{ flex: 1, minWidth: 0 }}>
         {/* the 36px icon is centred on the title's first line (h6 line box = 24px), whatever the title wraps to */}
-        <Box sx={{ mt: { xs: '-6px', md: 0 }, flexShrink: 0 }}>
+        <Box sx={{ height: { xs: 24, md: 'auto' }, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <KindIcon kind={t.kind} />
         </Box>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>{t.title}</Typography>
-            {/* only NEW gets the notification dot; solving even 1 question removes it */}
-            {t.status === 'new' && t.solved === 0 && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
-              </Stack>
-            )}
-            {t.status === 'expired' && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'error.dark' }}>פג תוקף</Typography>
-              </Stack>
-            )}
-            {t.status === 'partial' && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: amber[600], flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: brown[900] }}>בוצע חלקית</Typography>
-              </Stack>
-            )}
-            {t.status === 'notStarted' && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'grey.500', flexShrink: 0 }} />
-                <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'text.secondary' }}>טרם התחלתי</Typography>
-              </Stack>
-            )}
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+              {t.title}
+              {tag && (
+                <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, marginInlineStart: 1, verticalAlign: 'middle' }}>
+                  <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: tag.dot, flexShrink: 0 }} />
+                  <Box component="span" sx={{ fontSize: '0.8rem', fontWeight: 700, color: tag.text }}>{tag.label}</Box>
+                </Box>
+              )}
+            </Typography>
             {t.status === 'done' && t.grade != null && (
               <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                 <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
@@ -123,11 +114,14 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             <Typography sx={{ ...dateSx, display: { xs: 'none', md: 'block' } }}>{dateText}</Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, rowGap: 1 }}>
+          <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, columnGap: 3, rowGap: 1 }}>
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
-            <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' } }}>{dateText}</Typography>
+            <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateText}</Typography>
             {/* phone: the bar and the count get their own full-width line under the meta */}
-            <Box sx={{ width: { xs: '100%', md: 'auto' }, flex: { md: 1 }, display: { xs: 'flex', md: 'contents' }, alignItems: 'center', gap: 2, flexDirection: 'row-reverse' }}>
+            <Box sx={{
+              width: { xs: '100%', md: 'auto' }, flex: { md: 1 },
+              display: { xs: 'flex', md: 'contents' }, alignItems: 'center', gap: 3, flexDirection: 'row-reverse',
+            }}>
             <LinearProgress
               variant="determinate"
               value={pct}

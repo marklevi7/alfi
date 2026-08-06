@@ -284,8 +284,10 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             {bgLayer}
             {/* Mobile top bar */}
             <Stack direction="row" justifyContent="space-between" alignItems="center"
+              spacing={1.5}
               sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
-              <Logo variant="dark" size="small" />
+              {/* the wordmark takes the whole width of the bar, next to the sign-out button */}
+              <Logo variant="dark" size="small" sx={{ flex: 1, minWidth: 0, alignItems: 'stretch', '& svg': { width: '67%', height: 'auto', marginInlineStart: 'auto' } }} />
               <IconButton aria-label="התנתקות" onClick={() => setConfirmLogout(true)}>
                 <LogoutRoundedIcon className="dir-icon" />
               </IconButton>
