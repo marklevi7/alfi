@@ -104,17 +104,19 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
   };
   return (
     <Paper
-      elevation={8}
+      elevation={6}
       sx={{
-        // opens next to the sidebar balloon, just clear of the sidebar edge
-        position: 'fixed', bottom: 28, insetInlineStart: 'calc(25% + 24px)',
-        zIndex: (t) => t.zIndex.modal,
-        width: 340, maxWidth: 'calc(100vw - 56px)', height: 460, maxHeight: '70vh',
-        borderRadius: 4, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        // the speech bubble itself, grown into a chat — same spot, same tail, above Alfi's head
+        position: 'relative', width: '100%', height: 440, maxHeight: '60vh',
+        borderRadius: 3, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        '&::after': {
+          content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
+          borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
+          borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
+        },
       }}
     >
-      <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 1.5, bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }}>
-        <BotFace size={38} />
+      <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 1.5, bgcolor: 'grey.100' }}>
         <Box sx={{ flex: 1 }}>
           <Typography sx={{ fontWeight: 800, lineHeight: 1.2 }}>אלפי</Typography>
           <Typography variant="caption" color="text.secondary">כאן לכל שאלה</Typography>
@@ -160,45 +162,46 @@ const balloonBob = keyframes`
   50%      { transform: translateY(-6px); }
 `;
 
-/** "יש לי שאלה" balloon + popout chat — the teaching-assistant, shown only inside תרגול. */
+/** "יש לי שאלה" bubble that grows into the chat — the teaching-assistant, only inside תרגול. */
 export function AlfiWidget() {
   const [chatOpen, setChatOpen] = useState(false);
   return (
-    <>
-      {/* same shape as the main screen greeting: a speech bubble with a tail, and Alfi under it */}
+    <Box sx={{ display: { xs: 'none', md: 'block' }, width: '100%' }}>
       <Box
-        component="button"
-        onClick={() => setChatOpen((v) => !v)}
-        aria-label="שאלה כללית לאלפי"
         sx={{
-          display: { xs: 'none', md: 'block' }, width: '100%',
-          cursor: 'pointer', font: 'inherit', textAlign: 'start',
-          bgcolor: 'transparent', border: 0, p: 0,
+          mb: 2,
           animation: chatOpen ? 'none' : `${balloonBob} 2.6s ease-in-out infinite`,
-          '&:hover .alfi-bubble': { boxShadow: 12 },
           '&:hover': { animationPlayState: 'paused' },
           '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
         }}
       >
-        <Paper
-          className="alfi-bubble"
-          elevation={6}
-          sx={{
-            position: 'relative', borderRadius: 3, px: 2.5, py: 1.25, mb: 2,
-            transition: (t) => t.transitions.create('box-shadow'),
-            '&::after': {
-              content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
-              borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
-              borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
-            },
-          }}
-        >
-          <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
-        </Paper>
-        <Box sx={{ paddingInlineStart: 1.25 }}><AlfiAvatar size={64} /></Box>
+        {chatOpen ? (
+          <AlfiChat onClose={() => setChatOpen(false)} />
+        ) : (
+          <Paper
+            component="button"
+            elevation={6}
+            onClick={() => setChatOpen(true)}
+            aria-label="שאלה כללית לאלפי"
+            sx={{
+              position: 'relative', width: '100%', textAlign: 'start',
+              cursor: 'pointer', font: 'inherit', border: 0,
+              borderRadius: 3, px: 2.5, py: 1.25,
+              transition: (t) => t.transitions.create('box-shadow'),
+              '&:hover': { boxShadow: 12 },
+              '&::after': {
+                content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
+                borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
+                borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
+              },
+            }}
+          >
+            <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
+          </Paper>
+        )}
       </Box>
-      {chatOpen && <AlfiChat onClose={() => setChatOpen(false)} />}
-    </>
+      <Box sx={{ paddingInlineStart: 1.25 }}><AlfiAvatar size={64} /></Box>
+    </Box>
   );
 }
 
