@@ -133,7 +133,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         <Button
           component="span"
           variant={locked ? 'outlined' : 'contained'}
-          color={locked ? 'inherit' : kind}
+          color={kind}
           // one fixed width for every card, so the CTAs line up in a single column
           sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: 160 }}
         >

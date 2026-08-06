@@ -279,8 +279,7 @@ function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: ()
                 key={k}
                 onClick={() => onPick(k)}
                 variant="outlined"
-                color="inherit"
-                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none', color: 'text.primary', borderColor: 'divider' }}
+                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none' }}
               >
                 {k}
               </Button>
@@ -291,9 +290,8 @@ function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: ()
       <Button
         fullWidth
         variant="outlined"
-        color="inherit"
         onClick={() => onPick('\n')}
-        sx={{ mt: 0.75, minHeight: 40, fontWeight: 700, color: 'text.secondary', borderColor: 'divider' }}
+        sx={{ mt: 0.75, minHeight: 40, fontWeight: 700 }}
       >
         שורה חדשה
       </Button>
@@ -680,9 +678,9 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
         {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
       </Stack>
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
-        <Button size="small" variant="outlined" color="inherit" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ color: 'text.secondary' }}>צרף קובץ</Button>
-        <Button size="small" variant="outlined" color="inherit" startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ color: 'text.secondary', ...(mathOpen && { borderColor: 'primary.main', color: 'primary.dark' }) }}>מחשבון</Button>
-        <Button size="small" variant="outlined" color="inherit" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ color: 'text.secondary' }}>צלם תשובה</Button>
+        <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
+        <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>מחשבון</Button>
+        <Button size="small" variant="outlined" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
       </Stack>
       <Button
         fullWidth variant="contained" onClick={send} disabled={thinking || !draft.trim()}
@@ -711,7 +709,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
-        <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, color: 'text.secondary' }}>
+        <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700 }}>
           חזרה לשאלות
         </Button>
         {/* same quest track as the task page, so progress feels continuous */}
@@ -902,7 +900,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           <Confetti />
         </Box>
       )}
-      <Button onClick={onBack} variant="outlined" color="inherit" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, color: 'text.secondary' }}>
+      <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700 }}>
         חזרה לרשימת המשימות
       </Button>
 

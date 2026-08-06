@@ -351,7 +351,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
-          <Button onClick={() => setConfirmLogout(false)} variant="outlined" color="inherit" fullWidth sx={{ fontWeight: 700 }}>
+          <Button onClick={() => setConfirmLogout(false)} variant="outlined" fullWidth sx={{ fontWeight: 700 }}>
             נשארים
           </Button>
           <Button onClick={() => { setConfirmLogout(false); navTo.go('login'); }} variant="contained" fullWidth startIcon={<LogoutRoundedIcon className="dir-icon" />} sx={{ fontWeight: 800 }}>
