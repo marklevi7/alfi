@@ -4,6 +4,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT } from './Shell';
@@ -114,12 +116,14 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
 export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade' | 'noNext' | 'empty' | 'terms' }) {
   const theme = useTheme();
   const nav = useNav();
+  // on a phone Alfi gets the top half and the two cards merge into one compact strip
+  const phone = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Shell active="dashboard" title="" hideSidebarRobot>
       {/* main screen 5: first-login terms-of-use popup over the full dashboard */}
       {variant === 'terms' && <TermsDialog />}
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 150, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: '44vh', md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
         {/* speech bubble — always greets; oval marks where Alfi will stand */}
         <Box
           sx={{
@@ -146,7 +150,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
           </Typography>
         </Box>
         {!SHOW_BOT && (
-          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 150, md: 340 }, height: { xs: 170, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
+          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 190, md: 340 }, height: { xs: 240, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
         )}
         <MathSigns />
         {/* colorful glow halo behind ALFI */}
@@ -177,8 +181,43 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         )}
       </Box>
 
+      {/* phone: one strip — gauge beside the next-practice CTA */}
+      {variant !== 'empty' && phone && (
+        <Card sx={{ borderRadius: 4, boxShadow: theme.shadows[8] }}>
+          <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              {variant !== 'noGrade' && (
+                <Box sx={{ width: 118, flexShrink: 0 }}>
+                  <ScoreGauge value={78} />
+                  <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>
+                    הציון הממוצע שלי
+                  </Typography>
+                </Box>
+              )}
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, fontSize: '1.05rem', mb: 0.5 }}>
+                  {variant === 'noNext' ? 'אין תרגולים חדשים' : 'התרגול הבא שלי'}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, textWrap: 'pretty' }}>
+                  {variant === 'noNext' ? 'כשהמורה תשלח משימה, היא תופיע כאן.' : 'יש לי 2 תרגולים חדשים מהמורה.'}
+                </Typography>
+                <Button
+                  fullWidth
+                  variant={variant === 'noNext' ? 'outlined' : 'contained'}
+                  onClick={() => nav.go('practice')}
+                  endIcon={variant === 'noNext' ? undefined : <ArrowForwardRoundedIcon className="dir-icon" />}
+                  sx={{ fontWeight: 800 }}
+                >
+                  {variant === 'noNext' ? 'לכל התרגולים' : 'בוא נתרגל!'}
+                </Button>
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Boxes — colorful, overlapping ALFI's hands. dashboard4 shows none. */}
-      {variant !== 'empty' && (
+      {variant !== 'empty' && !phone && (
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, alignItems: 'stretch', position: 'relative', top: SHOW_BOT ? '-50px' : 0, zIndex: 1 }}>
 
         {/* Score gauge card */}
