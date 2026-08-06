@@ -124,14 +124,14 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
             <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' } }}>{dateText}</Typography>
             {/* phone: the bar and the count get their own full-width line under the meta */}
-            <Stack direction="row" spacing={2} alignItems="center" sx={{ width: { xs: '100%', md: 'auto' }, flex: { md: 1 }, display: { xs: 'flex', md: 'contents' } }}>
+            <Box sx={{ width: { xs: '100%', md: 'auto' }, flex: { md: 1 }, display: { xs: 'flex', md: 'contents' }, alignItems: 'center', gap: 2, flexDirection: 'row-reverse' }}>
             <LinearProgress
               variant="determinate"
               value={pct}
               sx={{ flex: 1, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
             />
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
-            </Stack>
+            </Box>
           </Stack>
 
           {t.status === 'expired' && (
