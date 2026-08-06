@@ -44,28 +44,6 @@ export const NAV = [
   { label: 'תמונת מצב', short: 'תמונת מצב', icon: <HistoryTwoToneIcon />, screen: 'history' as const },
 ];
 
-// mini friendly bot face — placeholder until the real Alfi avatar lands
-function BotFace({ size = 46 }: { size?: number }) {
-  return (
-    <Box
-      sx={{
-        width: size, height: size, borderRadius: '50%', flexShrink: 0,
-        bgcolor: (t) => alpha(t.palette.primary.main, 0.16),
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px',
-      }}
-    >
-      <Box sx={{ display: 'flex', gap: '5px' }}>
-        {[0, 1].map((i) => (
-          <Box key={i} sx={{ width: 12, height: 13, borderRadius: '50%', bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 1 }}>
-            <Box sx={{ width: 5, height: 6, borderRadius: '50%', bgcolor: 'primary.dark' }} />
-          </Box>
-        ))}
-      </Box>
-      <Box sx={{ width: 12, height: 6, borderBottom: 2, borderColor: 'primary.dark', borderRadius: '0 0 12px 12px' }} />
-    </Box>
-  );
-}
-
 // the real Alfi avatar — head shot, per theme version (green v7 / purple v5).
 // neutral circle behind it: the PNG is transparent, and a tinted disc would read as a state color.
 export function AlfiAvatar({ size = 40 }: { size?: number }) {
@@ -166,10 +144,12 @@ const balloonBob = keyframes`
 export function AlfiWidget() {
   const [chatOpen, setChatOpen] = useState(false);
   return (
-    <Box sx={{ display: { xs: 'none', md: 'block' }, width: '100%' }}>
+    <Box sx={{ display: { xs: 'none', md: 'block' }, width: '100%', position: 'relative' }}>
+      {/* the bubble grows upward out of the same spot, so Alfi's head never moves */}
       <Box
         sx={{
-          mb: 2,
+          position: 'absolute', bottom: '100%', width: '100%', mb: 2,
+          zIndex: (t) => t.zIndex.appBar,
           animation: chatOpen ? 'none' : `${balloonBob} 2.6s ease-in-out infinite`,
           '&:hover': { animationPlayState: 'paused' },
           '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
