@@ -255,13 +255,13 @@ export function Confetti({ pieces = 80 }: { pieces?: number }) {
 /* ---------- formula picker + QR dialogs ---------- */
 // A real math keypad: opens beside the answer box and STAYS open, so the student can
 // type on the keyboard and tap symbols at the same time. No modal, nothing blocked.
+// symbols only — digits come from the keyboard, which stays usable the whole time
 const PAD_ROWS: string[][] = [
-  ['7', '8', '9', '÷', '(', ')'],
-  ['4', '5', '6', '×', '√', 'π'],
-  ['1', '2', '3', '−', 'x²', 'xⁿ'],
-  ['0', '.', '=', '+', '≤', '≥'],
-  ['x', 'y', '≠', '±', '∞', '·'],
-  ["f′", "f″", '∫', 'Σ', 'lim', '→'],
+  ['+', '−', '×', '÷', '=', '≠'],
+  ['<', '>', '≤', '≥', '±', '·'],
+  ['(', ')', '√', 'x²', 'xⁿ', 'π'],
+  ['x', 'y', "f′", "f″", '∫', 'Σ'],
+  ['lim', '→', '∞', '°', 'α', 'θ'],
 ];
 
 function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: () => void }) {
@@ -280,7 +280,7 @@ function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: ()
                 onClick={() => onPick(k)}
                 variant="outlined"
                 color="inherit"
-                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, color: 'text.primary', borderColor: 'divider' }}
+                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none', color: 'text.primary', borderColor: 'divider' }}
               >
                 {k}
               </Button>
