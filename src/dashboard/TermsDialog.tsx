@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,13 +17,17 @@ import Link from '@mui/material/Link';
 export function TermsDialog() {
   const [open, setOpen] = useState(true);
   const [agreed, setAgreed] = useState(false);
+  // on a phone the terms take the whole screen instead of floating in a card
+  const theme = useTheme();
+  const phone = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Dialog
       open={open}
       disableEscapeKeyDown
+      fullScreen={phone}
       maxWidth="sm"
       fullWidth
-      PaperProps={{ sx: { borderRadius: 4, p: 1 } }}
+      PaperProps={{ sx: { borderRadius: phone ? 0 : 4, p: 1 } }}
     >
       <DialogTitle sx={{ fontWeight: 800, fontSize: '1.5rem', pb: 0.5 }}>
         ברוכים הבאים לאלפי! 👋
