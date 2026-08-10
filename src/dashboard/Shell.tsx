@@ -307,7 +307,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Stack>
 
             {/* Header strip — a screen with no title (a task, a question) keeps its space back */}
-            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 4, md: 7 }, pt: { xs: 5, md: 7 }, pb: { xs: 2, md: 3 }, display: title || headerAction ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 4 }, pt: { xs: 5, md: 7 }, pb: { xs: 2, md: 3 }, display: title || headerAction ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 {headerAction ?? (
                 <Typography variant="h4" component="h1"
