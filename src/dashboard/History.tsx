@@ -111,14 +111,18 @@ export function History() {
     <Shell active="history" title="תמונת מצב">
       {/* Stats — one card, 3 columns */}
       <Card variant="outlined" sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ py: 4, px: 0, '&:last-child': { pb: 4 } }}>
-          <Stack direction="row" divider={<Divider orientation="vertical" flexItem />}>
+        <CardContent sx={{ py: { xs: 2.5, md: 4 }, px: 0, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            divider={<Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />}
+            spacing={{ xs: 2.5, md: 0 }}
+          >
             {STATS.map((s) => {
               const pct = s.total ? Number(s.value) / s.total : 0;
               const tier = pct >= 0.7 ? 'gold' : pct < 0.3 ? 'bronze' : 'silver';
               return (
                 <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
+                  <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: { xs: 1, md: 2 } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' } }}>
                       {s.icon}
                     </Box>
@@ -150,20 +154,20 @@ export function History() {
 
       {/* Filters — bare row, no card */}
       <Box sx={{ px: 0.5 }}>
-          <Stack direction="row" flexWrap="nowrap" gap={1} alignItems="center">
+          <Stack direction="row" flexWrap={{ xs: 'wrap', md: 'nowrap' }} gap={1} alignItems="center">
             <TextField
               size="small"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="חיפוש לפי שם"
               InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
-              sx={{ flex: '1 1 120px', minWidth: 110 }}
+              sx={{ flex: { xs: '1 1 100%', md: '1 1 120px' }, minWidth: 110 }}
             />
-            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: '1 1 110px', minWidth: 100 }}>
+            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 100 }}>
               <MenuItem value="">כל הנושאים</MenuItem>
               {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
             </TextField>
-            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: '1 1 110px', minWidth: 100 }}>
+            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 100 }}>
               <MenuItem value="">הכל</MenuItem>
               {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </TextField>
@@ -172,7 +176,7 @@ export function History() {
               exclusive
               value={kind}
               onChange={(_, v) => v && setKind(v)}
-              sx={{ flexShrink: 0, '& .MuiToggleButton-root': { px: 1.25, fontWeight: 700, textTransform: 'none' } }}
+              sx={{ flexShrink: 0, width: { xs: '100%', md: 'auto' }, '& .MuiToggleButton-root': { flex: { xs: 1, md: 'none' }, px: 1.25, fontWeight: 700, textTransform: 'none' } }}
             >
               <ToggleButton value="all">הכל</ToggleButton>
               <ToggleButton value="תרגול">תרגול</ToggleButton>
