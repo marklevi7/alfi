@@ -12,7 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { type Kind } from './KindIcon';
 import { TaskCard, type TaskStatus } from './Practice';
-import { TaskDetail } from './TaskDetail';
+import { SummaryDialog, type Summary, type SummaryQuestion } from './SummaryDialog';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red, deepOrange, blue } from '@mui/material/colors';
@@ -54,6 +54,56 @@ const ITEMS: Item[] = [
   { title: 'בוחן בחקירת פונקציות', kind: 'בוחן', when: 'לפני שלושה שבועות', status: 'done', score: 94, topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'אסימפטוטות', solved: 8, total: 8 },
 ];
 
+// what the popup replays. Demo content: one test at 88, one perfect test, one half-done תרגול.
+const ANSWER_FULL = [
+  'תחום הגדרה: x²−9 ≠ 0, לכן x ≠ 3 וגם x ≠ −3',
+  'חיתוך עם ציר x: x²−4x = 0 → x = 0 או x = 4',
+  'אסימפטוטה אופקית: y = 1',
+].join('\n');
+const ANSWER_PARTIAL = [
+  'שיפוע הישר: m = 2',
+  'משוואת הישר: y = 2x + 3',
+].join('\n');
+
+function questionsFor(it: Item): SummaryQuestion[] {
+  const perQ = it.kind === 'בוחן' ? Math.round(100 / it.total) : 0;
+  // a test that lost points drops them on the second question, so the demo shows both states
+  const lost = it.score != null && it.score < 100;
+  return Array.from({ length: it.total }, (_, i) => {
+    const answered = i < it.solved;
+    const short = it.kind === 'בוחן' ? `שאלה ${i + 1} · ${it.subTopic}` : `תרגיל ${i + 1} · ${it.subTopic}`;
+    if (!answered) return { short, answer: '', status: 'notStarted' as const };
+    const dropped = lost && i === 1;
+    return {
+      short,
+      answer: it.kind === 'בוחן' ? ANSWER_FULL : ANSWER_PARTIAL,
+      ...(it.kind === 'בוחן' && { points: dropped ? Math.round(perQ * 0.75) : perQ, outOf: perQ }),
+      status: dropped ? ('partial' as const) : ('done' as const),
+    };
+  });
+}
+
+function insightFor(it: Item): string {
+  if (it.kind === 'תרגול') {
+    return it.solved === it.total
+      ? 'סיימת את כל התרגילים ובנית את הפתרונות לפי הסדר. הדרך שלך לחישוב שיפוע ומשוואת ישר ברורה ומדויקת. אפשר להתקדם לנושא הבא.'
+      : `פתרת ${it.solved} מתוך ${it.total} תרגילים. ההתחלה נכונה, ובמיוחד מציאת השיפוע. כדאי לחזור ולסיים את השאר כדי לקבע את החומר.`;
+  }
+  if (it.score != null && it.score >= 95) {
+    return 'בוחן כמעט מושלם. הגדרת נכון את התחום, זיהית את האסימפטוטות ובנית פתרון מסודר. שמור על הסדר הזה גם בבחנים הבאים.';
+  }
+  return `קיבלת ${it.score}. הגזירה שלך מצוינת והמעברים ברורים. הנקודות ירדו על טעויות חישוב קטנות בשאלה 2 ועל דילוג על שלב אחד בדרך. שווה לבדוק כל שורה לפני שליחה.`;
+}
+
+const summaryFor = (it: Item): Summary => ({
+  title: it.title,
+  kind: it.kind,
+  when: it.when,
+  score: it.score,
+  insight: insightFor(it),
+  questions: questionsFor(it),
+});
+
 const uniq = (arr: string[]) => Array.from(new Set(arr));
 const TOPICS = uniq(ITEMS.map((i) => i.topic));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
@@ -85,7 +135,8 @@ export function History() {
   const [subTopic, setSubTopic] = useState('');
   const [kind, setKind] = useState<'all' | Kind>('all');
   // a fully-completed test can be opened read-only, like a regular task
-  const [openItem, setOpenItem] = useState<Item | null>(null);
+  // a past task opens a summary popup — the student stays on תמונת מצב
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   const items = useMemo(
     () => ITEMS.filter((it) =>
@@ -97,15 +148,6 @@ export function History() {
     ),
     [q, topic, unit, subTopic, kind]
   );
-
-  if (openItem) {
-    return (
-      <TaskDetail
-        task={{ id: ITEMS.indexOf(openItem) + 440, title: openItem.title, total: openItem.total, solved: openItem.solved, from: '', to: null, grade: openItem.score, kind: openItem.kind }}
-        onBack={() => setOpenItem(null)}
-      />
-    );
-  }
 
   return (
     <Shell active="history" title="תמונת מצב">
@@ -224,13 +266,15 @@ export function History() {
                 grade: it.score,
               }}
               dateLabel={it.when}
-              onOpen={() => (it.status === 'done' ? setOpenItem(it) : nav.go('practice'))}
+              onOpen={() => (it.status === 'notStarted' ? nav.go('practice') : setSummary(summaryFor(it)))}
             />
           </Box>
           );
         })}
         </Box>
       </Box>
+      <SummaryDialog summary={summary} onClose={() => setSummary(null)} />
+
       {items.length === 0 && (
         <Typography sx={{ textAlign: 'center', color: 'text.secondary', py: 6, fontWeight: 600 }}>
           לא נמצאו תוצאות
