@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { alpha, keyframes } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -400,10 +402,13 @@ const railFill = keyframes`
   to   { transform: scaleX(1); }
 `;
 
-function QuestProgress({ total, solved, started, current, size = 44, onPick, onHover, hovered }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
+function QuestProgress({ total, solved, started, current, size: sizeProp, onPick, onHover, hovered }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
   const done = solved.size;
+  // the circles shrink on a phone so the "x/y שאלות" caption always fits beside them
+  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
+  const size = sizeProp ?? (phone ? 34 : 44);
   return (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ rowGap: 1 }}>
       <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: `${Math.round(size * 0.6)}px` }}>
         {/* rail behind the circles + animated green fill up to the solved count */}
         <Box sx={{ position: 'absolute', insetInline: size / 2, height: 7, borderRadius: 4, bgcolor: (t) => alpha(t.palette.text.primary, 0.1) }} />
@@ -452,7 +457,7 @@ function QuestProgress({ total, solved, started, current, size = 44, onPick, onH
           );
         })}
       </Box>
-      <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap', fontWeight: 700 }}>
+      <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap', fontWeight: 700, flexShrink: 0 }}>
         {done === total ? 'סיימת! כל הכבוד 🎉' : `${done}/${total} שאלות`}
       </Typography>
     </Stack>
