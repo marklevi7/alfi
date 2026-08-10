@@ -20,6 +20,11 @@ import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartm
 import TaskAltTwoToneIcon from '@mui/icons-material/TaskAltTwoTone';
 import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
 import { Shell } from './Shell';
+import Badge from '@mui/material/Badge';
+import Button from '@mui/material/Button';
+import Popover from '@mui/material/Popover';
+import IconButton from '@mui/material/IconButton';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
@@ -139,6 +144,9 @@ export function History() {
   const phone = useMediaQuery(theme.breakpoints.down('sm'));
   // a past task opens a summary popup — the student stays on תמונת מצב
   const [summary, setSummary] = useState<Summary | null>(null);
+  // every filter lives behind one button; the badge says how many are on
+  const [filterAnchor, setFilterAnchor] = useState<HTMLElement | null>(null);
+  const activeFilters = [topic, subTopic, kind === 'all' ? '' : kind].filter(Boolean).length;
 
   const items = useMemo(
     () => ITEMS.filter((it) =>
@@ -177,7 +185,7 @@ export function History() {
               // phone: two lines for the whole card — icon + number, label underneath
               if (phone) return (
                 <Stack key={s.label} spacing={0.25} alignItems="center" sx={{ flex: 1, minWidth: 0, px: 1 }}>
-                  <Stack direction="row" spacing={0.75} alignItems="center">
+                  <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ height: 34 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.4rem' }, flexShrink: 0 }}>{s.icon}</Box>
                     {s.label === 'תרגולים השבוע'
                       ? <Medal tier={tier} size={30} />
@@ -207,37 +215,68 @@ export function History() {
         </CardContent>
       </Card>
 
-      {/* Filters — bare row, no card */}
+      {/* Filters — a search field and one button; everything else hides behind it */}
       <Box sx={{ px: 0.5 }}>
-          <Stack direction="row" flexWrap={{ xs: 'wrap', md: 'nowrap' }} gap={1} alignItems="center">
-            <TextField
-              size="small"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="חיפוש לפי שם"
-              InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
-              sx={{ flex: { xs: '1 1 55%', md: '1 1 120px' }, minWidth: 0 }}
-            />
-            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 0, order: { xs: 3, md: 0 } }}>
+        <Stack direction="row" gap={1} alignItems="center">
+          <TextField
+            size="small"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="חיפוש לפי שם"
+            InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
+            sx={{ flex: 1, minWidth: 0 }}
+          />
+          <Badge badgeContent={activeFilters} color="primary" overlap="circular">
+            <IconButton
+              onClick={(e) => setFilterAnchor(e.currentTarget)}
+              aria-label="סינון"
+              sx={{ border: 1, borderColor: 'divider', borderRadius: 2, color: activeFilters ? 'primary.main' : 'text.secondary' }}
+            >
+              <TuneRoundedIcon />
+            </IconButton>
+          </Badge>
+        </Stack>
+
+        <Popover
+          open={!!filterAnchor}
+          anchorEl={filterAnchor}
+          onClose={() => setFilterAnchor(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          PaperProps={{ sx: { borderRadius: 3, p: 2, width: { xs: 'calc(100vw - 40px)', sm: 320 } } }}
+        >
+          <Stack spacing={2}>
+            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} fullWidth>
               <MenuItem value="">כל הנושאים</MenuItem>
               {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
             </TextField>
-            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 0, order: { xs: 4, md: 0 } }}>
+            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} fullWidth>
               <MenuItem value="">הכל</MenuItem>
               {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </TextField>
             <ToggleButtonGroup
               size="small"
               exclusive
+              fullWidth
               value={kind}
               onChange={(_, v) => v && setKind(v)}
-              sx={{ flexShrink: 0, order: { xs: 2, md: 0 }, '& .MuiToggleButton-root': { px: 1, fontWeight: 700, textTransform: 'none' } }}
+              sx={{ '& .MuiToggleButton-root': { fontWeight: 700, textTransform: 'none' } }}
             >
               <ToggleButton value="all">הכל</ToggleButton>
               <ToggleButton value="תרגול">תרגול</ToggleButton>
               <ToggleButton value="בוחן">בוחן</ToggleButton>
             </ToggleButtonGroup>
+            <Button
+              onClick={() => { setTopic(''); setSubTopic(''); setKind('all'); }}
+              variant="outlined"
+              fullWidth
+              disabled={!activeFilters}
+              sx={{ fontWeight: 700 }}
+            >
+              ניקוי סינון
+            </Button>
           </Stack>
+        </Popover>
       </Box>
 
       {/* timeline: every item hangs on a vertical rail — dot = submission state
