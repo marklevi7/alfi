@@ -14,7 +14,6 @@ import { type Kind } from './KindIcon';
 import { TaskCard, type TaskStatus } from './Practice';
 import { SummaryDialog, type Summary, type SummaryQuestion } from './SummaryDialog';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { useNav } from '../nav';
 import { green, amber, grey, brown, blueGrey, red, deepOrange, blue } from '@mui/material/colors';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
@@ -128,7 +127,6 @@ function Medal({ tier, size = 44 }: { tier: keyof typeof MEDAL_TIERS; size?: num
 }
 
 export function History() {
-  const nav = useNav();
   const [q, setQ] = useState('');
   const [topic, setTopic] = useState('');
   const [unit] = useState('');
@@ -266,7 +264,7 @@ export function History() {
                 grade: it.score,
               }}
               dateLabel={it.when}
-              onOpen={() => (it.status === 'notStarted' ? nav.go('practice') : setSummary(summaryFor(it)))}
+              onOpen={() => setSummary(summaryFor(it))}
             />
           </Box>
           );
