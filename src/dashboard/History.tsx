@@ -155,11 +155,10 @@ export function History() {
     <Shell active="history" title="תמונת מצב">
       {/* Stats — one card, 3 columns */}
       <Card variant="outlined" sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ py: { xs: 2.5, md: 4 }, px: 0, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
+        <CardContent sx={{ py: { xs: 1.75, md: 4 }, px: 0, '&:last-child': { pb: { xs: 1.75, md: 4 } } }}>
           <Stack
-            direction={{ xs: 'column', md: 'row' }}
-            divider={<Divider orientation={phone ? 'horizontal' : 'vertical'} flexItem />}
-            spacing={{ xs: 2, md: 0 }}
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
           >
             {STATS.map((s) => {
               const pct = s.total ? Number(s.value) / s.total : 0;
@@ -175,16 +174,16 @@ export function History() {
                 ? <Medal tier={tier} size={phone ? 40 : 54} />
                 : <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>;
 
-              // phone: one tidy row per stat — icon, text block, value on the far side
+              // phone: two lines for the whole card — icon + number, label underneath
               if (phone) return (
-                <Stack key={s.label} direction="row" spacing={2} alignItems="center" sx={{ px: 2.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' }, flexShrink: 0 }}>{s.icon}</Box>
-                  <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 800 }}>{s.label}</Typography>
-                    <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
-                    {dots}
+                <Stack key={s.label} spacing={0.25} alignItems="center" sx={{ flex: 1, minWidth: 0, px: 1 }}>
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.4rem' }, flexShrink: 0 }}>{s.icon}</Box>
+                    {s.label === 'תרגולים השבוע'
+                      ? <Medal tier={tier} size={30} />
+                      : <Typography variant="h5" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
                   </Stack>
-                  <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{value}</Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>{s.label}</Typography>
                 </Stack>
               );
 
@@ -217,13 +216,13 @@ export function History() {
               onChange={(e) => setQ(e.target.value)}
               placeholder="חיפוש לפי שם"
               InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
-              sx={{ flex: { xs: '1 1 100%', md: '1 1 120px' }, minWidth: 110 }}
+              sx={{ flex: { xs: '1 1 55%', md: '1 1 120px' }, minWidth: 0 }}
             />
-            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 100 }}>
+            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 0, order: { xs: 3, md: 0 } }}>
               <MenuItem value="">כל הנושאים</MenuItem>
               {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
             </TextField>
-            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 100 }}>
+            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ flex: { xs: '1 1 45%', md: '1 1 110px' }, minWidth: 0, order: { xs: 4, md: 0 } }}>
               <MenuItem value="">הכל</MenuItem>
               {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </TextField>
@@ -232,7 +231,7 @@ export function History() {
               exclusive
               value={kind}
               onChange={(_, v) => v && setKind(v)}
-              sx={{ flexShrink: 0, width: { xs: '100%', md: 'auto' }, '& .MuiToggleButton-root': { flex: { xs: 1, md: 'none' }, px: 1.25, fontWeight: 700, textTransform: 'none' } }}
+              sx={{ flexShrink: 0, order: { xs: 2, md: 0 }, '& .MuiToggleButton-root': { px: 1, fontWeight: 700, textTransform: 'none' } }}
             >
               <ToggleButton value="all">הכל</ToggleButton>
               <ToggleButton value="תרגול">תרגול</ToggleButton>
