@@ -595,6 +595,13 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
+  // walking back into a question that was already solved gets a celebration too
+  useEffect(() => {
+    if (!locked) return;
+    setConfetti(true);
+    const id = window.setTimeout(() => setConfetti(false), 1800);
+    return () => window.clearTimeout(id);
+  }, [locked]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' }); }, [msgs.length, thinking]);
 
   // symbols land where the cursor is, and the caret stays put so typing continues naturally
