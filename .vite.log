@@ -806,3 +806,7 @@
 10:12:54 AM [vite] page reload dist/index.html
 10:15:57 AM [vite] hmr update /src/login/parts.tsx
 10:16:01 AM [vite] page reload dist/index.html
+10:18:09 AM [vite] hmr update /src/App.tsx
+10:18:51 AM [vite] hmr update /src/App.tsx
+10:20:53 AM [vite] hmr update /src/login/parts.tsx
+10:20:57 AM [vite] page reload dist/index.html

@@ -408,8 +408,8 @@ function QuestProgress({ total, solved, started, current, size: sizeProp, onPick
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   const size = sizeProp ?? (phone ? 34 : 44);
   return (
-    <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ rowGap: 1 }}>
-      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: `${Math.round(size * 0.6)}px` }}>
+    <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, py: 1, overflow: 'visible' }}>
+      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: `${Math.round(size * 0.6)}px`, py: 0.5, overflow: 'visible' }}>
         {/* rail behind the circles + animated green fill up to the solved count */}
         <Box sx={{ position: 'absolute', insetInline: size / 2, height: 7, borderRadius: 4, bgcolor: (t) => alpha(t.palette.text.primary, 0.1) }} />
         <Box sx={{
