@@ -20,6 +20,8 @@ import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartm
 import TaskAltTwoToneIcon from '@mui/icons-material/TaskAltTwoTone';
 import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
 import { Shell } from './Shell';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 const STATS = [
   { label: 'רצף תרגול', value: '4', total: 5, sub: '4 מתוך 5 ימים', icon: <LocalFireDepartmentTwoToneIcon sx={{ color: deepOrange[500] }} />, tone: 'primary' as const },
@@ -133,6 +135,8 @@ export function History() {
   const [subTopic, setSubTopic] = useState('');
   const [kind, setKind] = useState<'all' | Kind>('all');
   // a fully-completed test can be opened read-only, like a regular task
+  const theme = useTheme();
+  const phone = useMediaQuery(theme.breakpoints.down('sm'));
   // a past task opens a summary popup — the student stays on תמונת מצב
   const [summary, setSummary] = useState<Summary | null>(null);
 
@@ -154,37 +158,49 @@ export function History() {
         <CardContent sx={{ py: { xs: 2.5, md: 4 }, px: 0, '&:last-child': { pb: { xs: 2.5, md: 4 } } }}>
           <Stack
             direction={{ xs: 'column', md: 'row' }}
-            divider={<Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', md: 'block' } }} />}
-            spacing={{ xs: 2.5, md: 0 }}
+            divider={<Divider orientation={phone ? 'horizontal' : 'vertical'} flexItem />}
+            spacing={{ xs: 2, md: 0 }}
           >
             {STATS.map((s) => {
               const pct = s.total ? Number(s.value) / s.total : 0;
               const tier = pct >= 0.7 ? 'gold' : pct < 0.3 ? 'bronze' : 'silver';
+              const dots = s.total > 0 && (
+                <Stack direction="row" spacing={0.5}>
+                  {Array.from({ length: s.total }).map((_, i) => (
+                    <Box key={i} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: i < Number(s.value) ? 'primary.main' : 'grey.300' }} />
+                  ))}
+                </Stack>
+              );
+              const value = s.label === 'תרגולים השבוע'
+                ? <Medal tier={tier} size={phone ? 40 : 54} />
+                : <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>;
+
+              // phone: one tidy row per stat — icon, text block, value on the far side
+              if (phone) return (
+                <Stack key={s.label} direction="row" spacing={2} alignItems="center" sx={{ px: 2.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' }, flexShrink: 0 }}>{s.icon}</Box>
+                  <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 800 }}>{s.label}</Typography>
+                    <Typography variant="caption" color="text.secondary">{s.sub}</Typography>
+                    {dots}
+                  </Stack>
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{value}</Box>
+                </Stack>
+              );
+
               return (
                 <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: { xs: 1, md: 2 } }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' } }}>
-                      {s.icon}
-                    </Box>
+                  <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' } }}>{s.icon}</Box>
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{s.label}</Typography>
                   </Stack>
                   {/* value slot — fixed height keeps number & medal on one baseline */}
                   <Box sx={{ height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {s.label === 'תרגולים השבוע'
-                      ? <Box sx={{ mt: '-6px', display: 'flex' }}><Medal tier={tier} size={54} /></Box>
-                      : <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
+                    {s.label === 'תרגולים השבוע' ? <Box sx={{ mt: '-6px', display: 'flex' }}>{value}</Box> : value}
                   </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5 }}>{s.sub}</Typography>
                   {/* progress slot — fixed height so all columns align even when empty */}
-                  <Box sx={{ mt: 2, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {s.total > 0 && (
-                      <Stack direction="row" spacing={0.5}>
-                        {Array.from({ length: s.total }).map((_, i) => (
-                          <Box key={i} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: i < Number(s.value) ? 'primary.main' : 'grey.300' }} />
-                        ))}
-                      </Stack>
-                    )}
-                  </Box>
+                  <Box sx={{ mt: 2, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{dots}</Box>
                 </Box>
               );
             })}
