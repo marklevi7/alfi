@@ -29,6 +29,7 @@ import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav, type Screen } from '../nav';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -185,7 +186,9 @@ export function AlfiWidget() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean }) {
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false, mobileBack }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
+  // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
+  mobileBack?: () => void }) {
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
@@ -286,11 +289,19 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             <Stack direction="row" justifyContent="space-between" alignItems="center"
               spacing={1.5}
               sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
-              {/* the wordmark takes the whole width of the bar, next to the sign-out button */}
-              <Logo variant="dark" size="small" sx={{ flex: 1, minWidth: 0, alignItems: 'stretch', '& svg': { width: '67%', height: 'auto', marginInlineStart: 'auto' } }} />
-              <IconButton aria-label="התנתקות" onClick={() => setConfirmLogout(true)}>
-                <LogoutRoundedIcon className="dir-icon" />
-              </IconButton>
+              {mobileBack ? (
+                <IconButton aria-label="חזרה" onClick={mobileBack}>
+                  <ArrowForwardRoundedIcon />
+                </IconButton>
+              ) : (
+                <>
+                  {/* the wordmark takes the whole width of the bar, next to the sign-out button */}
+                  <Logo variant="dark" size="small" sx={{ flex: 1, minWidth: 0, alignItems: 'stretch', '& svg': { width: '67%', height: 'auto', marginInlineStart: 'auto' } }} />
+                  <IconButton aria-label="התנתקות" onClick={() => setConfirmLogout(true)}>
+                    <LogoutRoundedIcon className="dir-icon" />
+                  </IconButton>
+                </>
+              )}
             </Stack>
 
             {/* Header strip */}

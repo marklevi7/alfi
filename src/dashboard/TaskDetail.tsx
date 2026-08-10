@@ -714,7 +714,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
-        <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700 }}>
+        <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
           חזרה לשאלות
         </Button>
         {/* same quest track as the task page, so progress feels continuous */}
@@ -877,7 +877,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   if (openQ !== null) {
     const nx = nextUnsolved(openQ);
     return (
-      <Shell active="practice" title="" alfi={alfi}>
+      <Shell active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}>
         <QuestionPage
           q={questions[openQ]}
           index={openQ}
@@ -898,14 +898,14 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   }
 
   return (
-    <Shell active="practice" title="" alfi={alfi}>
+    <Shell active="practice" title="" alfi={alfi} mobileBack={onBack}>
       {/* re-entering a finished task celebrates again */}
       {entryConfetti && (
         <Box sx={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: (t) => t.zIndex.modal }}>
           <Confetti />
         </Box>
       )}
-      <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700 }}>
+      <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
         חזרה לרשימת המשימות
       </Button>
 
