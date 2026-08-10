@@ -714,9 +714,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
-        <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
-          חזרה לשאלות
-        </Button>
+
         {/* same quest track as the task page, so progress feels continuous */}
         <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
       </Stack>
@@ -877,7 +875,14 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   if (openQ !== null) {
     const nx = nextUnsolved(openQ);
     return (
-      <Shell active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}>
+      <Shell
+        active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}
+        headerAction={
+          <Button onClick={() => setOpenQ(null)} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
+            חזרה לשאלות
+          </Button>
+        }
+      >
         <QuestionPage
           q={questions[openQ]}
           index={openQ}
@@ -898,16 +903,21 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   }
 
   return (
-    <Shell active="practice" title="" alfi={alfi} mobileBack={onBack}>
+    <Shell
+      active="practice" title="" alfi={alfi} mobileBack={onBack}
+      headerAction={
+        <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
+          חזרה לרשימת המשימות
+        </Button>
+      }
+    >
       {/* re-entering a finished task celebrates again */}
       {entryConfetti && (
         <Box sx={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: (t) => t.zIndex.modal }}>
           <Confetti />
         </Box>
       )}
-      <Button onClick={onBack} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ alignSelf: 'flex-start', fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
-        חזרה לרשימת המשימות
-      </Button>
+
 
       {/* header — title, then meta line with the progress tucked under it as helper text */}
       <Box sx={{ mt: 2 }}>

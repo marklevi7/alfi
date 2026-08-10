@@ -186,9 +186,11 @@ export function AlfiWidget() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false, mobileBack }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false, mobileBack, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
   // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
-  mobileBack?: () => void }) {
+  mobileBack?: () => void;
+  // sits in the header strip on desktop, inline with the sign-out button
+  headerAction?: ReactNode }) {
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
@@ -305,12 +307,14 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Stack>
 
             {/* Header strip — a screen with no title (a task, a question) keeps its space back */}
-            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 4, md: 7 }, pt: { xs: 5, md: 7 }, pb: { xs: 2, md: 3 }, display: title ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 4, md: 7 }, pt: { xs: 5, md: 7 }, pb: { xs: 2, md: 3 }, display: title || headerAction ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
+                {headerAction ?? (
                 <Typography variant="h4" component="h1"
                   sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   {title}
                 </Typography>
+                )}
                 <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
                   <LogoutRoundedIcon className="dir-icon" />
                 </IconButton>
