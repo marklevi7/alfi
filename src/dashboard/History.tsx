@@ -21,8 +21,12 @@ import TaskAltTwoToneIcon from '@mui/icons-material/TaskAltTwoTone';
 import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
 import { Shell } from './Shell';
 import Badge from '@mui/material/Badge';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Button from '@mui/material/Button';
-import Popover from '@mui/material/Popover';
 import IconButton from '@mui/material/IconButton';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -145,7 +149,11 @@ export function History() {
   // a past task opens a summary popup — the student stays on תמונת מצב
   const [summary, setSummary] = useState<Summary | null>(null);
   // every filter lives behind one button; the badge says how many are on
-  const [filterAnchor, setFilterAnchor] = useState<HTMLElement | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  // the page edits a draft; nothing filters until החל סינון is pressed
+  const [draftTopic, setDraftTopic] = useState('');
+  const [draftSubTopic, setDraftSubTopic] = useState('');
+  const [draftKind, setDraftKind] = useState<'all' | Kind>('all');
   const activeFilters = [topic, subTopic, kind === 'all' ? '' : kind].filter(Boolean).length;
 
   const items = useMemo(
@@ -228,7 +236,7 @@ export function History() {
           />
           <Badge badgeContent={activeFilters} color="primary" overlap="circular">
             <IconButton
-              onClick={(e) => setFilterAnchor(e.currentTarget)}
+              onClick={() => { setDraftTopic(topic); setDraftSubTopic(subTopic); setDraftKind(kind); setFilterOpen(true); }}
               aria-label="סינון"
               sx={{ border: 1, borderColor: 'divider', borderRadius: 2, color: activeFilters ? 'primary.main' : 'text.secondary' }}
             >
@@ -237,46 +245,69 @@ export function History() {
           </Badge>
         </Stack>
 
-        <Popover
-          open={!!filterAnchor}
-          anchorEl={filterAnchor}
-          onClose={() => setFilterAnchor(null)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-          PaperProps={{ sx: { borderRadius: 3, p: 2, width: { xs: 'calc(100vw - 40px)', sm: 320 } } }}
+        {/* filtering is its own page on a phone, a panel on desktop */}
+        <Dialog
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          fullScreen={phone}
+          maxWidth="xs"
+          fullWidth
+          PaperProps={{ sx: { borderRadius: phone ? 0 : 4 } }}
         >
-          <Stack spacing={2}>
-            <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} fullWidth>
-              <MenuItem value="">כל הנושאים</MenuItem>
-              {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-            </TextField>
-            <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} fullWidth>
-              <MenuItem value="">הכל</MenuItem>
-              {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-            </TextField>
-            <ToggleButtonGroup
-              size="small"
-              exclusive
-              fullWidth
-              value={kind}
-              onChange={(_, v) => v && setKind(v)}
-              sx={{ '& .MuiToggleButton-root': { fontWeight: 700, textTransform: 'none' } }}
-            >
-              <ToggleButton value="all">הכל</ToggleButton>
-              <ToggleButton value="תרגול">תרגול</ToggleButton>
-              <ToggleButton value="בוחן">בוחן</ToggleButton>
-            </ToggleButtonGroup>
+          <DialogTitle component="div" sx={{ pb: 1 }}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="h6" sx={{ fontWeight: 800, flex: 1 }}>סינון</Typography>
+              <IconButton onClick={() => setFilterOpen(false)} aria-label="סגירה"><CloseRoundedIcon /></IconButton>
+            </Stack>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            <Stack spacing={3} sx={{ pt: 1 }}>
+              <TextField select size="small" label="נושא" value={draftTopic} onChange={(e) => setDraftTopic(e.target.value)} fullWidth>
+                <MenuItem value="">כל הנושאים</MenuItem>
+                {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+              </TextField>
+              <TextField select size="small" label="תת נושא" value={draftSubTopic} onChange={(e) => setDraftSubTopic(e.target.value)} fullWidth>
+                <MenuItem value="">הכל</MenuItem>
+                {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+              </TextField>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 1 }}>סוג</Typography>
+                <ToggleButtonGroup
+                  size="small"
+                  exclusive
+                  fullWidth
+                  value={draftKind}
+                  onChange={(_, v) => v && setDraftKind(v)}
+                  sx={{ '& .MuiToggleButton-root': { fontWeight: 700, textTransform: 'none' } }}
+                >
+                  <ToggleButton value="all">הכל</ToggleButton>
+                  <ToggleButton value="תרגול">תרגול</ToggleButton>
+                  <ToggleButton value="בוחן">בוחן</ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+            </Stack>
+          </DialogContent>
+
+          <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
             <Button
-              onClick={() => { setTopic(''); setSubTopic(''); setKind('all'); }}
+              onClick={() => { setDraftTopic(''); setDraftSubTopic(''); setDraftKind('all'); }}
               variant="outlined"
               fullWidth
-              disabled={!activeFilters}
-              sx={{ fontWeight: 700 }}
+              sx={{ py: 1.25, fontWeight: 700 }}
             >
-              ניקוי סינון
+              ניקוי
             </Button>
-          </Stack>
-        </Popover>
+            <Button
+              onClick={() => { setTopic(draftTopic); setSubTopic(draftSubTopic); setKind(draftKind); setFilterOpen(false); }}
+              variant="contained"
+              fullWidth
+              sx={{ py: 1.25, fontWeight: 800 }}
+            >
+              החל סינון
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
 
       {/* timeline: every item hangs on a vertical rail — dot = submission state
