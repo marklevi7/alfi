@@ -21,6 +21,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { deepPurple, blue, cyan, amber, brown, green, red, pink, grey } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
@@ -260,42 +262,79 @@ export function Confetti({ pieces = 80 }: { pieces?: number }) {
 // A real math keypad: opens beside the answer box and STAYS open, so the student can
 // type on the keyboard and tap symbols at the same time. No modal, nothing blocked.
 // symbols only — digits come from the keyboard, which stays usable the whole time
-const PAD_ROWS: string[][] = [
-  ['+', '−', '×', '÷', '=', '≠'],
-  ['<', '>', '≤', '≥', '±', '·'],
-  ['(', ')', '√', 'x²', 'xⁿ', 'π'],
-  ['x', 'y', "f′", "f″", '∫', 'Σ'],
-  ['lim', '→', '∞', '°', 'α', 'θ'],
+/* ---------- math keypad ----------
+   The keys are content, not code: edit KEYS to change what a topic offers.
+   The first 12 are the small pad; all 20 are the big one. No digits, no lim,
+   no plus and no equals — the student types those. Division is a real fraction. */
+type PadKey = { label: ReactNode; insert: string; aria: string };
+
+const KEYS: PadKey[] = [
+  // the 12 that every topic needs
+  { label: '−', insert: '−', aria: 'מינוס' },
+  { label: '×', insert: '×', aria: 'כפל' },
+  { label: <Frac n="a" d="b" />, insert: '/', aria: 'שבר' },
+  { label: '√', insert: '√', aria: 'שורש' },
+  { label: 'x²', insert: 'x²', aria: 'בריבוע' },
+  { label: 'xⁿ', insert: '^', aria: 'בחזקת' },
+  { label: '(', insert: '(', aria: 'סוגר פותח' },
+  { label: ')', insert: ')', aria: 'סוגר סוגר' },
+  { label: '≠', insert: '≠', aria: 'שונה מ' },
+  { label: '≤', insert: '≤', aria: 'קטן או שווה' },
+  { label: '≥', insert: '≥', aria: 'גדול או שווה' },
+  { label: 'π', insert: 'π', aria: 'פאי' },
+  // the 8 the bigger pad adds
+  { label: '<', insert: '<', aria: 'קטן מ' },
+  { label: '>', insert: '>', aria: 'גדול מ' },
+  { label: '±', insert: '±', aria: 'פלוס מינוס' },
+  { label: '∞', insert: '∞', aria: 'אינסוף' },
+  { label: 'x', insert: 'x', aria: 'איקס' },
+  { label: 'y', insert: 'y', aria: 'וואי' },
+  { label: 'f′', insert: 'f′', aria: 'נגזרת' },
+  { label: '∫', insert: '∫', aria: 'אינטגרל' },
 ];
 
 function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: () => void }) {
+  // two sizes of the same pad — a topic with few formulas gets the small one
+  const [size, setSize] = useState<12 | 20>(12);
+  const keys = KEYS.slice(0, size);
   return (
     <Paper variant="outlined" sx={{ borderRadius: 3, p: 1.5, width: { xs: '100%', md: 300 }, flexShrink: 0, alignSelf: 'flex-start' }}>
-      <Stack direction="row" alignItems="center" sx={{ mb: 1 }}>
+      <Stack direction="row" alignItems="center" sx={{ mb: 1.25 }}>
         <Typography sx={{ fontWeight: 800, flex: 1 }}>מחשבון מתמטי</Typography>
         <IconButton size="small" onClick={onClose} aria-label="סגירת המחשבון"><CloseRoundedIcon fontSize="small" /></IconButton>
       </Stack>
-      <Stack spacing={0.75}>
-        {PAD_ROWS.map((row, r) => (
-          <Stack key={r} direction="row" spacing={0.75}>
-            {row.map((k) => (
-              <Button
-                key={k}
-                onClick={() => onPick(k)}
-                variant="outlined"
-                sx={{ flex: 1, minWidth: 0, px: 0, minHeight: 40, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none' }}
-              >
-                {k}
-              </Button>
-            ))}
-          </Stack>
+
+      <ToggleButtonGroup
+        size="small"
+        exclusive
+        fullWidth
+        value={size}
+        onChange={(_, v) => v && setSize(v)}
+        sx={{ mb: 1.25, '& .MuiToggleButton-root': { fontWeight: 700, textTransform: 'none', py: 0.25 } }}
+      >
+        <ToggleButton value={12}>12 מקשים</ToggleButton>
+        <ToggleButton value={20}>20 מקשים</ToggleButton>
+      </ToggleButtonGroup>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0.75 }}>
+        {keys.map((k) => (
+          <Button
+            key={k.aria}
+            onClick={() => onPick(k.insert)}
+            aria-label={k.aria}
+            variant="outlined"
+            sx={{ minWidth: 0, px: 0, minHeight: 44, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none', lineHeight: 1 }}
+          >
+            {k.label}
+          </Button>
         ))}
-      </Stack>
+      </Box>
+
       <Button
         fullWidth
         variant="outlined"
         onClick={() => onPick('\n')}
-        sx={{ mt: 0.75, minHeight: 40, fontWeight: 700 }}
+        sx={{ mt: 0.75, minHeight: 44, fontWeight: 700 }}
       >
         שורה חדשה
       </Button>
