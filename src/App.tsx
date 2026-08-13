@@ -104,8 +104,12 @@ export function App() {
   const variant = active.subs?.[sub]?.variant;
   // The selected version themes the WHOLE app: v6/v7 = green, everything else = purple.
   const activeTheme = active.label === 'v6' || active.label.startsWith('v7') ? greenTheme : theme;
+  // every menu tap counts, even onto the screen you are already on: the counter
+  // remounts the section, so a tap always lands on its main page, however deep you are.
+  const [navTick, setNavTick] = useState(0);
+  const go = (s: Screen) => { setScreen(s); setNavTick((n) => n + 1); };
   return (
-    <NavContext.Provider value={{ go: setScreen }}>
+    <NavContext.Provider value={{ go }}>
       <ThemeProvider theme={activeTheme}>
         {/* invisible hotspot — top-right corner toggles the dev control bar (hidden by default) */}
         <Box
@@ -138,10 +142,10 @@ export function App() {
         ) : (
           <>
             {screen === 'login' ? <AuthViewContext.Provider value={{ view: authView, setView: setAuthView }}><LoginSwitcher /></AuthViewContext.Provider>
-              : screen === 'analytics' ? <Analytics />
-              : screen === 'practice' ? <Practice />
-              : screen === 'history' ? <History />
-              : <DashVariant variant={variant} />}
+              : screen === 'analytics' ? <Analytics key={navTick} />
+              : screen === 'practice' ? <Practice key={navTick} />
+              : screen === 'history' ? <History key={navTick} />
+              : <DashVariant key={navTick} variant={variant} />}
           </>
         )}
       </ThemeProvider>
