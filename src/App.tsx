@@ -111,8 +111,9 @@ export function App() {
         <Box
           onClick={() => setShowBar((v) => !v)}
           aria-label="הצגת בקרות פיתוח"
-          // physical top-LEFT on every screen and device, clear of the RTL back button
-          sx={{ position: 'fixed', top: 0, insetInlineEnd: 0, width: 56, height: 56, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
+          // the extreme physical top-LEFT corner on every screen and device — small enough
+          // to stay clear of the back button and of Alfi's question button next to it
+          sx={{ position: 'fixed', top: 0, insetInlineEnd: 0, width: 20, height: 20, zIndex: (t) => t.zIndex.modal + 2, cursor: 'default' }}
         />
         {showBar && (
           <VersionBar

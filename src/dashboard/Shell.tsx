@@ -23,7 +23,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
+import Fab from '@mui/material/Fab';
+import Popover from '@mui/material/Popover';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
@@ -186,6 +189,63 @@ export function AlfiWidget() {
   );
 }
 
+/** Phone version of "יש לי שאלה": a small round button in the top bar.
+ *  Alfi's face flips to a "?" three times, two seconds apart, and stays a "?". */
+function AlfiMobileButton() {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [question, setQuestion] = useState(false);
+  useEffect(() => {
+    // face → ? → face → ? → face → ? and stop: five turns, one every two seconds
+    let turns = 0;
+    const id = window.setInterval(() => {
+      turns += 1;
+      setQuestion((v) => !v);
+      if (turns >= 5) window.clearInterval(id);
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const face = { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backfaceVisibility: 'hidden' } as const;
+  return (
+    <Box sx={{ display: { xs: 'block', md: 'none' }, flexShrink: 0 }}>
+      <Fab
+        size="small"
+        aria-label="שאלה כללית לאלפי"
+        onClick={(e) => setAnchor(e.currentTarget)}
+        sx={{ bgcolor: 'background.paper', '&:hover': { bgcolor: 'grey.100' } }}
+      >
+        {/* two faces of one coin — it turns over instead of swapping */}
+        <Box
+          sx={{
+            position: 'relative', width: 34, height: 34,
+            transformStyle: 'preserve-3d',
+            transform: question ? 'rotateY(180deg)' : 'none',
+            transition: (t) => t.transitions.create('transform', { duration: 600, easing: t.transitions.easing.easeInOut }),
+            '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+          }}
+        >
+          <Box sx={face}><AlfiAvatar size={34} /></Box>
+          <Box sx={{ ...face, transform: 'rotateY(180deg)' }}>
+            <QuestionMarkRoundedIcon sx={{ fontSize: 24, color: 'primary.main' }} />
+          </Box>
+        </Box>
+      </Fab>
+
+      <Popover
+        open={Boolean(anchor)}
+        anchorEl={anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        marginThreshold={12}
+        slotProps={{ paper: { elevation: 0, sx: { mt: 1.5, width: 'calc(100vw - 32px)', bgcolor: 'transparent', backgroundImage: 'none' } } }}
+      >
+        <AlfiChat onClose={() => setAnchor(null)} />
+      </Popover>
+    </Box>
+  );
+}
+
 export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false, mobileBack, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
   // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
   mobileBack?: () => void;
@@ -292,9 +352,13 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               spacing={1.5}
               sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
               {mobileBack ? (
-                <IconButton aria-label="חזרה" onClick={mobileBack}>
-                  <ArrowForwardRoundedIcon />
-                </IconButton>
+                <>
+                  <IconButton aria-label="חזרה" onClick={mobileBack}>
+                    <ArrowForwardRoundedIcon />
+                  </IconButton>
+                  {/* Alfi sits at the far end of the bar — the corner a thumb reaches, out of the back button's way */}
+                  {alfi && <AlfiMobileButton />}
+                </>
               ) : (
                 <>
                   {/* the wordmark takes the whole width of the bar, next to the sign-out button */}

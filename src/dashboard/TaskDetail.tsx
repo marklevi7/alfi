@@ -710,8 +710,10 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer }: {
+function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer, showPoints }: {
   q: Question; index: number; total: number; solved: boolean; started: boolean; solvedSet: Set<number>; startedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
+  // points are a בוחן thing — תרגול is never scored, anywhere
+  showPoints?: boolean;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
   // a question counts as "long" when its solution runs past ~6 steps (the A4-page case)
@@ -749,7 +751,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
                 <Typography sx={{ fontWeight: 900, fontSize: '0.9rem', letterSpacing: '0.04em' }}>הצלחת!</Typography>
               </Stack>
             )}
-            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
+            {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
             <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
             {/* only long questions get the collapse control */}
             {isLong && (
@@ -805,7 +807,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
 }
 
 /* ---------- question list card ---------- */
-function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered }: { q: Question; index: number; solved: boolean; started?: boolean; onOpen: () => void; onHover: (i: number | null) => void; hovered: number | null }) {
+function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, showPoints }: { q: Question; index: number; solved: boolean; started?: boolean; onOpen: () => void; onHover: (i: number | null) => void; hovered: number | null; showPoints?: boolean }) {
   return (
     <Card
       variant="outlined"
@@ -826,7 +828,7 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered }: {
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
               <QMeta index={index} solved={solved} started={started} />
-              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>
+              {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
             </Stack>
             <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8,
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
@@ -878,6 +880,8 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
   // "יש לי שאלה" — the teaching-assistant lives ONLY inside תרגול (never בוחן), in the sidebar
   const alfi = task.kind === 'תרגול';
+  // ...and the mirror image: points exist ONLY inside בוחן. תרגול shows none, anywhere.
+  const showPoints = task.kind === 'בוחן';
 
   if (openQ !== null) {
     const nx = nextUnsolved(openQ);
@@ -903,6 +907,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           onSolved={(answer) => markSolved(openQ, answer)}
           onStarted={() => setStarted((s) => new Set(s).add(openQ))}
           savedAnswer={answers[openQ]}
+          showPoints={showPoints}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
       </Shell>
@@ -955,7 +960,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
 
       <Stack spacing={2.5} sx={{ mt: 1 }}>
         {questions.map((q, i) => (
-          <QuestionCard key={i} q={q} index={i} solved={solved.has(i)} started={started.has(i)} onOpen={() => setOpenQ(i)} onHover={setHoverQ} hovered={hoverQ} />
+          <QuestionCard key={i} q={q} index={i} solved={solved.has(i)} started={started.has(i)} onOpen={() => setOpenQ(i)} onHover={setHoverQ} hovered={hoverQ} showPoints={showPoints} />
         ))}
       </Stack>
 
