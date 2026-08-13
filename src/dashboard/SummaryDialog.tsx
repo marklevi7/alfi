@@ -129,11 +129,14 @@ function Preview({ q }: { q: SummaryQuestion }) {
           </Box>
         )}
       </Box>
-      {clipped && (
-        <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 800, display: 'block', mt: 0.5 }}>
-          ראה עוד
-        </Typography>
-      )}
+      {/* same fixed line the question cards use, hint pushed to the end */}
+      <Stack direction="row" alignItems="center" sx={{ height: 22, mt: 1 }}>
+        {clipped && (
+          <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 800, marginInlineStart: 'auto' }}>
+            ראה עוד
+          </Typography>
+        )}
+      </Stack>
     </>
   );
 }
