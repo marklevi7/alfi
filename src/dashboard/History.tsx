@@ -223,9 +223,42 @@ export function History() {
         </CardContent>
       </Card>
 
-      {/* Filters — a search field and one button; everything else hides behind it */}
+      {/* Filters — every control is on screen on desktop; a phone has no room, so they
+          collapse to a search field plus one button that opens them as a page. */}
       <Box sx={{ px: 0.5 }}>
-        <Stack direction="row" gap={1} alignItems="center">
+        {/* desktop: all controls in one row, same small size so they line up */}
+        <Stack direction="row" gap={1.5} alignItems="center" sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <TextField
+            size="small"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="חיפוש לפי שם"
+            InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
+            sx={{ flex: 1, minWidth: 180 }}
+          />
+          <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ width: 200 }}>
+            <MenuItem value="">כל הנושאים</MenuItem>
+            {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+          </TextField>
+          <TextField select size="small" label="תת נושא" value={subTopic} onChange={(e) => setSubTopic(e.target.value)} sx={{ width: 200 }}>
+            <MenuItem value="">הכל</MenuItem>
+            {SUBTOPICS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+          </TextField>
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={kind}
+            onChange={(_, v) => v && setKind(v)}
+            sx={{ height: 40, '& .MuiToggleButton-root': { fontWeight: 700, textTransform: 'none', px: 2 } }}
+          >
+            <ToggleButton value="all">הכל</ToggleButton>
+            <ToggleButton value="תרגול">תרגול</ToggleButton>
+            <ToggleButton value="בוחן">בוחן</ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
+
+        {/* phone: search plus one button, the rest behind it */}
+        <Stack direction="row" gap={1} alignItems="center" sx={{ display: { xs: 'flex', md: 'none' } }}>
           <TextField
             size="small"
             value={q}
