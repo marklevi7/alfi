@@ -252,7 +252,15 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Box>
           )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.1rem', md: '1.25rem' }, textWrap: 'balance' }}>
+            {/* one line on a phone, always — a long name is cut, never wrapped into a column */}
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.05rem', md: '1.25rem' },
+                whiteSpace: { xs: 'nowrap', md: 'normal' }, overflow: 'hidden', textOverflow: 'ellipsis',
+                textWrap: { md: 'balance' },
+              }}
+            >
               {open ? open.short : summary.title}
             </Typography>
             {open ? (
