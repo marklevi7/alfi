@@ -11,8 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { alpha, useTheme } from '@mui/material/styles';
-import type { Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { green, amber, brown, grey } from '@mui/material/colors';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -233,8 +232,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               variant="outlined"
               sx={{
                 borderRadius: 4, p: { xs: 2.5, md: 3 }, mb: 3,
-                bgcolor: (t: Theme) => alpha(t.palette.primary.main, 0.06),
-                borderColor: (t: Theme) => alpha(t.palette.primary.main, 0.25),
+                bgcolor: 'grey.100', borderColor: 'divider',
               }}
             >
               <Stack direction="row" spacing={2} alignItems="flex-start">
