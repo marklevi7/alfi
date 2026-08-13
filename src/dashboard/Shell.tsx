@@ -246,7 +246,7 @@ function AlfiMobileButton() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100vh', bgLayer, alfi = false, mobileBack, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100dvh', bgLayer, alfi = false, mobileBack, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
   // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
   mobileBack?: () => void;
   // sits in the header strip on desktop, inline with the sign-out button
@@ -268,7 +268,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
     >
       <Paper
         elevation={3}
-        sx={{ width: '100%', maxWidth: 1200, height: { xs: 'auto', md: `calc(${minH} - 64px)` }, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
+        sx={{ width: '100%', maxWidth: 1200, height: { xs: minH, md: `calc(${minH} - 64px)` }, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
       >
         <Grid container sx={{ height: '100%' }}>
           {/* Sidebar — first in RTL = right */}

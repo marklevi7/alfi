@@ -13,13 +13,12 @@ import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { keyframes, useTheme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { AlfiAvatar } from './Shell';
 import { QMeta } from './TaskDetail';
-import { KindIcon, type Kind } from './KindIcon';
+import { type Kind } from './KindIcon';
 
 // one line of the conversation, exactly as it happened in the question
 export type SummaryTurn = { from: 'student' | 'alfi'; text: string; tone?: 'hint' | 'ok' };
@@ -159,15 +158,15 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
     >
       <DialogTitle component="div" sx={{ pb: 1 }}>
         <Stack direction="row" spacing={2} alignItems="flex-start">
-          {/* the icon sits on the title's own line, not between the two lines of text */}
+          {/* one way out, always in the same spot: back to the question list, or back to תמונת מצב */}
           <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            {open ? (
-              <IconButton onClick={() => setOpenQ(null)} aria-label="חזרה לרשימת השאלות" sx={{ my: -1 }}>
-                <ArrowForwardRoundedIcon />
-              </IconButton>
-            ) : (
-              <KindIcon kind={summary.kind} />
-            )}
+            <IconButton
+              onClick={() => (open ? setOpenQ(null) : onClose())}
+              aria-label={open ? 'חזרה לרשימת השאלות' : 'חזרה לתמונת מצב'}
+              sx={{ my: -1 }}
+            >
+              <ArrowForwardRoundedIcon />
+            </IconButton>
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px' }}>
@@ -184,7 +183,6 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
-          <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: 'center' }}><CloseRoundedIcon /></IconButton>
         </Stack>
       </DialogTitle>
 

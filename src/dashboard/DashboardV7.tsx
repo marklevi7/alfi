@@ -124,7 +124,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
       {/* main screen 5: first-login terms-of-use popup over the full dashboard */}
       {variant === 'terms' && <TermsDialog />}
       {/* Big ALFI face with speech bubble — sits behind the boxes below */}
-      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: '44vh', md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: SHOW_BOT ? 'flex-end' : 'center', justifyContent: 'center', minHeight: { xs: 0, md: 400 }, mt: SHOW_BOT ? '-150px' : 0, mb: SHOW_BOT ? { xs: -16, md: -40 } : 0, position: 'relative', zIndex: 0 }}>
         {/* speech bubble — always greets; oval marks where Alfi will stand */}
         <Box
           sx={{

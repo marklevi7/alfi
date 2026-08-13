@@ -197,7 +197,7 @@ export function History() {
   return (
     <Shell active="history" title="תמונת מצב">
       {/* Stats — one card, 3 columns */}
-      <Card variant="outlined" sx={{ borderRadius: 3 }}>
+      <Card variant="outlined" sx={{ borderRadius: 3, borderColor: { xs: 'transparent', md: 'divider' } }}>
         <CardContent sx={{ py: { xs: 1.75, md: 4 }, px: 0, '&:last-child': { pb: { xs: 1.75, md: 4 } } }}>
           <Stack
             direction="row"
