@@ -230,6 +230,12 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
       PaperProps={{ sx: { borderRadius: phone ? 0 : 4, height: phone ? '100%' : 'min(760px, 90vh)' } }}
     >
       <DialogTitle component="div" sx={{ pb: 1 }}>
+        {/* phone: the close button gets a bar of its own, so the title keeps the full width */}
+        {!open && (
+          <Stack direction="row" justifyContent="flex-end" sx={{ display: { xs: 'flex', md: 'none' }, mx: -1, mt: -1, mb: 0.5 }}>
+            <IconButton onClick={onClose} aria-label="סגירה"><CloseRoundedIcon /></IconButton>
+          </Stack>
+        )}
         <Stack direction="row" spacing={2} alignItems="flex-start">
           {/* inside a question there is only a way back; the list closes from the far side */}
           {open && (
@@ -246,7 +252,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Box>
           )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.1rem', md: '1.25rem' } }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.1rem', md: '1.25rem' }, textWrap: 'balance' }}>
               {open ? open.short : summary.title}
             </Typography>
             {open ? (
@@ -295,7 +301,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Box>
           )}
           {!open && (
-            <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: { xs: 'flex-start', md: 'center' }, my: { xs: -1, md: 0 } }}>
+            <IconButton onClick={onClose} aria-label="סגירה" sx={{ display: { xs: 'none', md: 'inline-flex' }, alignSelf: 'center' }}>
               <CloseRoundedIcon />
             </IconButton>
           )}
