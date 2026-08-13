@@ -344,7 +344,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           </Grid>
 
           {/* Main */}
-          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: { md: '100%' } }}>
+          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: '100%' }}>
             {/* Full-bleed background layer (covers header + content, no hard edges) */}
             {bgLayer}
             {/* Mobile top bar */}

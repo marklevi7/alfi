@@ -279,11 +279,11 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
 
       <DialogActions sx={{ px: 3, py: 2 }}>
         {open ? (
-          <Button onClick={() => setOpenQ(null)} variant="contained" fullWidth startIcon={<ArrowForwardRoundedIcon />} sx={{ py: 1.25, fontWeight: 800 }}>
+          <Button onClick={() => setOpenQ(null)} variant="contained" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 800 }}>
             חזרה לרשימת השאלות
           </Button>
         ) : (
-          <Button onClick={onClose} variant="contained" fullWidth sx={{ py: 1.25, fontWeight: 800 }}>
+          <Button onClick={onClose} variant="contained" sx={{ fontWeight: 800 }}>
             חזרה לתמונת מצב
           </Button>
         )}
