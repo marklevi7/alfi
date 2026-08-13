@@ -20,6 +20,7 @@ import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { AlfiAvatar } from './Shell';
 import { QMeta } from './TaskDetail';
+import { TrafficPill } from './Practice';
 import { KindIcon, type Kind } from './KindIcon';
 
 // one line of the conversation, exactly as it happened in the question
@@ -214,7 +215,9 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
     from { background-color: ${alpha(theme.palette.primary.main, 0.16)}; }
     to   { background-color: transparent; }
   `;
-  const badge = isTest && summary.score != null ? (
+  const badge = !isTest && (summary.state === 'done' || summary.state === 'partial' || summary.state === 'expired') ? (
+    <TrafficPill solved={summary.solved} total={summary.total} />
+  ) : isTest && summary.score != null ? (
     <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0 }}>
       <Typography component="span" sx={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{summary.score}</Typography>
       <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>

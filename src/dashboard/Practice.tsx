@@ -44,6 +44,25 @@ const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as
 
 // The one task card, shared by תרגולים and the תמונת מצב timeline.
 // dateLabel overrides the deadline text (the timeline shows "היום" etc.).
+/* תרגול is never scored, so where a בוחן shows its grade a תרגול shows a traffic light:
+   everything solved is green, some of it is amber, none of it is red. */
+export const TRAFFIC = [
+  { bg: red[700], label: 'טעון שיפור' },
+  { bg: amber[700], label: 'בסדר' },
+  { bg: green[700], label: 'מצוין' },
+] as const;
+export const trafficFor = (solved: number, total: number) => TRAFFIC[!solved ? 0 : solved >= total ? 2 : 1];
+
+export function TrafficPill({ solved, total }: { solved: number; total: number }) {
+  const t = trafficFor(solved, total);
+  return (
+    <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: t.bg, display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0 }}>
+      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: 'common.white', opacity: 0.9, flexShrink: 0 }} />
+      <Typography component="span" sx={{ fontSize: '0.85rem', fontWeight: 800, lineHeight: 1, color: 'common.white' }}>{t.label}</Typography>
+    </Box>
+  );
+}
+
 export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void; dateLabel?: string }) {
   const kind = KIND[t.kind];
   const pct = t.total ? Math.round((t.solved / t.total) * 100) : 0;
@@ -103,6 +122,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
                 </Box>
               )}
             </Typography>
+            {/* תרגול gets the traffic light in the slot where a בוחן shows its grade */}
+            {t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired') && (
+              <TrafficPill solved={t.solved} total={t.total} />
+            )}
             {t.status === 'done' && t.grade != null && (
               <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                 <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
