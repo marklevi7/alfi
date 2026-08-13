@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { keyframes, useTheme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -59,10 +60,16 @@ function NumberedAnswer({ text }: { text: string }) {
   );
 }
 
-// the question sheet slides in over the list; the dialog itself never changes size
-const takeOver = keyframes`
-  from { opacity: 0; transform: scale(0.98); }
-  to   { opacity: 1; transform: none; }
+// the tapped card grows out of its own spot until it fills the dialog
+const grow = keyframes`
+  from { opacity: 0; transform: scale(0.28); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: scale(1); }
+`;
+// coming back is the same move in reverse, softer
+const shrinkBack = keyframes`
+  from { opacity: 0; transform: scale(1.06); }
+  to   { opacity: 1; transform: scale(1); }
 `;
 
 /** one line of the replayed conversation — the student on the right, Alfi on the left */
@@ -146,6 +153,19 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
   const phone = useMediaQuery(theme.breakpoints.down('sm'));
   // one question at a time: opening it puts the whole review inside, and hides the rest
   const [openQ, setOpenQ] = useState<number | null>(null);
+  // where the tapped card sat, so the question can grow out of exactly that spot
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [origin, setOrigin] = useState('50% 50%');
+  const openCard = (i: number, el: HTMLElement) => {
+    const box = contentRef.current?.getBoundingClientRect();
+    const card = el.getBoundingClientRect();
+    if (box && box.width && box.height) {
+      const x = ((card.left + card.width / 2 - box.left) / box.width) * 100;
+      const y = ((card.top + card.height / 2 - box.top) / box.height) * 100;
+      setOrigin(`${x}% ${y}%`);
+    }
+    setOpenQ(i);
+  };
   if (!summary) return null;
   const isTest = summary.kind === 'בוחן';
   const open = openQ === null ? null : summary.questions[openQ];
@@ -158,16 +178,14 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
     >
       <DialogTitle component="div" sx={{ pb: 1 }}>
         <Stack direction="row" spacing={2} alignItems="flex-start">
-          {/* one way out, always in the same spot: back to the question list, or back to תמונת מצב */}
-          <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            <IconButton
-              onClick={() => (open ? setOpenQ(null) : onClose())}
-              aria-label={open ? 'חזרה לרשימת השאלות' : 'חזרה לתמונת מצב'}
-              sx={{ my: -1 }}
-            >
-              <ArrowForwardRoundedIcon />
-            </IconButton>
-          </Box>
+          {/* inside a question there is only a way back; the list closes from the far side */}
+          {open && (
+            <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+              <IconButton onClick={() => setOpenQ(null)} aria-label="חזרה לרשימת השאלות" sx={{ my: -1 }}>
+                <ArrowForwardRoundedIcon />
+              </IconButton>
+            </Box>
+          )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px' }}>
               {open ? open.short : summary.title}
@@ -183,14 +201,22 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
+          {!open && (
+            <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: 'center' }}>
+              <CloseRoundedIcon />
+            </IconButton>
+          )}
         </Stack>
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent dividers ref={contentRef}>
         <Box
           key={openQ === null ? 'list' : `q${openQ}`}
           sx={{
-            animation: `${takeOver} 260ms ${theme.transitions.easing.easeOut} both`,
+            transformOrigin: origin,
+            animation: open
+              ? `${grow} 800ms ${theme.transitions.easing.easeOut} both`
+              : `${shrinkBack} 320ms ${theme.transitions.easing.easeOut} both`,
             '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
           }}
         >
@@ -218,7 +244,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 </Stack>
               </>
             ) : (
-              <Typography variant="body2" color="text.secondary">השאלה נשארה ריקה — לא נשלחה אליה תשובה.</Typography>
+              <Typography variant="body2" color="text.secondary">לא נענתה.</Typography>
             )}
           </Stack>
         ) : (
@@ -249,7 +275,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                   key={i}
                   component="button"
                   variant="outlined"
-                  onClick={() => setOpenQ(i)}
+                  onClick={(e) => openCard(i, e.currentTarget)}
                   sx={{
                     display: 'block', width: '100%', textAlign: 'start', font: 'inherit', color: 'inherit',
                     cursor: 'pointer', borderRadius: 3, p: 2,
