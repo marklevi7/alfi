@@ -77,8 +77,12 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     partial: { label: 'בוצע חלקית', dot: amber[600], text: brown[900] },
     notStarted: { label: 'טרם התחלתי', dot: 'grey.500', text: 'text.secondary' },
   };
-  // NEW only counts before the first solved question
-  const tag = t.status === 'new' && t.solved > 0 ? undefined : STATUS_TAG[t.status];
+  // NEW only counts before the first solved question.
+  // תרגול says "partly done" with its traffic light, so the word tag would repeat it.
+  const traffic = t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
+  const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial')
+    ? undefined
+    : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   return (
@@ -123,9 +127,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
               )}
             </Typography>
             {/* תרגול gets the traffic light in the slot where a בוחן shows its grade */}
-            {t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired') && (
-              <TrafficPill solved={t.solved} total={t.total} />
-            )}
+            {traffic && <TrafficPill solved={t.solved} total={t.total} />}
             {t.status === 'done' && t.grade != null && (
               <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
                 <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{t.grade}</Typography>
