@@ -121,6 +121,15 @@ function questionsFor(it: Item): SummaryQuestion[] {
 }
 
 function insightFor(it: Item): string {
+  // nothing was submitted, or the clock ran out — never talk about a grade here
+  if (it.status === 'notStarted') {
+    return it.kind === 'בוחן'
+      ? 'לא התחלת את הבוחן הזה, ולכן אין מה לסכם. אפשר עדיין לפתוח את השאלות ולתרגל אותן בלי ציון.'
+      : 'לא התחלת את התרגול הזה. אפשר לפתוח אותו ולעבור על השאלות בקצב שלך.';
+  }
+  if (it.status === 'expired') {
+    return `המועד עבר לפני שסיימת. הספקת ${it.solved} מתוך ${it.total} שאלות, והן נשמרו כאן. אפשר לעבור עליהן ולהשלים את החומר.`;
+  }
   if (it.kind === 'תרגול') {
     return it.solved === it.total
       ? 'סיימת את כל התרגילים ובנית את הפתרונות לפי הסדר. הדרך שלך לחישוב שיפוע ומשוואת ישר ברורה ומדויקת. אפשר להתקדם לנושא הבא.'
@@ -136,6 +145,11 @@ const summaryFor = (it: Item): Summary => ({
   title: it.title,
   kind: it.kind,
   when: it.when,
+  state: it.status,
+  topic: it.topic,
+  subTopic: it.subTopic,
+  solved: it.solved,
+  total: it.total,
   score: it.score,
   insight: insightFor(it),
   questions: questionsFor(it),

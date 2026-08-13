@@ -10,16 +10,17 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
+import LinearProgress from '@mui/material/LinearProgress';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { keyframes, useTheme } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
+import { alpha, keyframes, useTheme } from '@mui/material/styles';
+import { green, amber, red, grey } from '@mui/material/colors';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { AlfiAvatar } from './Shell';
 import { QMeta } from './TaskDetail';
-import { type Kind } from './KindIcon';
+import { KindIcon, type Kind } from './KindIcon';
 
 // one line of the conversation, exactly as it happened in the question
 export type SummaryTurn = { from: 'student' | 'alfi'; text: string; tone?: 'hint' | 'ok' };
@@ -34,14 +35,43 @@ export type SummaryQuestion = {
   status: 'done' | 'partial' | 'notStarted';
 };
 
+export type SummaryState = 'done' | 'partial' | 'notStarted' | 'expired';
+
 export type Summary = {
   title: string;
   kind: Kind;
   when: string;
-  score?: number;          // בוחן only
+  state: SummaryState;     // how it ended — decides what sits where the grade goes
+  topic: string;
+  subTopic: string;
+  solved: number;
+  total: number;
+  score?: number;          // בוחן only, and only when it was actually done
   insight: string;         // תובנות AI — what went well, what didn't
   questions: SummaryQuestion[];
 };
+
+// what fills the grade slot when there is no grade to show.
+// תרגול is never scored, so it gets a traffic light instead; an unfinished
+// בוחן says so in words — never a zero, which would read as a failure.
+const STATE_LABEL: Record<SummaryState, string> = {
+  done: 'בוצע',
+  partial: 'בוצע חלקית',
+  notStarted: 'לא בוצע',
+  expired: 'פג תוקף',
+};
+
+function StateBadge({ state }: { state: SummaryState }) {
+  const dot = state === 'done' ? green[600] : state === 'partial' ? amber[600] : state === 'expired' ? red[600] : grey[500];
+  return (
+    <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, border: 1, borderColor: 'divider', display: 'inline-flex', alignItems: 'center', gap: 1, flexShrink: 0, alignSelf: 'center' }}>
+      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: dot, flexShrink: 0 }} />
+      <Typography component="span" sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1, whiteSpace: 'nowrap' }}>
+        {STATE_LABEL[state]}
+      </Typography>
+    </Box>
+  );
+}
 
 // the same numbered-line treatment the chat uses, so the replay reads identically
 function NumberedAnswer({ text }: { text: string }) {
@@ -169,6 +199,10 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
   if (!summary) return null;
   const isTest = summary.kind === 'בוחן';
   const open = openQ === null ? null : summary.questions[openQ];
+  // same bar language as the card: barely started red, in progress amber,
+  // finished green, and a dead deadline goes grey
+  const pct = summary.total ? Math.round((summary.solved / summary.total) * 100) : 0;
+  const barColor = summary.state === 'expired' ? grey[400] : summary.state === 'done' ? green[600] : pct < 34 ? red[500] : amber[600];
 
   return (
     <Dialog
@@ -186,21 +220,64 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               </IconButton>
             </Box>
           )}
+          {/* the kind icon, on the title's own line — same as the card on the timeline */}
+          {!open && (
+            <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+              <KindIcon kind={summary.kind} />
+            </Box>
+          )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px' }}>
               {open ? open.short : summary.title}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
-              {open ? summary.title : summary.when}
-            </Typography>
+            {open ? (
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+                {summary.title}
+              </Typography>
+            ) : (
+              /* everything the card carried: subject, date, progress */
+              <>
+                <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1, columnGap: 3, rowGap: 0.5 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                    {summary.topic} · {summary.subTopic}
+                  </Typography>
+                  <Typography variant="body2" sx={{ whiteSpace: 'nowrap', ...(summary.state === 'expired' ? { color: 'error.dark', fontWeight: 700 } : { color: 'text.secondary' }) }}>
+                    {summary.when}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" alignItems="center" sx={{ mt: 1, columnGap: 3 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={pct}
+                    sx={{
+                      flex: 1, minWidth: 90, height: 8, borderRadius: 4,
+                      bgcolor: (t) => alpha(t.palette.text.primary, 0.1),
+                      '& .MuiLinearProgress-bar': { bgcolor: barColor },
+                    }}
+                  />
+                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                    {summary.solved}/{summary.total} שאלות
+                  </Typography>
+                </Stack>
+                {summary.state === 'expired' && (
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+                    המועד להגשה חלף, אז המשימה הזאת כבר לא נספרת לציון.
+                  </Typography>
+                )}
+              </>
+            )}
           </Box>
-          {!open
-            && isTest && summary.score != null && (
+          {/* a graded test shows its grade; everything else shows what actually happened */}
+          {!open && (
+            isTest && summary.score != null ? (
               <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0, alignSelf: 'center' }}>
                 <Typography component="span" sx={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{summary.score}</Typography>
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
-            )}
+            ) : (
+              <StateBadge state={summary.state} />
+            )
+          )}
           {!open && (
             <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: 'center' }}>
               <CloseRoundedIcon />
