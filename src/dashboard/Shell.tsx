@@ -24,7 +24,6 @@ import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import Fab from '@mui/material/Fab';
-import Popover from '@mui/material/Popover';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -71,7 +70,7 @@ const ALFI_REPLIES = [
   'אני כאן איתך 🙂 תסביר לי מה לא ברור ונפתור את זה יחד.',
 ];
 
-function AlfiChat({ onClose }: { onClose: () => void }) {
+function AlfiChat({ onClose, full = false }: { onClose: () => void; full?: boolean }) {
   const [msgs, setMsgs] = useState<ChatMsg[]>([{ from: 'alfi', text: 'היי! אני אלפי 👋 אפשר לשאול אותי כל שאלה — במתמטיקה או על המערכת.' }]);
   const [draft, setDraft] = useState('');
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -86,16 +85,21 @@ function AlfiChat({ onClose }: { onClose: () => void }) {
   };
   return (
     <Paper
-      elevation={6}
+      elevation={full ? 0 : 6}
       sx={{
-        // the speech bubble itself, grown into a chat — same spot, same tail, above Alfi's head
-        position: 'relative', width: '100%', height: 440, maxHeight: '60vh',
-        borderRadius: 3, display: 'flex', flexDirection: 'column', overflow: 'hidden',
-        '&::after': {
-          content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
-          borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
-          borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
-        },
+        // the speech bubble itself, grown into a chat — same spot, same tail, above Alfi's head.
+        // on a phone it takes the whole screen instead, so nothing behind it competes.
+        position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        ...(full
+          ? { height: '100%', borderRadius: 0 }
+          : {
+              height: 440, maxHeight: '60vh', borderRadius: 3,
+              '&::after': {
+                content: '""', position: 'absolute', bottom: -12, insetInlineStart: 26,
+                borderWidth: '13px 13px 0 13px', borderStyle: 'solid',
+                borderColor: (t) => `${t.palette.background.paper} transparent transparent transparent`,
+              },
+            }),
       }}
     >
       <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 1.5, bgcolor: 'grey.100' }}>
@@ -231,17 +235,10 @@ function AlfiMobileButton() {
         </Box>
       </Fab>
 
-      <Popover
-        open={Boolean(anchor)}
-        anchorEl={anchor}
-        onClose={() => setAnchor(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-        marginThreshold={12}
-        slotProps={{ paper: { elevation: 0, sx: { mt: 1.5, width: 'calc(100vw - 32px)', bgcolor: 'transparent', backgroundImage: 'none' } } }}
-      >
-        <AlfiChat onClose={() => setAnchor(null)} />
-      </Popover>
+      {/* on a phone the chat owns the whole screen — it covers everything behind it */}
+      <Dialog fullScreen open={Boolean(anchor)} onClose={() => setAnchor(null)}>
+        <AlfiChat onClose={() => setAnchor(null)} full />
+      </Dialog>
     </Box>
   );
 }
