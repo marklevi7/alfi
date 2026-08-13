@@ -11,15 +11,14 @@ import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import { green, amber, brown, grey } from '@mui/material/colors';
+import { keyframes, useTheme } from '@mui/material/styles';
+import { green } from '@mui/material/colors';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import { AlfiAvatar } from './Shell';
+import { QMeta } from './TaskDetail';
 import { KindIcon, type Kind } from './KindIcon';
 
 // one line of the conversation, exactly as it happened in the question
@@ -61,26 +60,11 @@ function NumberedAnswer({ text }: { text: string }) {
   );
 }
 
-/** the status circle every question carries — green check, half amber, or empty */
-function StatusDot({ status, index, size = 32 }: { status: SummaryQuestion['status']; index: number; size?: number }) {
-  const half = status === 'partial';
-  return (
-    <Box
-      sx={{
-        width: size, height: size, borderRadius: '50%', flexShrink: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontWeight: 800, fontFeatureSettings: '"tnum","lnum"',
-        ...(status === 'done'
-          ? { bgcolor: green[600], color: 'common.white' }
-          : half
-          ? { border: 2, borderColor: amber[700], color: brown[900], bgcolor: 'background.paper', backgroundImage: `linear-gradient(to left, ${amber[300]} 50%, transparent 50%)` }
-          : { border: 2, borderColor: grey[400], color: 'text.secondary' }),
-      }}
-    >
-      {status === 'done' ? <CheckRoundedIcon sx={{ fontSize: size * 0.62 }} /> : index + 1}
-    </Box>
-  );
-}
+// the question sheet slides in over the list; the dialog itself never changes size
+const takeOver = keyframes`
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: none; }
+`;
 
 /** one line of the replayed conversation — the student on the right, Alfi on the left */
 function Turn({ turn }: { turn: SummaryTurn }) {
@@ -165,46 +149,57 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
   const open = openQ === null ? null : summary.questions[openQ];
 
   return (
-    <Dialog open onClose={onClose} fullScreen={phone} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: phone ? 0 : 4 } }}>
+    <Dialog
+      open onClose={onClose} fullScreen={phone} maxWidth="md" fullWidth
+      // the box never resizes — the question slides in over the list, inside the same frame
+      PaperProps={{ sx: { borderRadius: phone ? 0 : 4, height: phone ? '100%' : 'min(760px, 90vh)' } }}
+    >
       <DialogTitle component="div" sx={{ pb: 1 }}>
-        <Stack direction="row" spacing={2} alignItems="center">
-          {open ? (
-            <IconButton onClick={() => setOpenQ(null)} aria-label="חזרה לרשימת השאלות">
-              <ArrowForwardRoundedIcon />
-            </IconButton>
-          ) : (
-            <KindIcon kind={summary.kind} />
-          )}
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          {/* the icon sits on the title's own line, not between the two lines of text */}
+          <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+            {open ? (
+              <IconButton onClick={() => setOpenQ(null)} aria-label="חזרה לרשימת השאלות" sx={{ my: -1 }}>
+                <ArrowForwardRoundedIcon />
+              </IconButton>
+            ) : (
+              <KindIcon kind={summary.kind} />
+            )}
+          </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px' }}>
               {open ? open.short : summary.title}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
               {open ? summary.title : summary.when}
             </Typography>
           </Box>
           {!open
             && isTest && summary.score != null && (
-              <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0 }}>
+              <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0, alignSelf: 'center' }}>
                 <Typography component="span" sx={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{summary.score}</Typography>
                 <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
               </Box>
             )}
-          <IconButton onClick={onClose} aria-label="סגירה"><CloseRoundedIcon /></IconButton>
+          <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: 'center' }}><CloseRoundedIcon /></IconButton>
         </Stack>
       </DialogTitle>
 
       <DialogContent dividers>
+        <Box
+          key={openQ === null ? 'list' : `q${openQ}`}
+          sx={{
+            animation: `${takeOver} 260ms ${theme.transitions.easing.easeOut} both`,
+            '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+          }}
+        >
         {open ? (
           /* one question, everything that happened in it */
           <Stack spacing={2.5}>
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              <StatusDot status={open.status} index={openQ!} size={36} />
-              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, flex: 1 }}>
-                {open.status === 'done' ? 'נפתר' : open.status === 'partial' ? 'נפתר חלקית' : 'לא נענתה'}
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <QMeta index={openQ!} solved={open.status === 'done'} started={open.status === 'partial'} />
               {isTest && open.outOf != null && (
-                <Typography variant="body2" sx={{ fontWeight: 800, whiteSpace: 'nowrap', color: open.points === open.outOf ? green[800] : brown[900] }}>
+                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
                   {points(open)}
                 </Typography>
               )}
@@ -235,7 +230,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 bgcolor: 'grey.100', borderColor: 'divider',
               }}
             >
-              <Stack direction="row" spacing={2} alignItems="flex-start">
+              <Stack direction="row" spacing={2} alignItems="center">
                 <AlfiAvatar size={64} />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>מה אלפי אומר</Typography>
@@ -262,15 +257,14 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                     '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
                   }}
                 >
-                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
-                    <StatusDot status={q.status} index={i} />
-                    <Typography sx={{ fontWeight: 700, flex: 1, minWidth: 0 }}>{q.short}</Typography>
+                  {/* exactly the header of a question card in the task list */}
+                  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
+                    <QMeta index={i} solved={q.status === 'done'} started={q.status === 'partial'} />
                     {isTest && q.outOf != null && (
-                      <Typography variant="body2" sx={{ fontWeight: 800, whiteSpace: 'nowrap', color: q.points === q.outOf ? green[800] : brown[900] }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
                         {points(q)}
                       </Typography>
                     )}
-                    <ExpandMoreRoundedIcon sx={{ color: 'text.disabled' }} />
                   </Stack>
 
                   <Preview q={q} />
@@ -279,6 +273,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Stack>
           </>
         )}
+        </Box>
       </DialogContent>
 
       <DialogActions sx={{ px: 3, py: 2 }}>

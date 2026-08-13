@@ -466,7 +466,7 @@ function QuestProgress({ total, solved, started, current, size: sizeProp, onPick
 
 /* ---------- shared header bits ---------- */
 // just the number, in a soft round badge — no "שאלה" label
-function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved: boolean; started?: boolean; size?: 'h6' | 'h5' }) {
+export function QMeta({ index, solved, started, size = 'h6' }: { index: number; solved: boolean; started?: boolean; size?: 'h6' | 'h5' }) {
   const d = size === 'h5' ? 44 : 36;
   // half-filled amber dot = opened and answered, not solved yet (same language as תמונת מצב)
   const half = !solved && !!started;
