@@ -90,15 +90,19 @@ function NumberedAnswer({ text }: { text: string }) {
   );
 }
 
-// the tapped card grows out of its own spot until it fills the dialog
-const grow = keyframes`
-  from { opacity: 0; transform: scale(0.28); }
-  60%  { opacity: 1; }
-  to   { opacity: 1; transform: scale(1); }
+// the tapped card unrolls from its own line until it fills the dialog
+const unroll = keyframes`
+  from { transform: scaleY(0.06); }
+  to   { transform: scaleY(1); }
 `;
-// coming back is the same move in reverse, softer
+// its contents arrive once the sheet is nearly open, so nothing looks squashed
+const settle = keyframes`
+  from { opacity: 0; }
+  to   { opacity: 1; }
+`;
+// coming back is a plain fade — the list was never anywhere else
 const shrinkBack = keyframes`
-  from { opacity: 0; transform: scale(1.06); }
+  from { opacity: 0; transform: scale(1.02); }
   to   { opacity: 1; transform: scale(1); }
 `;
 
@@ -189,10 +193,10 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
   const openCard = (i: number, el: HTMLElement) => {
     const box = contentRef.current?.getBoundingClientRect();
     const card = el.getBoundingClientRect();
-    if (box && box.width && box.height) {
-      const x = ((card.left + card.width / 2 - box.left) / box.width) * 100;
+    if (box && box.height) {
+      // the sheet unrolls from the line the card sat on
       const y = ((card.top + card.height / 2 - box.top) / box.height) * 100;
-      setOrigin(`${x}% ${y}%`);
+      setOrigin(`50% ${y}%`);
     }
     setOpenQ(i);
   };
@@ -203,6 +207,21 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
   // finished green, and a dead deadline goes grey
   const pct = summary.total ? Math.round((summary.solved / summary.total) * 100) : 0;
   const barColor = summary.state === 'expired' ? grey[400] : summary.state === 'done' ? green[600] : pct < 34 ? red[500] : amber[600];
+  // the grade, or what happened instead. On a phone it gets its own line under the
+  // title; on desktop it sits at the end of the title row.
+  // the sheet lights up as it unrolls, then settles back to plain paper
+  const glow = keyframes`
+    from { background-color: ${alpha(theme.palette.primary.main, 0.16)}; }
+    to   { background-color: transparent; }
+  `;
+  const badge = isTest && summary.score != null ? (
+    <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0 }}>
+      <Typography component="span" sx={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{summary.score}</Typography>
+      <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
+    </Box>
+  ) : (
+    <StateBadge state={summary.state} />
+  );
 
   return (
     <Dialog
@@ -227,7 +246,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Box>
           )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.1rem', md: '1.25rem' } }}>
               {open ? open.short : summary.title}
             </Typography>
             {open ? (
@@ -237,20 +256,22 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             ) : (
               /* everything the card carried: subject, date, progress */
               <>
-                <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1, columnGap: 3, rowGap: 0.5 }}>
-                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                {/* phone: the badge gets its own line, so the title never has to share the row */}
+                <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 1.25 }}>{badge}</Box>
+                <Stack direction="row" alignItems="baseline" flexWrap="wrap" sx={{ mt: 1.25, columnGap: 2, rowGap: 0.5 }}>
+                  <Typography variant="body2" color="text.secondary">
                     {summary.topic} · {summary.subTopic}
                   </Typography>
                   <Typography variant="body2" sx={{ whiteSpace: 'nowrap', ...(summary.state === 'expired' ? { color: 'error.dark', fontWeight: 700 } : { color: 'text.secondary' }) }}>
                     {summary.when}
                   </Typography>
                 </Stack>
-                <Stack direction="row" alignItems="center" sx={{ mt: 1, columnGap: 3 }}>
+                <Stack direction="row" alignItems="center" sx={{ mt: 1.25, columnGap: 2 }}>
                   <LinearProgress
                     variant="determinate"
                     value={pct}
                     sx={{
-                      flex: 1, minWidth: 90, height: 8, borderRadius: 4,
+                      flex: 1, minWidth: 60, height: 8, borderRadius: 4,
                       bgcolor: (t) => alpha(t.palette.text.primary, 0.1),
                       '& .MuiLinearProgress-bar': { bgcolor: barColor },
                     }}
@@ -267,19 +288,14 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               </>
             )}
           </Box>
-          {/* a graded test shows its grade; everything else shows what actually happened */}
+          {/* desktop: the grade, or what happened instead, at the end of the title row */}
           {!open && (
-            isTest && summary.score != null ? (
-              <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, flexShrink: 0, alignSelf: 'center' }}>
-                <Typography component="span" sx={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{summary.score}</Typography>
-                <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
-              </Box>
-            ) : (
-              <StateBadge state={summary.state} />
-            )
+            <Box sx={{ display: { xs: 'none', md: 'inline-flex' }, alignSelf: 'center', flexShrink: 0 }}>
+              {badge}
+            </Box>
           )}
           {!open && (
-            <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: 'center' }}>
+            <IconButton onClick={onClose} aria-label="סגירה" sx={{ alignSelf: { xs: 'flex-start', md: 'center' }, my: { xs: -1, md: 0 } }}>
               <CloseRoundedIcon />
             </IconButton>
           )}
@@ -291,10 +307,15 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
           key={openQ === null ? 'list' : `q${openQ}`}
           sx={{
             transformOrigin: origin,
+            borderRadius: 3,
             animation: open
-              ? `${grow} 800ms ${theme.transitions.easing.easeOut} both`
+              ? `${unroll} 460ms ${theme.transitions.easing.easeOut} both, ${glow} 620ms ${theme.transitions.easing.easeOut} both`
               : `${shrinkBack} 320ms ${theme.transitions.easing.easeOut} both`,
-            '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+            // the text catches up while the sheet is still opening, so it never looks squashed
+            '& > *': open
+              ? { animation: `${settle} 320ms 120ms ${theme.transitions.easing.easeOut} both` }
+              : undefined,
+            '@media (prefers-reduced-motion: reduce)': { animation: 'none', '& > *': { animation: 'none' } },
           }}
         >
         {open ? (
@@ -334,13 +355,19 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 bgcolor: 'grey.100', borderColor: 'divider',
               }}
             >
-              <Stack direction="row" spacing={2} alignItems="center">
-                <AlfiAvatar size={64} />
-                <Box sx={{ flex: 1, minWidth: 0 }}>
+              {/* a phone has no room for a column beside a 64px head: Alfi sits on the
+                  heading line and the text runs the full width underneath */}
+              <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: { xs: 1.5, md: 0 } }}>
+                <AlfiAvatar size={phone ? 48 : 64} />
+                <Typography variant="h6" sx={{ fontWeight: 800, display: { xs: 'block', md: 'none' } }}>מה אלפי אומר</Typography>
+                <Box sx={{ flex: 1, minWidth: 0, display: { xs: 'none', md: 'block' } }}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>מה אלפי אומר</Typography>
                   <Typography sx={{ fontSize: '1.05rem', lineHeight: 1.8, textWrap: 'pretty' }}>{summary.insight}</Typography>
                 </Box>
               </Stack>
+              <Typography sx={{ display: { xs: 'block', md: 'none' }, lineHeight: 1.8, textWrap: 'pretty' }}>
+                {summary.insight}
+              </Typography>
             </Paper>
 
             <Divider sx={{ mb: 2 }} />
