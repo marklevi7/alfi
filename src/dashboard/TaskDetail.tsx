@@ -807,7 +807,23 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
 }
 
 /* ---------- question list card ---------- */
+// the question window every card shares, so the cards all end up the same height.
+// a phone wraps far more, so it gets two lines where the desktop needs one.
+const PROMPT_H = { xs: 100, md: 56 };
+
 function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, showPoints }: { q: Question; index: number; solved: boolean; started?: boolean; onOpen: () => void; onHover: (i: number | null) => void; hovered: number | null; showPoints?: boolean }) {
+  // a question longer than the window fades out and says so
+  const promptRef = useRef<HTMLDivElement | null>(null);
+  const [clipped, setClipped] = useState(false);
+  useEffect(() => {
+    const el = promptRef.current;
+    if (!el) return;
+    const measure = () => setClipped(el.scrollHeight > el.clientHeight + 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [q.prompt]);
   return (
     <Card
       variant="outlined"
@@ -830,12 +846,32 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, sho
               <QMeta index={index} solved={solved} started={started} />
               {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
             </Stack>
-            <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8,
-              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {q.prompt}
-            </Typography>
-            {solved && <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700, display: 'block', mt: 1 }}>סיכום צ׳אט · התשובה נשמרה</Typography>}
-            {!solved && started && <Typography variant="caption" sx={{ color: brown[900], fontWeight: 700, display: 'block', mt: 1 }}>התחלתי · עוד לא נפתר</Typography>}
+            {/* every card is the same height: the question gets a fixed window and
+                fades out at the bottom when there is more of it to read */}
+            <Box
+              ref={promptRef}
+              sx={{
+                height: PROMPT_H, overflow: 'hidden',
+                ...(clipped && {
+                  maskImage: 'linear-gradient(to top, transparent 0, #000 40px)',
+                  WebkitMaskImage: 'linear-gradient(to top, transparent 0, #000 40px)',
+                }),
+              }}
+            >
+              <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8 }}>
+                {q.prompt}
+              </Typography>
+            </Box>
+            {/* one fixed-height line for the status and the "there's more" hint */}
+            <Stack direction="row" alignItems="center" sx={{ height: 22, mt: 1 }}>
+              {solved && <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700 }}>סיכום צ׳אט · התשובה נשמרה</Typography>}
+              {!solved && started && <Typography variant="caption" sx={{ color: brown[900], fontWeight: 700 }}>התחלתי · עוד לא נפתר</Typography>}
+              {clipped && (
+                <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 800, marginInlineStart: 'auto' }}>
+                  ראה עוד
+                </Typography>
+              )}
+            </Stack>
           </Box>
         </Stack>
       </CardActionArea>
@@ -964,9 +1000,6 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
         ))}
       </Stack>
 
-      <Typography variant="caption" color="text.disabled" sx={{ textAlign: 'center', mt: 2, mb: 1 }}>
-        בתרגול אין ציון — אלפי כאן כדי לעזור לך להגיע לתשובה הנכונה בעצמך.
-      </Typography>
     </Shell>
   );
 }
