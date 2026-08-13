@@ -75,19 +75,46 @@ const ANSWER_PARTIAL = [
   'משוואת הישר: y = 2x + 3',
 ].join('\n');
 
+// the questions themselves, and the wrong first try that earned a correction
+const PROMPT_TEST = 'נתונה הפונקציה y = (x²−4x)/(x²−9). מצא את תחום ההגדרה, את נקודות החיתוך עם הצירים, ואת האסימפטוטות של הפונקציה. הראה את כל שלבי הדרך.';
+const PROMPT_PRACTICE = 'נתונות הנקודות A(1,5) ו-B(3,9). מצא את שיפוע הישר העובר דרך שתי הנקודות, ואת משוואת הישר. בדוק שהנקודות אכן מקיימות את המשוואה.';
+const ANSWER_FIRST_TRY = [
+  'תחום הגדרה: x²−9 ≠ 0, לכן x ≠ 3 וגם x ≠ −3',
+  'חיתוך עם ציר x: x²−4x = 0 → x = 4',
+  'אסימפטוטה אופקית: y = 1',
+].join('\n');
+const HINT = 'כמעט! יש טעות בשורה 2. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.';
+const APPROVED = 'כל הכבוד! תשובה נכונה! 🎉';
+
 function questionsFor(it: Item): SummaryQuestion[] {
   const perQ = it.kind === 'בוחן' ? Math.round(100 / it.total) : 0;
+  const test = it.kind === 'בוחן';
   // a test that lost points drops them on the second question, so the demo shows both states
   const lost = it.score != null && it.score < 100;
   return Array.from({ length: it.total }, (_, i) => {
     const answered = i < it.solved;
-    const short = it.kind === 'בוחן' ? `שאלה ${i + 1} · ${it.subTopic}` : `תרגיל ${i + 1} · ${it.subTopic}`;
-    if (!answered) return { short, answer: '', status: 'notStarted' as const };
+    const short = test ? `שאלה ${i + 1} · ${it.subTopic}` : `תרגיל ${i + 1} · ${it.subTopic}`;
+    const prompt = test ? PROMPT_TEST : PROMPT_PRACTICE;
+    if (!answered) return { short, prompt, turns: [], status: 'notStarted' as const };
     const dropped = lost && i === 1;
+    const answer = test ? ANSWER_FULL : ANSWER_PARTIAL;
+    // the ones that lost points got there the long way: a try, a correction, then the answer
+    const turns = dropped
+      ? [
+          { from: 'student' as const, text: ANSWER_FIRST_TRY },
+          { from: 'alfi' as const, text: HINT, tone: 'hint' as const },
+          { from: 'student' as const, text: answer },
+          { from: 'alfi' as const, text: APPROVED, tone: 'ok' as const },
+        ]
+      : [
+          { from: 'student' as const, text: answer },
+          { from: 'alfi' as const, text: APPROVED, tone: 'ok' as const },
+        ];
     return {
       short,
-      answer: it.kind === 'בוחן' ? ANSWER_FULL : ANSWER_PARTIAL,
-      ...(it.kind === 'בוחן' && { points: dropped ? Math.round(perQ * 0.75) : perQ, outOf: perQ }),
+      prompt,
+      turns,
+      ...(test && { points: dropped ? Math.round(perQ * 0.75) : perQ, outOf: perQ }),
       status: dropped ? ('partial' as const) : ('done' as const),
     };
   });
