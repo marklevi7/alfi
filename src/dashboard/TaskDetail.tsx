@@ -25,8 +25,10 @@ import { deepPurple, blue, cyan, amber, brown, green, red, pink, grey } from '@m
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import FunctionsRoundedIcon from '@mui/icons-material/FunctionsRounded';
+import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
+import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
+// the dialog still shows a real QR to scan — only the button wears the camera
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -691,8 +693,8 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
       </Stack>
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
         <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
-        <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<FunctionsRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>מחשבון</Button>
-        <Button size="small" variant="outlined" startIcon={<QrCode2RoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
+        <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>מחשבון</Button>
+        <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
       </Stack>
       <Button
         fullWidth variant="contained" onClick={send} disabled={thinking || !draft.trim()}
