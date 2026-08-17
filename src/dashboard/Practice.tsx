@@ -8,7 +8,7 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 import { KindIcon, type Kind } from './KindIcon';
-import { Shell } from './Shell';
+import { Shell, AlfiAvatar } from './Shell';
 import { TaskDetail } from './TaskDetail';
 
 // expired = deadline passed with questions left; still practiceable, no longer graded.
@@ -99,17 +99,19 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // NEW only counts before the first solved question.
   // תרגול says "partly done" with its traffic light, so the word tag would repeat it.
   const traffic = t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
-  // פג תוקף belongs with the date, not with the title
-  const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial') || t.status === 'expired'
+  // closed states belong with the date, not with the title
+  const byDate = t.status === 'expired' || t.status === 'notStarted';
+  const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial') || byDate
     ? undefined
     : STATUS_TAG[t.status];
+  const dateTag = byDate ? STATUS_TAG[t.status] : undefined;
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   const dateNode = (
     <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
       <Typography sx={dateSx}>{dateText}</Typography>
-      {t.status === 'expired' && (
-        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
+      {dateTag && (
+        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: dateTag.text, fontWeight: 700 }}>{dateTag.label}</Typography>
       )}
     </Stack>
   );
@@ -205,17 +207,17 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   );
 }
 
-export function Practice() {
+export function Practice({ empty = false }: { empty?: boolean }) {
   const [openId, setOpenId] = useState<number | null>(null);
 
   // Open work only. Finished / expired tasks live on the תמונת מצב timeline.
   const tasks = useMemo(
     () =>
       TASKS
-        .filter((t) => t.status === 'new' || t.status === 'inProgress')
+        .filter((t) => !empty && (t.status === 'new' || t.status === 'inProgress'))
         .slice()
         .sort((a, b) => rankOf(a) - rankOf(b)),
-    []
+    [empty]
   );
 
   const openTask = TASKS.find((t) => t.id === openId);
@@ -229,10 +231,14 @@ export function Practice() {
       <Stack spacing={2.5}>
         {tasks.map((t) => <TaskCard key={t.id} t={t} onOpen={() => setOpenId(t.id)} />)}
         {tasks.length === 0 && (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
-            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 700 }}>עדיין אין משימות</Typography>
-            <Typography variant="body2" color="text.disabled" sx={{ mt: 0.5 }}>כשהמורה תשלח משימה, היא תופיע כאן</Typography>
-          </Box>
+          /* nothing was sent yet — same empty state Alfi uses on תמונת מצב */
+          <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 460, mx: 'auto' }}>
+            <AlfiAvatar size={96} />
+            <Typography variant="h5" sx={{ fontWeight: 800 }}>אין לך משימות כרגע</Typography>
+            <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>
+              כשהמורה תשלח תרגול או בוחן, הם יופיעו כאן ואפשר יהיה להתחיל לפתור.
+            </Typography>
+          </Stack>
         )}
       </Stack>
     </Shell>
