@@ -71,9 +71,11 @@ export const trafficFor = (solved: number, total: number) => TRAFFIC[!solved ? 0
 
 export function TrafficPill({ solved, total }: { solved: number; total: number }) {
   const t = trafficFor(solved, total);
+  // white with a hairline, so it reads on a plain card and on a tinted one alike
   return (
-    <Box sx={{ ...PILL, bgcolor: 'grey.200' }}>
+    <Box sx={{ ...PILL, bgcolor: 'background.paper', border: 1, borderColor: 'grey.400' }}>
       <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: t.dot, flexShrink: 0 }} />
+      <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.secondary' }}>ציון:</Typography>
       <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.primary' }}>{t.label}</Typography>
     </Box>
   );
@@ -96,11 +98,23 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // NEW only counts before the first solved question.
   // תרגול says "partly done" with its traffic light, so the word tag would repeat it.
   const traffic = t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
-  const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial')
+  // פג תוקף belongs with the date, not with the title
+  const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial') || t.status === 'expired'
     ? undefined
     : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
+  const dateNode = (
+    <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
+      <Typography sx={dateSx}>{dateText}</Typography>
+      {t.status === 'expired' && (
+        <Stack direction="row" spacing={0.75} alignItems="center">
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
+          <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
+        </Stack>
+      )}
+    </Stack>
+  );
   return (
     <Card
       variant="outlined"
@@ -155,13 +169,13 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
             <Box sx={{ flex: 1, display: { xs: 'none', md: 'block' } }} />
             {/* deadline sits at the end of the title row on desktop, and with the meta on a phone */}
-            <Typography sx={{ ...dateSx, display: { xs: 'none', md: 'block' } }}>{dateText}</Typography>
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>{dateNode}</Box>
           </Stack>
 
           <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, columnGap: 3, rowGap: 1 }}>
             {/* the title already names the topic — only the sub-topic adds anything */}
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
-            <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateText}</Typography>
+            <Box sx={{ display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateNode}</Box>
             {/* phone: the bar and the count get their own full-width line under the meta */}
             <Box sx={{
               width: { xs: '100%', md: 'auto' }, flex: { md: 1 },
