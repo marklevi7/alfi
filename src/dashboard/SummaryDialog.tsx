@@ -277,7 +277,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 1.25 }}>{badge}</Box>
                 <Stack direction="row" alignItems="baseline" flexWrap="wrap" sx={{ mt: 1.25, columnGap: 2, rowGap: 0.5 }}>
                   <Typography variant="body2" color="text.secondary">
-                    {summary.topic} · {summary.subTopic}
+                    {summary.subTopic}
                   </Typography>
                   <Typography variant="body2" sx={{ whiteSpace: 'nowrap', ...(summary.state === 'expired' ? { color: 'error.dark', fontWeight: 700 } : { color: 'text.secondary' }) }}>
                     {summary.when}

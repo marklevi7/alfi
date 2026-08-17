@@ -116,7 +116,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         </Box>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5 }}>
+          {/* fixed title row, so a grade pill or a traffic light never makes one card taller */}
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5, minHeight: 32 }}>
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
               {t.title}
               {tag && (
@@ -140,7 +141,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           </Stack>
 
           <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, columnGap: 3, rowGap: 1 }}>
-            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.topic} · {t.subTopic}</Typography>
+            {/* the title already names the topic — only the sub-topic adds anything */}
+            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
             <Typography sx={{ ...dateSx, display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateText}</Typography>
             {/* phone: the bar and the count get their own full-width line under the meta */}
             <Box sx={{
@@ -156,11 +158,6 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             </Box>
           </Stack>
 
-          {t.status === 'expired' && (
-            <Typography sx={{ ...META, mt: 0.75 }}>
-              המועד להגשה חלף, אז המשימה הזאת כבר לא נספרת לציון.
-            </Typography>
-          )}
         </Box>
         </Stack>
 

@@ -58,14 +58,14 @@ const ITEMS: Item[] = [
   // a תרגול whose deadline passed — no grade, only the state
   { title: 'תרגול טריגונומטריה', kind: 'תרגול', when: 'לפני 5 ימים', status: 'expired', topic: 'טריגונומטריה', unit: '5 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 1, total: 4 },
   { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 5 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית', solved: 5, total: 5 },
-  { title: 'תרגול הסתברות', kind: 'תרגול', when: 'בשבוע שעבר', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית', solved: 2, total: 4 },
+  { title: 'תרגול הסתברות', kind: 'תרגול', when: '10/08/26', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית', solved: 2, total: 4 },
   // nothing was solved before the deadline — the red end of the traffic light
-  { title: 'תרגול וקטורים', kind: 'תרגול', when: 'בשבוע שעבר', status: 'expired', topic: 'וקטורים', unit: '5 יח"ל', subTopic: 'חיבור וחיסור וקטורים', solved: 0, total: 5 },
-  { title: 'בוחן באלגברה', kind: 'בוחן', when: 'בשבוע שעבר', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות', solved: 6, total: 6 },
+  { title: 'תרגול וקטורים', kind: 'תרגול', when: '09/08/26', status: 'expired', topic: 'וקטורים', unit: '5 יח"ל', subTopic: 'חיבור וחיסור וקטורים', solved: 0, total: 5 },
+  { title: 'בוחן באלגברה', kind: 'בוחן', when: '08/08/26', status: 'done', score: 73, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'פונקציות', solved: 6, total: 6 },
   // moved here from the תרגולים list — finished tasks live on the timeline
-  { title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 88, topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 6, total: 6 },
-  { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני שבועיים', status: 'done', score: 76, topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'משוואות טריגונומטריות', solved: 5, total: 5 },
-  { title: 'בוחן בחקירת פונקציות', kind: 'בוחן', when: 'לפני שלושה שבועות', status: 'done', score: 94, topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'אסימפטוטות', solved: 8, total: 8 },
+  { title: 'בוחן בגיאומטריה אנליטית', kind: 'בוחן', when: '03/08/26', status: 'done', score: 88, topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 6, total: 6 },
+  { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: '02/08/26', status: 'done', score: 76, topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'משוואות טריגונומטריות', solved: 5, total: 5 },
+  { title: 'בוחן בחקירת פונקציות', kind: 'בוחן', when: '27/07/26', status: 'done', score: 94, topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'אסימפטוטות', solved: 8, total: 8 },
 ];
 
 // what the popup replays. Demo content: one test at 88, one perfect test, one half-done תרגול.
