@@ -215,7 +215,8 @@ export function History() {
   return (
     <Shell active="history" title="תמונת מצב">
       {/* Stats — one card, 3 columns */}
-      <Card variant="outlined" sx={{ borderRadius: 3, borderColor: { xs: 'transparent', md: 'divider' } }}>
+      {/* on a phone the strip runs edge to edge, so the three numbers get the whole width */}
+      <Card variant="outlined" sx={{ borderRadius: 3, borderColor: { xs: 'transparent', md: 'divider' }, mx: { xs: -2.5, md: 0 } }}>
         <CardContent sx={{ py: { xs: 1.75, md: 4 }, px: 0, '&:last-child': { pb: { xs: 1.75, md: 4 } } }}>
           <Stack
             direction="row"
@@ -237,7 +238,7 @@ export function History() {
 
               // phone: two lines for the whole card — icon + number, label underneath
               if (phone) return (
-                <Stack key={s.label} spacing={0.25} alignItems="center" sx={{ flex: 1, minWidth: 0, px: 1 }}>
+                <Stack key={s.label} spacing={0.25} alignItems="center" sx={{ flex: 1, minWidth: 0, px: 0.5 }}>
                   <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ height: 34 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.4rem' }, flexShrink: 0 }}>{s.icon}</Box>
                     {s.label === 'תרגולים השבוע'
