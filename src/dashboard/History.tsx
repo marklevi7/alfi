@@ -50,7 +50,8 @@ const STATUS_MAP: Record<Status, TaskStatus> = { done: 'done', partial: 'partial
 
 // Newest first (top) → oldest last (bottom). Placeholder data.
 const ITEMS: Item[] = [
-  // history starts yesterday — nothing from today lives here
+  // the newest thing closed today, so the "היום" wording has somewhere to show
+  { title: 'תרגול אלגברה', kind: 'תרגול', when: 'היום', status: 'done', topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'משוואות ריבועיות', solved: 3, total: 3 },
   { title: 'בוחן באלגברה', kind: 'בוחן', when: 'אתמול', status: 'done', score: 88, topic: 'אלגברה', unit: '5 יח"ל', subTopic: 'משוואות ריבועיות', solved: 8, total: 8 },
   { title: 'תרגול גיאומטריה אנליטית', kind: 'תרגול', when: 'אתמול', status: 'partial', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 2, total: 5 },
   { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני יומיים', status: 'notStarted', topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 0, total: 6 },
