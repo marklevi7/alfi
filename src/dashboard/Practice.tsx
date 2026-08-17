@@ -116,8 +116,15 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         </Box>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          {/* fixed title row, so a grade pill or a traffic light never makes one card taller */}
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ rowGap: 0.5, minHeight: 32 }}>
+          {/* desktop: one row, fixed height so a pill never makes a card taller.
+              phone: the grade or traffic light always drops to its own line under the title. */}
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={1}
+            alignItems={{ xs: 'flex-start', md: 'center' }}
+            flexWrap="wrap"
+            sx={{ rowGap: 0.5, minHeight: { md: 32 } }}
+          >
             <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
               {t.title}
               {tag && (
