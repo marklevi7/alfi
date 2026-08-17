@@ -255,17 +255,21 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Box>
           )}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            {/* one line on a phone, always — a long name is cut, never wrapped into a column */}
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.05rem', md: '1.25rem' },
-                whiteSpace: { xs: 'nowrap', md: 'normal' }, overflow: 'hidden', textOverflow: 'ellipsis',
-                textWrap: { md: 'balance' },
-              }}
-            >
-              {open ? open.short : summary.title}
-            </Typography>
+            {/* the grade or the traffic light sits with the title, the way the timeline card has it */}
+            <Stack direction="row" alignItems="center" spacing={1.5} sx={{ minWidth: 0 }}>
+              {/* one line on a phone, always — a long name is cut, never wrapped into a column */}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.05rem', md: '1.25rem' },
+                  whiteSpace: { xs: 'nowrap', md: 'normal' }, overflow: 'hidden', textOverflow: 'ellipsis',
+                  textWrap: { md: 'balance' }, minWidth: 0,
+                }}
+              >
+                {open ? open.short : summary.title}
+              </Typography>
+              {!open && <Box sx={{ display: { xs: 'none', md: 'inline-flex' }, flexShrink: 0 }}>{badge}</Box>}
+            </Stack>
             {open ? (
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
                 {summary.title}
@@ -282,6 +286,12 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                   <Typography variant="body2" sx={{ whiteSpace: 'nowrap', ...(summary.state === 'expired' ? { color: 'error.dark', fontWeight: 700 } : { color: 'text.secondary' }) }}>
                     {summary.when}
                   </Typography>
+                  {summary.state === 'expired' && (
+                    <Stack direction="row" spacing={0.75} alignItems="center">
+                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: 'error.dark', whiteSpace: 'nowrap' }}>פג תוקף</Typography>
+                    </Stack>
+                  )}
                 </Stack>
                 <Stack direction="row" alignItems="center" sx={{ mt: 1.25, columnGap: 2 }}>
                   <LinearProgress
@@ -305,12 +315,6 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               </>
             )}
           </Box>
-          {/* desktop: the grade, or what happened instead, at the end of the title row */}
-          {!open && (
-            <Box sx={{ display: { xs: 'none', md: 'inline-flex' }, alignSelf: 'center', flexShrink: 0 }}>
-              {badge}
-            </Box>
-          )}
           {!open && (
             <IconButton onClick={onClose} aria-label="סגירה" sx={{ display: { xs: 'none', md: 'inline-flex' }, alignSelf: 'center' }}>
               <CloseRoundedIcon />
