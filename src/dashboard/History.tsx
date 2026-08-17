@@ -161,7 +161,7 @@ const summaryFor = (it: Item): Summary => ({
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
 // the three levels the filter works on: unit, then topic, then sub-topic
-const UNITS = uniq(ITEMS.map((i) => i.unit));
+const UNITS = ['5 יח"ל', '4 יח"ל', '3 יח"ל'];
 const TOPICS = uniq(ITEMS.map((i) => i.topic));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
 
@@ -285,7 +285,7 @@ export function History() {
             InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
             sx={{ flex: 1, minWidth: 180 }}
           />
-          <TextField select size="small" label="יחידה" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ width: 140 }}>
+          <TextField select size="small" label="יחידות" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ width: 140 }}>
             <MenuItem value="">כל היחידות</MenuItem>
             {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
           </TextField>
@@ -349,7 +349,7 @@ export function History() {
 
           <DialogContent dividers>
             <Stack spacing={3} sx={{ pt: 1 }}>
-              <TextField select size="small" label="יחידה" value={draftUnit} onChange={(e) => setDraftUnit(e.target.value)} fullWidth>
+              <TextField select size="small" label="יחידות" value={draftUnit} onChange={(e) => setDraftUnit(e.target.value)} fullWidth>
                 <MenuItem value="">כל היחידות</MenuItem>
                 {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
               </TextField>
