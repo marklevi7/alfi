@@ -40,6 +40,7 @@ import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
 import { Shell, AlfiAvatar } from './Shell';
+import { GradePill } from './Practice';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
 export type SolveTask = { id: number; title: string; total: number; solved: number; from: string; to: string | null; grade?: number; kind?: 'תרגול' | 'בוחן' };
@@ -1014,10 +1015,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
           {/* finished test: the grade pill sits right by the title, same style as the list card */}
           {task.grade != null && (
-            <Box sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, bgcolor: green[800], display: 'inline-flex', alignItems: 'center', gap: 0.75, alignSelf: 'center' }}>
-              <Typography component="span" sx={{ fontSize: '1.15rem', fontWeight: 800, lineHeight: 1, color: 'common.white', fontFeatureSettings: '"tnum","lnum"', letterSpacing: '-0.01em' }}>{task.grade}</Typography>
-              <Typography component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, lineHeight: 1, color: 'common.white', opacity: 0.9 }}>ציון</Typography>
-            </Box>
+            <Box sx={{ alignSelf: 'center' }}><GradePill grade={task.grade} /></Box>
           )}
           {/* new until the first question is solved — same rule as the task list */}
           {done === 0 && (
