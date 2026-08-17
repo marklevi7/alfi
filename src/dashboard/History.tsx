@@ -160,6 +160,8 @@ const summaryFor = (it: Item): Summary => ({
 });
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
+// the three levels the filter works on: unit, then topic, then sub-topic
+const UNITS = uniq(ITEMS.map((i) => i.unit));
 const TOPICS = uniq(ITEMS.map((i) => i.topic));
 const SUBTOPICS = uniq(ITEMS.map((i) => i.subTopic));
 
@@ -185,7 +187,7 @@ function Medal({ tier, size = 44 }: { tier: keyof typeof MEDAL_TIERS; size?: num
 export function History() {
   const [q, setQ] = useState('');
   const [topic, setTopic] = useState('');
-  const [unit] = useState('');
+  const [unit, setUnit] = useState('');
   const [subTopic, setSubTopic] = useState('');
   const [kind, setKind] = useState<'all' | Kind>('all');
   // a fully-completed test can be opened read-only, like a regular task
@@ -196,10 +198,11 @@ export function History() {
   // every filter lives behind one button; the badge says how many are on
   const [filterOpen, setFilterOpen] = useState(false);
   // the page edits a draft; nothing filters until החל סינון is pressed
+  const [draftUnit, setDraftUnit] = useState('');
   const [draftTopic, setDraftTopic] = useState('');
   const [draftSubTopic, setDraftSubTopic] = useState('');
   const [draftKind, setDraftKind] = useState<'all' | Kind>('all');
-  const activeFilters = [topic, subTopic, kind === 'all' ? '' : kind].filter(Boolean).length;
+  const activeFilters = [unit, topic, subTopic, kind === 'all' ? '' : kind].filter(Boolean).length;
 
   const items = useMemo(
     () => ITEMS.filter((it) =>
@@ -282,6 +285,10 @@ export function History() {
             InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
             sx={{ flex: 1, minWidth: 180 }}
           />
+          <TextField select size="small" label="יחידה" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ width: 140 }}>
+            <MenuItem value="">כל היחידות</MenuItem>
+            {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
+          </TextField>
           <TextField select size="small" label="נושא" value={topic} onChange={(e) => setTopic(e.target.value)} sx={{ width: 200 }}>
             <MenuItem value="">כל הנושאים</MenuItem>
             {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
@@ -315,7 +322,7 @@ export function History() {
           />
           <Badge badgeContent={activeFilters} color="primary" overlap="circular">
             <IconButton
-              onClick={() => { setDraftTopic(topic); setDraftSubTopic(subTopic); setDraftKind(kind); setFilterOpen(true); }}
+              onClick={() => { setDraftUnit(unit); setDraftTopic(topic); setDraftSubTopic(subTopic); setDraftKind(kind); setFilterOpen(true); }}
               aria-label="סינון"
               sx={{ border: 1, borderColor: 'divider', borderRadius: 2, color: activeFilters ? 'primary.main' : 'text.secondary' }}
             >
@@ -342,6 +349,10 @@ export function History() {
 
           <DialogContent dividers>
             <Stack spacing={3} sx={{ pt: 1 }}>
+              <TextField select size="small" label="יחידה" value={draftUnit} onChange={(e) => setDraftUnit(e.target.value)} fullWidth>
+                <MenuItem value="">כל היחידות</MenuItem>
+                {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
+              </TextField>
               <TextField select size="small" label="נושא" value={draftTopic} onChange={(e) => setDraftTopic(e.target.value)} fullWidth>
                 <MenuItem value="">כל הנושאים</MenuItem>
                 {TOPICS.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
@@ -370,7 +381,7 @@ export function History() {
 
           <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
             <Button
-              onClick={() => { setDraftTopic(''); setDraftSubTopic(''); setDraftKind('all'); }}
+              onClick={() => { setDraftUnit(''); setDraftTopic(''); setDraftSubTopic(''); setDraftKind('all'); }}
               variant="outlined"
               fullWidth
               sx={{ py: 1.25, fontWeight: 700 }}
@@ -378,7 +389,7 @@ export function History() {
               ניקוי
             </Button>
             <Button
-              onClick={() => { setTopic(draftTopic); setSubTopic(draftSubTopic); setKind(draftKind); setFilterOpen(false); }}
+              onClick={() => { setUnit(draftUnit); setTopic(draftTopic); setSubTopic(draftSubTopic); setKind(draftKind); setFilterOpen(false); }}
               variant="contained"
               fullWidth
               sx={{ py: 1.25, fontWeight: 800 }}
