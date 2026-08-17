@@ -92,12 +92,17 @@ const numParam = (key: string, fallback: number) => {
   return Number.isFinite(raw) && params.has(key) ? raw : fallback;
 };
 
+// the two states of תמונת מצב, driven from the dev control bar
+const HISTORY_VIEWS = [{ label: 'שימוש רגיל' }, { label: 'כניסה ראשונה' }];
+
 export function App() {
   const [screen, setScreen] = useState<Screen>((params.get('screen') as Screen) || 'dashboard');
   const [authView, setAuthView] = useState<AuthView>((params.get('authView') as AuthView) || 'login');
   const [ver, setVer] = useState(() => numParam('ver', Math.max(0, DASH_VERSIONS.findIndex((v) => v.label === 'v7'))));
   const [sub, setSub] = useState(() => numParam('sub', 0));
   const [showBar, setShowBar] = useState(false);
+  // תמונת מצב has two lives: a student with history, and a brand-new one
+  const [historyView, setHistoryView] = useState(() => numParam('hist', 0));
   const [device, setDevice] = useState<Device>('desktop');
   const active = DASH_VERSIONS[ver];
   const DashVariant = active.Comp;
@@ -126,6 +131,8 @@ export function App() {
             hideSubs={screen !== 'dashboard' && screen !== 'login'}
             screens={screen === 'login'
               ? { items: AUTH_VIEWS, active: AUTH_VIEWS.findIndex((v) => v.view === authView), onPick: (i) => setAuthView(AUTH_VIEWS[i].view) }
+              : screen === 'history'
+              ? { items: HISTORY_VIEWS, active: historyView, onPick: setHistoryView }
               : undefined}
           />
         )}
@@ -134,7 +141,7 @@ export function App() {
           <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.900', py: 3 }}>
             <Box
               component="iframe"
-              src={`${window.location.pathname}?ver=${ver}&sub=${sub}&screen=${screen}&authView=${authView}`}
+              src={`${window.location.pathname}?ver=${ver}&sub=${sub}&screen=${screen}&authView=${authView}&hist=${historyView}`}
               title="תצוגת מובייל"
               sx={{ width: 390, height: 'min(844px, 92vh)', border: 0, borderRadius: 6, boxShadow: 24, bgcolor: 'background.paper' }}
             />
@@ -144,7 +151,7 @@ export function App() {
             {screen === 'login' ? <AuthViewContext.Provider value={{ view: authView, setView: setAuthView }}><LoginSwitcher /></AuthViewContext.Provider>
               : screen === 'analytics' ? <Analytics key={navTick} />
               : screen === 'practice' ? <Practice key={navTick} />
-              : screen === 'history' ? <History key={navTick} />
+              : screen === 'history' ? <History key={navTick} firstUse={historyView === 1} />
               : <DashVariant key={navTick} variant={variant} />}
           </>
         )}

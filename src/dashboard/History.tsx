@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { type Kind } from './KindIcon';
+import { useNav } from '../nav';
 import { TaskCard, type TaskStatus } from './Practice';
 import { SummaryDialog, type Summary, type SummaryQuestion } from './SummaryDialog';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -19,7 +20,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
 import TaskAltTwoToneIcon from '@mui/icons-material/TaskAltTwoTone';
 import TimerTwoToneIcon from '@mui/icons-material/TimerTwoTone';
-import { Shell } from './Shell';
+import { Shell, AlfiAvatar } from './Shell';
 import Badge from '@mui/material/Badge';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -184,7 +185,27 @@ function Medal({ tier, size = 44 }: { tier: keyof typeof MEDAL_TIERS; size?: num
   );
 }
 
-export function History() {
+/** First login: nothing has been submitted yet, so there is nothing to look back on. */
+function FirstUse() {
+  const navTo = useNav();
+  return (
+    <Shell active="history" title="תמונת מצב">
+      <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 460, mx: 'auto' }}>
+        <AlfiAvatar size={96} />
+        <Typography variant="h5" sx={{ fontWeight: 800 }}>עוד אין כאן כלום</Typography>
+        <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>
+          כאן יופיעו התרגולים והבחנים שכבר סיימת, עם הסיכום של אלפי על כל אחד מהם.
+          אחרי התרגול הראשון תמצא אותם כאן.
+        </Typography>
+        <Button variant="contained" onClick={() => navTo.go('practice')} sx={{ py: 1.25, px: 3, fontWeight: 800 }}>
+          לתרגולים ובחנים
+        </Button>
+      </Stack>
+    </Shell>
+  );
+}
+
+export function History({ firstUse = false }: { firstUse?: boolean }) {
   const [q, setQ] = useState('');
   const [topic, setTopic] = useState('');
   const [unit, setUnit] = useState('');
@@ -214,6 +235,8 @@ export function History() {
     ),
     [q, topic, unit, subTopic, kind]
   );
+
+  if (firstUse) return <FirstUse />;
 
   return (
     <Shell active="history" title="תמונת מצב">
