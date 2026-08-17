@@ -364,7 +364,10 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
           </Stack>
         ) : (
           <>
-            {/* תובנות AI — the headline of the whole review */}
+            {/* תובנות AI — the headline of the whole review.
+                Alfi only writes it for something that actually finished, so an
+                expired item gets no block at all. */}
+            {summary.state !== 'expired' && (
             <Paper
               variant="outlined"
               sx={{
@@ -386,6 +389,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 {summary.insight}
               </Typography>
             </Paper>
+            )}
 
             <Divider sx={{ mb: 2 }} />
 
