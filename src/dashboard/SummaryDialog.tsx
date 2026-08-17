@@ -284,10 +284,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                     {summary.when}
                   </Typography>
                   {summary.state === 'expired' && (
-                    <Stack direction="row" spacing={0.75} alignItems="center">
-                      <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
-                      <Typography variant="body2" sx={{ fontWeight: 700, color: 'error.dark', whiteSpace: 'nowrap' }}>פג תוקף</Typography>
-                    </Stack>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: 'error.dark', whiteSpace: 'nowrap' }}>פג תוקף</Typography>
                   )}
                 </Stack>
                 <Stack direction="row" alignItems="center" sx={{ mt: 1.25, columnGap: 2 }}>

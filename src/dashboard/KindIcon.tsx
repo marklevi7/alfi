@@ -15,13 +15,14 @@ export function KindIcon({ kind }: { kind: Kind }) {
       variant="rounded"
       aria-label={kind}
       sx={{
-        // fixed on purpose: one size everywhere, no per-screen override
-        width: 36,
-        height: 36,
+        // fixed on purpose: one size everywhere, no per-screen override.
+        // 5.5 spacing units = 44px, and the glyph sits at the standard medium 24.
+        width: (t) => t.spacing(5.5),
+        height: (t) => t.spacing(5.5),
         flexShrink: 0,
         bgcolor: (t) => alpha(t.palette.primary.main, 0.12),
         color: 'primary.main',
-        '& svg': { fontSize: 20 },
+        '& svg': { fontSize: 24 },
       }}
     >
       {kind === 'בוחן' ? <TimerTwoToneIcon /> : <MenuBookTwoToneIcon />}

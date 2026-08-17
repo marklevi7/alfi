@@ -52,11 +52,12 @@ const PILL = {
 } as const;
 const PILL_TEXT = { fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, whiteSpace: 'nowrap' } as const;
 
+// same white pill as the traffic light, so a grade and a rating read as one family
 export function GradePill({ grade }: { grade: number }) {
   return (
-    <Box sx={{ ...PILL, bgcolor: green[800] }}>
-      <Typography component="span" sx={{ ...PILL_TEXT, color: 'common.white', opacity: 0.9 }}>ציון:</Typography>
-      <Typography component="span" sx={{ ...PILL_TEXT, color: 'common.white', fontFeatureSettings: '"tnum","lnum"' }}>{grade}</Typography>
+    <Box sx={{ ...PILL, bgcolor: 'background.paper', border: 1, borderColor: 'grey.400' }}>
+      <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.secondary' }}>ציון:</Typography>
+      <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.primary', fontFeatureSettings: '"tnum","lnum"' }}>{grade}</Typography>
     </Box>
   );
 }
@@ -108,10 +109,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
       <Typography sx={dateSx}>{dateText}</Typography>
       {t.status === 'expired' && (
-        <Stack direction="row" spacing={0.75} alignItems="center">
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'error.main', flexShrink: 0 }} />
-          <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
-        </Stack>
+        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
       )}
     </Stack>
   );
