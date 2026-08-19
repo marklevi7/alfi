@@ -208,7 +208,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         {/* phone: the grade or the rating gets its own line under the title,
             starting at the same edge as the bar below it */}
         {/* phone: one line — the pill, then the count, then the bar filling what is left */}
-        <Stack direction="row-reverse" alignItems="center" spacing={2} sx={{ display: { xs: 'flex', md: 'none' } }}>
+        <Stack direction="row-reverse" alignItems="center" spacing={4} sx={{ display: { xs: 'flex', md: 'none' } }}>
           {progressNode}
           {traffic && <TrafficPill solved={t.solved} total={t.total} />}
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
