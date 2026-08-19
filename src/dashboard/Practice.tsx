@@ -189,7 +189,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>{dateNode}</Box>
           </Stack>
 
-          <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: { xs: 1, md: 1.5 }, columnGap: 3, rowGap: { xs: 0.75, md: 1 } }}>
+          <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: { xs: 0.25, md: 1.5 }, columnGap: 3, rowGap: { xs: 0.75, md: 1 } }}>
             {/* the title already names the topic — only the sub-topic adds anything */}
             <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 0 }}>
               <Typography sx={{ ...META, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.subTopic}</Typography>
@@ -203,12 +203,16 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           </Stack>
 
         </Box>
-        {/* phone: the grade or the rating closes the row */}
-        <Box sx={{ display: { xs: 'inline-flex', md: 'none' }, flexShrink: 0, alignSelf: 'flex-start', mt: 0.5 }}>
+        </Stack>
+
+        {/* phone: the grade or the rating gets its own line under the title,
+            starting at the same edge as the bar below it */}
+        {/* plain block at fit-content: it lands on the reading-start side with no
+            flexbox keyword that RTL could flip */}
+        <Box sx={{ display: { xs: 'block', md: 'none' }, width: 'fit-content' }}>
           {traffic && <TrafficPill solved={t.solved} total={t.total} />}
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Box>
-        </Stack>
 
         {/* phone: the bar gets the card's full width, under the icon row */}
         <Stack direction="row-reverse" alignItems="center" spacing={2} sx={{ display: { xs: 'flex', md: 'none' } }}>
