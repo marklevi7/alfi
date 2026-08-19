@@ -134,7 +134,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           phone: the CTA drops under the content, full width. */}
       <Stack
         direction={{ xs: 'column', md: 'row' }}
-        spacing={{ xs: 2, md: 3 }}
+        spacing={{ xs: 1.5, md: 3 }}
         alignItems={{ xs: 'stretch', md: 'center' }}
         sx={{ px: { xs: 2, md: 3.5 }, py: { xs: 2, md: 3 } }}
       >
@@ -142,14 +142,19 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             line under it starts at the same edge — no indent. */}
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          spacing={{ xs: 1.5, md: 3 }}
+          spacing={{ xs: 1, md: 3 }}
           alignItems={{ xs: 'stretch', md: 'center' }}
           sx={{ flex: 1, minWidth: 0 }}
         >
-        {/* on desktop the icon is centred on the title's first line, whatever the title wraps to */}
-        <Box sx={{ height: { xs: 'auto', md: 'auto' }, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        {/* phone: the icon shares its line with the pill, so neither costs a row of its own.
+            desktop: the icon is centred on the title's first line, whatever the title wraps to. */}
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ flexShrink: 0 }}>
           <KindIcon kind={t.kind} />
-        </Box>
+          <Box sx={{ display: { xs: 'inline-flex', md: 'none' } }}>
+            {traffic && <TrafficPill solved={t.solved} total={t.total} />}
+            {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
+          </Box>
+        </Stack>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
           {/* desktop: one row, fixed height so a pill never makes a card taller.
@@ -171,8 +176,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
               )}
             </Typography>
             {/* תרגול gets the traffic light in the slot where a בוחן shows its grade */}
-            {traffic && <TrafficPill solved={t.solved} total={t.total} />}
-            {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
+            <Box sx={{ display: { xs: 'none', md: 'inline-flex' }, gap: 1 }}>
+              {traffic && <TrafficPill solved={t.solved} total={t.total} />}
+              {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
+            </Box>
             <Box sx={{ flex: 1, display: { xs: 'none', md: 'block' } }} />
             {/* deadline sits at the end of the title row on desktop, and with the meta on a phone */}
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>{dateNode}</Box>
@@ -180,8 +187,13 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
 
           <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: { xs: 1, md: 1.5 }, columnGap: 3, rowGap: { xs: 0.75, md: 1 } }}>
             {/* the title already names the topic — only the sub-topic adds anything */}
-            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
-            <Box sx={{ display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateNode}</Box>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 0 }}>
+              <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
+              <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
+                <Typography sx={{ ...META }}>·</Typography>
+                {dateNode}
+              </Box>
+            </Stack>
             {/* phone: the bar and the count get their own full-width line under the meta */}
             <Box sx={{
               width: { xs: '100%', md: 'auto' }, flex: { md: 1 },
