@@ -62,15 +62,21 @@ export function GradePill({ grade }: { grade: number }) {
   );
 }
 
-// everything solved is green, some of it is amber, none of it is red
+/* Everything solved is green, most of it amber, barely any of it red —
+   the same thresholds the progress bar uses. Nothing solved gets no rating
+   at all: there is nothing there to judge. */
 export const TRAFFIC = [
   { dot: red[600], label: 'טעון שיפור' },
   { dot: amber[600], label: 'בסדר' },
   { dot: green[600], label: 'מצוין' },
 ] as const;
-export const trafficFor = (solved: number, total: number) => TRAFFIC[!solved ? 0 : solved >= total ? 2 : 1];
+export const trafficFor = (solved: number, total: number) => {
+  const pct = total ? (solved / total) * 100 : 0;
+  return TRAFFIC[pct >= 100 ? 2 : pct < 34 ? 0 : 1];
+};
 
 export function TrafficPill({ solved, total }: { solved: number; total: number }) {
+  if (!solved) return null;
   const t = trafficFor(solved, total);
   // white with a hairline, so it reads on a plain card and on a tinted one alike
   return (
@@ -98,24 +104,16 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   };
   // NEW only counts before the first solved question.
   // תרגול says "partly done" with its traffic light, so the word tag would repeat it.
-  const traffic = t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
-  // פג תוקף belongs with the date; "not started" needs no words at all —
-  // the empty bar and the 0/6 count already say it
+  const traffic = t.kind === 'תרגול' && t.solved > 0 && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
+  // closed states say nothing in words: the bar, the count and the pill already do
   const byDate = t.status === 'expired' || t.status === 'notStarted';
   const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial') || byDate
     ? undefined
     : STATUS_TAG[t.status];
-  const dateTag = t.status === 'expired' ? STATUS_TAG[t.status] : undefined;
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
-  const dateNode = (
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
-      <Typography sx={dateSx}>{dateText}</Typography>
-      {dateTag && (
-        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: dateTag.text, fontWeight: 700 }}>{dateTag.label}</Typography>
-      )}
-    </Stack>
-  );
+  // no status words on the card at all — the red date, the bar and the pill carry it
+  const dateNode = <Typography sx={dateSx}>{dateText}</Typography>;
   return (
     <Card
       variant="outlined"
