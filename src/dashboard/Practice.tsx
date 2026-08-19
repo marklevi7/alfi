@@ -81,9 +81,9 @@ export function TrafficPill({ solved, total }: { solved: number; total: number }
   // white with a hairline, so it reads on a plain card and on a tinted one alike
   return (
     <Box sx={{ ...PILL, bgcolor: 'background.paper', border: 1, borderColor: 'grey.400' }}>
+      {/* the colour is the rating — the word would only repeat it */}
       <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.secondary' }}>ציון:</Typography>
-      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: t.dot, flexShrink: 0 }} />
-      <Typography component="span" sx={{ ...PILL_TEXT, color: 'text.primary' }}>{t.label}</Typography>
+      <Box aria-label={t.label} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: t.dot, flexShrink: 0 }} />
     </Box>
   );
 }
