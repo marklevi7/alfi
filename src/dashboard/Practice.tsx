@@ -207,16 +207,11 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
 
         {/* phone: the grade or the rating gets its own line under the title,
             starting at the same edge as the bar below it */}
-        {/* plain block at fit-content: it lands on the reading-start side with no
-            flexbox keyword that RTL could flip */}
-        <Box sx={{ display: { xs: 'block', md: 'none' }, width: 'fit-content' }}>
-          {traffic && <TrafficPill solved={t.solved} total={t.total} />}
-          {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
-        </Box>
-
-        {/* phone: the bar gets the card's full width, under the icon row */}
+        {/* phone: one line — the pill, then the count, then the bar filling what is left */}
         <Stack direction="row-reverse" alignItems="center" spacing={2} sx={{ display: { xs: 'flex', md: 'none' } }}>
           {progressNode}
+          {traffic && <TrafficPill solved={t.solved} total={t.total} />}
+          {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Stack>
 
         <Button
