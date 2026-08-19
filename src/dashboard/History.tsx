@@ -428,7 +428,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
           (filled = done, half = partial, hollow = not started / expired) */}
       <Box sx={{ position: 'relative', paddingInlineStart: 4.5 }}>
         <Box sx={{ position: 'absolute', insetInlineStart: '11px', top: 14, bottom: 14, width: 2, bgcolor: 'divider', borderRadius: 1 }} />
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 1.5 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 1.5 }}>
         {items.map((it, i) => {
           return (
           <Box key={i} sx={{ position: 'relative' }}>

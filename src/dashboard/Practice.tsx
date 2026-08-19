@@ -114,6 +114,17 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   // no status words on the card at all — the red date, the bar and the pill carry it
   const dateNode = <Typography sx={dateSx}>{dateText}</Typography>;
+  // bar and count: beside the meta on desktop, a full-width line of its own on a phone
+  const progressNode = (
+    <>
+      <LinearProgress
+        variant="determinate"
+        value={pct}
+        sx={{ flexGrow: 1, flexBasis: 0, minWidth: 60, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
+      />
+      <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
+    </>
+  );
   return (
     <Card
       variant="outlined"
@@ -138,25 +149,18 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         alignItems={{ xs: 'stretch', md: 'center' }}
         sx={{ px: { xs: 2, md: 3.5 }, py: { xs: 2, md: 3 } }}
       >
-        {/* desktop: icon beside the content. phone: icon on its own line, and every
-            line under it starts at the same edge — no indent. */}
+        {/* icon, then the title and its meta beside it, then the pill at the far end */}
         <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={{ xs: 1, md: 3 }}
-          alignItems={{ xs: 'stretch', md: 'center' }}
+          direction="row"
+          spacing={{ xs: 1.5, md: 3 }}
+          alignItems={{ xs: 'flex-start', md: 'center' }}
           sx={{ flex: 1, minWidth: 0 }}
         >
-        {/* phone: the icon shares its line with the pill, so neither costs a row of its own.
-            desktop: the icon is centred on the title's first line, whatever the title wraps to. */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <KindIcon kind={t.kind} />
-          <Box sx={{ display: { xs: 'inline-flex', md: 'none' } }}>
-            {traffic && <TrafficPill solved={t.solved} total={t.total} />}
-            {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
-          </Box>
-        </Stack>
+        </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
           {/* desktop: one row, fixed height so a pill never makes a card taller.
               phone: the grade or traffic light always drops to its own line under the title. */}
           <Stack
@@ -188,27 +192,27 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: { xs: 1, md: 1.5 }, columnGap: 3, rowGap: { xs: 0.75, md: 1 } }}>
             {/* the title already names the topic — only the sub-topic adds anything */}
             <Stack direction="row" alignItems="center" spacing={1} sx={{ minWidth: 0 }}>
-              <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
+              <Typography sx={{ ...META, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.subTopic}</Typography>
               <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
                 <Typography sx={{ ...META }}>·</Typography>
                 {dateNode}
               </Box>
             </Stack>
-            {/* phone: the bar and the count get their own full-width line under the meta */}
-            <Box sx={{
-              width: { xs: '100%', md: 'auto' }, flex: { md: 1 },
-              display: { xs: 'flex', md: 'contents' }, alignItems: 'center', gap: 3, flexDirection: 'row-reverse',
-            }}>
-            <LinearProgress
-              variant="determinate"
-              value={pct}
-              sx={{ flexGrow: 1, flexBasis: 0, minWidth: 90, height: 8, borderRadius: 4, bgcolor: (th) => alpha(th.palette.text.primary, 0.1), '& .MuiLinearProgress-bar': { bgcolor: barColor }, ...(t.status === 'done' && { bgcolor: alpha(green[500], 0.2), '& .MuiLinearProgress-bar': { bgcolor: green[600] } }), ...(t.status === 'expired' && { '& .MuiLinearProgress-bar': { bgcolor: 'grey.400' } }) }}
-            />
-            <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
-            </Box>
+            {/* desktop only: the bar shares the meta row */}
+            <Box sx={{ flex: 1, display: { xs: 'none', md: 'contents' } }}>{progressNode}</Box>
           </Stack>
 
         </Box>
+        {/* phone: the grade or the rating closes the row */}
+        <Box sx={{ display: { xs: 'inline-flex', md: 'none' }, flexShrink: 0, alignSelf: 'flex-start', mt: 0.5 }}>
+          {traffic && <TrafficPill solved={t.solved} total={t.total} />}
+          {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
+        </Box>
+        </Stack>
+
+        {/* phone: the bar gets the card's full width, under the icon row */}
+        <Stack direction="row-reverse" alignItems="center" spacing={2} sx={{ display: { xs: 'flex', md: 'none' } }}>
+          {progressNode}
         </Stack>
 
         <Button
