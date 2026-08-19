@@ -52,28 +52,6 @@ export type Summary = {
   questions: SummaryQuestion[];
 };
 
-// what fills the grade slot when there is no grade to show.
-// תרגול is never scored, so it gets a traffic light instead; an unfinished
-// בוחן says so in words — never a zero, which would read as a failure.
-const STATE_LABEL: Record<SummaryState, string> = {
-  done: 'בוצע',
-  partial: 'בוצע חלקית',
-  notStarted: 'לא בוצע',
-  expired: 'פג תוקף',
-};
-
-function StateBadge({ state }: { state: SummaryState }) {
-  const dot = state === 'done' ? green[600] : state === 'partial' ? amber[600] : state === 'expired' ? red[600] : grey[500];
-  return (
-    <Box sx={{ px: 1.5, py: 0.75, borderRadius: 2, border: 1, borderColor: 'divider', display: 'inline-flex', alignItems: 'center', gap: 1, flexShrink: 0, alignSelf: 'center' }}>
-      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: dot, flexShrink: 0 }} />
-      <Typography component="span" sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1, whiteSpace: 'nowrap' }}>
-        {STATE_LABEL[state]}
-      </Typography>
-    </Box>
-  );
-}
-
 // the same numbered-line treatment the chat uses, so the replay reads identically
 function NumberedAnswer({ text }: { text: string }) {
   const lines = text.split('\n').filter((l) => l.trim() !== '');
@@ -219,9 +197,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
     <TrafficPill solved={summary.solved} total={summary.total} />
   ) : isTest && summary.score != null ? (
     <GradePill grade={summary.score} />
-  ) : (
-    <StateBadge state={summary.state} />
-  );
+  ) : null;
 
   return (
     <Dialog
