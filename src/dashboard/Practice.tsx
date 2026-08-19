@@ -170,7 +170,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             flexWrap="wrap"
             sx={{ rowGap: 0.5, minHeight: { md: 32 } }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: { xs: 1.1, md: 1.2 } }}>
               {t.title}
               {tag && (
                 <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, marginInlineStart: 1, verticalAlign: 'middle' }}>
