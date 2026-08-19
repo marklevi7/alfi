@@ -99,12 +99,13 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
   // NEW only counts before the first solved question.
   // תרגול says "partly done" with its traffic light, so the word tag would repeat it.
   const traffic = t.kind === 'תרגול' && (t.status === 'done' || t.status === 'partial' || t.status === 'expired');
-  // closed states belong with the date, not with the title
+  // פג תוקף belongs with the date; "not started" needs no words at all —
+  // the empty bar and the 0/6 count already say it
   const byDate = t.status === 'expired' || t.status === 'notStarted';
   const tag = (t.status === 'new' && t.solved > 0) || (traffic && t.status === 'partial') || byDate
     ? undefined
     : STATUS_TAG[t.status];
-  const dateTag = byDate ? STATUS_TAG[t.status] : undefined;
+  const dateTag = t.status === 'expired' ? STATUS_TAG[t.status] : undefined;
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   const dateNode = (
