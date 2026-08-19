@@ -136,11 +136,18 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         direction={{ xs: 'column', md: 'row' }}
         spacing={{ xs: 2, md: 3 }}
         alignItems={{ xs: 'stretch', md: 'center' }}
-        sx={{ px: { xs: 2.5, md: 3.5 }, py: { xs: 2.5, md: 3 } }}
+        sx={{ px: { xs: 2, md: 3.5 }, py: { xs: 2, md: 3 } }}
       >
-        <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems={{ xs: 'flex-start', md: 'center' }} sx={{ flex: 1, minWidth: 0 }}>
-        {/* the 36px icon is centred on the title's first line (h6 line box = 24px), whatever the title wraps to */}
-        <Box sx={{ height: { xs: 24, md: 'auto' }, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        {/* desktop: icon beside the content. phone: icon on its own line, and every
+            line under it starts at the same edge — no indent. */}
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={{ xs: 1.5, md: 3 }}
+          alignItems={{ xs: 'stretch', md: 'center' }}
+          sx={{ flex: 1, minWidth: 0 }}
+        >
+        {/* on desktop the icon is centred on the title's first line, whatever the title wraps to */}
+        <Box sx={{ height: { xs: 'auto', md: 'auto' }, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <KindIcon kind={t.kind} />
         </Box>
 
@@ -171,7 +178,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>{dateNode}</Box>
           </Stack>
 
-          <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: 1.5, columnGap: 3, rowGap: 1 }}>
+          <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mt: { xs: 1, md: 1.5 }, columnGap: 3, rowGap: { xs: 0.75, md: 1 } }}>
             {/* the title already names the topic — only the sub-topic adds anything */}
             <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.subTopic}</Typography>
             <Box sx={{ display: { xs: 'block', md: 'none' }, width: { xs: '100%', md: 'auto' } }}>{dateNode}</Box>
