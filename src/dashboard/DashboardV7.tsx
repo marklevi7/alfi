@@ -84,6 +84,7 @@ function MathSigns() {
 
 // Semicircle score gauge: red -> amber -> green, marker at value
 function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
+  const gaugeTheme = useTheme();
   const cx = 100, cy = 100, r = 84;
   const deg = 180 - (value / max) * 180;
   const rad = (deg * Math.PI) / 180;
@@ -105,7 +106,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
       </Box>
       {/* the number stands ON the gauge's base line — y=100 of the 120-tall viewBox */}
       <Box sx={{ position: 'absolute', insetInline: 0, bottom: '16.7%', textAlign: 'center' }}>
-        <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: '2.9rem', md: '4.25rem' }, lineHeight: 0.82, color: 'text.primary', letterSpacing: '-0.01em' }}>
+        <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: gaugeTheme.typography.h3.fontSize, md: gaugeTheme.typography.h2.fontSize }, lineHeight: 0.82, color: 'text.primary', letterSpacing: '-0.01em' }}>
           {value}
         </Typography>
       </Box>
@@ -147,7 +148,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: theme.typography.body1.fontSize, md: theme.typography.h5.fontSize }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>
@@ -197,7 +198,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
                 </Box>
               )}
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 800, fontSize: '1.05rem', mb: 0.5 }}>
+                <Typography variant="body1" sx={{ fontWeight: 800, mb: 0.5 }}>
                   {variant === 'noNext' ? 'אין תרגולים חדשים' : 'התרגול הבא שלי'}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, textWrap: 'pretty' }}>

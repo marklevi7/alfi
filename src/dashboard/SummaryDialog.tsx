@@ -235,7 +235,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               <Typography
                 variant="h6"
                 sx={{
-                  fontWeight: 800, lineHeight: '24px', fontSize: { xs: '1.05rem', md: '1.25rem' },
+                  fontWeight: 800, lineHeight: '24px', fontSize: { xs: theme.typography.body1.fontSize, md: theme.typography.h6.fontSize },
                   whiteSpace: { xs: 'nowrap', md: 'normal' }, overflow: 'hidden', textOverflow: 'ellipsis',
                   textWrap: { md: 'balance' }, minWidth: 0,
                 }}
@@ -328,7 +328,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Stack>
 
             <Paper variant="outlined" sx={{ borderRadius: 3, p: 2.5 }}>
-              <Typography sx={{ fontSize: '1.1rem', lineHeight: 1.9, textAlign: 'start' }}>{open.prompt}</Typography>
+              <Typography variant="body1" sx={{ lineHeight: 1.9, textAlign: 'start' }}>{open.prompt}</Typography>
             </Paper>
 
             {open.turns.length ? (
@@ -362,7 +362,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 <Typography variant="h6" sx={{ fontWeight: 800, display: { xs: 'block', md: 'none' } }}>מה אלפי אומר</Typography>
                 <Box sx={{ flex: 1, minWidth: 0, display: { xs: 'none', md: 'block' } }}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>מה אלפי אומר</Typography>
-                  <Typography sx={{ fontSize: '1.05rem', lineHeight: 1.8, textWrap: 'pretty' }}>{summary.insight}</Typography>
+                  <Typography variant="body1" sx={{ lineHeight: 1.8, textWrap: 'pretty' }}>{summary.insight}</Typography>
                 </Box>
               </Stack>
               <Typography sx={{ display: { xs: 'block', md: 'none' }, lineHeight: 1.8, textWrap: 'pretty' }}>

@@ -299,7 +299,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
               if (phone) return (
                 <Stack key={s.label} spacing={0.25} alignItems="center" sx={{ flex: 1, minWidth: 0, px: 0.5 }}>
                   <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ height: 34 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.4rem' }, flexShrink: 0 }}>{s.icon}</Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: 'medium' }, flexShrink: 0 }}>{s.icon}</Box>
                     {s.label === 'תרגולים השבוע'
                       ? <Medal tier={tier} size={30} />
                       : <Typography variant="h5" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
@@ -311,7 +311,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
               return (
                 <Box key={s.label} sx={{ flex: 1, textAlign: 'center', px: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.75rem' } }}>{s.icon}</Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: 'large' } }}>{s.icon}</Box>
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{s.label}</Typography>
                   </Stack>
                   {/* value slot — fixed height keeps number & medal on one baseline */}

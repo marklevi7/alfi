@@ -396,7 +396,7 @@ function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: ()
             onClick={() => onPick(k.insert)}
             aria-label={k.aria}
             variant="outlined"
-            sx={{ minWidth: 0, px: 0, minHeight: 44, fontSize: '1.05rem', fontWeight: 700, textTransform: 'none', lineHeight: 1 }}
+            sx={{ minWidth: 0, px: 0, minHeight: 44, fontSize: (t: Theme) => t.typography.body1.fontSize, fontWeight: 700, textTransform: 'none', lineHeight: 1 }}
           >
             {k.label}
           </Button>
@@ -459,7 +459,7 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
         <Stack direction="row" spacing={0.75}>
           {[red[400], amber[400], green[400]].map((c) => <Box key={c} sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: c }} />)}
         </Stack>
-        <Typography sx={{ flex: 1, textAlign: 'center', fontWeight: 700, fontSize: '0.9rem', color: 'text.secondary' }}>בחירת קובץ</Typography>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>בחירת קובץ</Typography>
         <Box sx={{ width: 54 }} />
       </Box>
       <Box sx={{ display: 'flex', height: 320 }}>
@@ -469,7 +469,7 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
             {FINDER_FAV.map((f, i) => (
               <ListItemButton key={f} selected={i === 1} sx={{ mx: 1, borderRadius: 1.5 }}>
                 <ListItemIcon sx={{ minWidth: 30 }}><FolderTwoToneIcon fontSize="small" sx={{ color: amber[600] }} /></ListItemIcon>
-                <ListItemText primary={f} primaryTypographyProps={{ fontSize: '0.85rem', noWrap: true }} />
+                <ListItemText primary={f} primaryTypographyProps={{ variant: 'body2', noWrap: true }} />
               </ListItemButton>
             ))}
           </List>
@@ -479,7 +479,7 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
             {FINDER_FILES.map((f, i) => (
               <ListItemButton key={f.name} selected={i === sel} onClick={() => setSel(i)} onDoubleClick={choose} sx={{ px: 2 }}>
                 <ListItemIcon sx={{ minWidth: 40 }}>{fileIcon(f.kind)}</ListItemIcon>
-                <ListItemText primary={f.name} secondary={f.when} primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 600, noWrap: true }} />
+                <ListItemText primary={f.name} secondary={f.when} primaryTypographyProps={{ variant: 'body2', fontWeight: 600, noWrap: true }} />
               </ListItemButton>
             ))}
           </List>
@@ -872,7 +872,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
             {solved && (
               <Stack direction="row" spacing={0.5} alignItems="center" sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, border: 2, borderColor: 'primary.main', color: 'primary.dark', transform: 'rotate(-4deg)' }}>
                 <CheckRoundedIcon sx={{ fontSize: 18 }} />
-                <Typography sx={{ fontWeight: 900, fontSize: '0.9rem', letterSpacing: '0.04em' }}>הצלחת!</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 900, letterSpacing: '0.04em' }}>הצלחת!</Typography>
               </Stack>
             )}
             {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
@@ -895,7 +895,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
           <>
             <Divider sx={{ mb: 3 }} />
             {/* the whole question is always shown in full — never scrolls inside the card */}
-            <Typography component="div" sx={{ fontSize: '1.2rem', lineHeight: 2.1, textAlign: 'start' }}>
+            <Typography component="div" variant="h6" sx={{ fontWeight: 400, lineHeight: 2.1, textAlign: 'start' }}>
               {q.prompt}
             </Typography>
           </>

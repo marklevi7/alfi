@@ -51,7 +51,7 @@ const PILL = {
   height: 28, px: 1.25, borderRadius: 1.5, flexShrink: 0,
   display: 'inline-flex', alignItems: 'center', gap: 0.75,
 } as const;
-const PILL_TEXT = { fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, whiteSpace: 'nowrap' } as const;
+const PILL_TEXT = { fontSize: (t: Theme) => t.typography.body2.fontSize, fontWeight: 800, lineHeight: 1, whiteSpace: 'nowrap' } as const;
 
 // same white pill as the traffic light, so a grade and a rating read as one family
 export function GradePill({ grade }: { grade: number }) {

@@ -209,7 +209,7 @@ export function AlfiWidget() {
               },
             }}
           >
-            <Typography sx={{ fontWeight: 800, fontSize: '1.15rem', whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, whiteSpace: 'nowrap' }}>יש לי שאלה</Typography>
           </Paper>
         )}
       </Box>
@@ -415,7 +415,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     the page still name themselves for a screen reader, off-screen. */}
                 {title ? (
                 <Typography variant="h4" component="h1"
-                  sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
+                  sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: theme.typography.h5.fontSize, sm: theme.typography.h4.fontSize }, textWrap: 'balance' }}>
                   {title}
                 </Typography>
                 ) : (
@@ -451,8 +451,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           borderRadius: 3,
           // full nav names, same as desktop — they need to fit three across a phone
           '& .MuiBottomNavigationAction-root': { minWidth: 0, px: 0.5 },
-          '& .MuiBottomNavigationAction-label': { ...FREDOKA, fontSize: '0.72rem', whiteSpace: 'nowrap' },
-          '& .MuiBottomNavigationAction-label.Mui-selected': { fontSize: '0.72rem' },
+          '& .MuiBottomNavigationAction-label': { ...FREDOKA, fontSize: (t: Theme) => t.typography.caption.fontSize, whiteSpace: 'nowrap' },
+          '& .MuiBottomNavigationAction-label.Mui-selected': { fontSize: (t: Theme) => t.typography.caption.fontSize },
           '& .MuiBottomNavigationAction-root.Mui-selected': {
             bgcolor: 'primary.main',
             color: 'primary.contrastText',

@@ -30,7 +30,7 @@ export function TermsDialog() {
       fullWidth
       PaperProps={{ sx: { borderRadius: phone ? 0 : 4, p: 1 } }}
     >
-      <DialogTitle sx={{ fontWeight: 800, fontSize: '1.5rem', pb: 0.5 }}>
+      <DialogTitle sx={{ fontWeight: 800, fontSize: (t) => t.typography.h5.fontSize, pb: 0.5 }}>
         ברוכים הבאים לאלפי! 👋
       </DialogTitle>
       <DialogContent>
