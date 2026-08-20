@@ -40,11 +40,11 @@ const base = {
           letterSpacing: '0.04em',
           // doubled selector so one weight wins over the per-screen sx values
           '&&': { fontWeight: 600 },
-          // 18.8px is the smallest size that counts as "large text" once bold, which
-          // drops the contrast bar from 4.5:1 to 3:1 and lets the brand green stay.
-          fontSize: '1.175rem',
+          // h6's size — the smallest canonical step that clears WCAG's large-text
+          // cutoff, so the contrast bar drops to 3:1 and the brand green stays.
+          fontSize: '1.25rem',
         },
-        sizeSmall: { fontSize: '1.175rem' },
+        sizeSmall: { fontSize: '1.25rem' },
       },
     },
     MuiListItemButton: {
