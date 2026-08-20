@@ -413,14 +413,18 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 {/* every screen carries a real page title. Screens that show no title on
                     the page still name themselves for a screen reader, off-screen. */}
-                {title ? (
-                <Typography variant="h4" component="h1"
-                  sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: theme.typography.h5.fontSize, sm: theme.typography.h4.fontSize }, textWrap: 'balance' }}>
-                  {title}
-                </Typography>
-                ) : (
-                headerAction
-                )}
+                {/* the first slot always takes the width it can, so sign-out stays pinned
+                    to the far end of the row even on a screen with no title */}
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  {title ? (
+                  <Typography variant="h4" component="h1"
+                    sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: theme.typography.h5.fontSize, sm: theme.typography.h4.fontSize }, textWrap: 'balance' }}>
+                    {title}
+                  </Typography>
+                  ) : (
+                  headerAction
+                  )}
+                </Box>
                 <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
                   <LogoutRoundedIcon className="dir-icon" />
                 </IconButton>
