@@ -321,15 +321,16 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       px: 2.5,
                       bgcolor: 'transparent',
                       transition: (t) => t.transitions.create(['background-color', 'transform']),
-                      // label and icon always carry the same colour, in both states
-                      '& .MuiListItemIcon-root, & .MuiListItemText-primary': { color: 'text.disabled' },
+                      // label and icon always carry the same colour, in both states.
+                      // text.secondary, not text.disabled: 5.7:1 on white, so it clears AA.
+                      '& .MuiListItemIcon-root, & .MuiListItemText-primary': { color: 'text.secondary' },
                       '& .MuiSvgIcon-root': { fontSize: 30 },
                       '&:hover': { bgcolor: (t) => alpha(t.palette.text.primary, 0.04), transform: 'scale(1.02)' },
-                      // one notch brighter than primary.dark, so the live item reads as the brand green
-                      '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.main' },
+                      // primary.main on the tinted pill is only 3.6:1 — primary.dark takes it to 6.8:1
+                      '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.dark' },
                       '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
                       // every item wears the same weight — the live one is told apart by colour alone
-                      '&.Mui-selected .MuiListItemIcon-root, &.Mui-selected .MuiListItemText-primary': { color: 'primary.main' },
+                      '&.Mui-selected .MuiListItemIcon-root, &.Mui-selected .MuiListItemText-primary': { color: 'primary.dark' },
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 46 }}>{item.icon}</ListItemIcon>
