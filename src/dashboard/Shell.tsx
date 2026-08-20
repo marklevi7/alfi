@@ -33,6 +33,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav, type Screen } from '../nav';
+import { FREDOKA } from '../theme';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
 
@@ -60,7 +61,8 @@ const liftSx = (on: boolean) => ({
   '@media (prefers-reduced-motion: reduce)': { transition: 'none', '&::after': { transition: 'none' } },
 });
 
-export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
+// one source of truth: the font token lives in the theme
+export { FREDOKA };
 
 export const NAV = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const },

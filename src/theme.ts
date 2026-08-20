@@ -1,6 +1,10 @@
 import { createTheme } from '@mui/material/styles';
 import { deepPurple, green, teal, blue } from '@mui/material/colors';
 
+// Fredoka: the nav, the page titles and every button wear it. It stops at 700,
+// so nothing wearing it asks for 800.
+export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
+
 // Shared options both themes use (RTL, shape, dir-icon mirroring).
 const base = {
   direction: 'rtl' as const,
@@ -27,6 +31,15 @@ const base = {
     },
     // The blue ring is the focus marker, so the grey wash behind a focused row
     // drops to the same weight as hover instead of MUI's heavier action.focus.
+    // every button speaks in Fredoka, at its heaviest weight
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          ...FREDOKA,
+          fontWeight: 700,
+        },
+      },
+    },
     MuiListItemButton: {
       styleOverrides: {
         root: ({ theme }: { theme: { palette: { action: { hover: string } } } }) => ({
