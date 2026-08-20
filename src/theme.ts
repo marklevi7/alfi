@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { deepPurple, green, teal } from '@mui/material/colors';
+import { deepPurple, green, teal, blue } from '@mui/material/colors';
 
 // Shared options both themes use (RTL, shape, dir-icon mirroring).
 const base = {
@@ -11,6 +11,20 @@ const base = {
     subtitle1: { fontSize: '1.25rem', fontWeight: 700 },
   },
   components: {
+    // Keyboard focus has to be visible (SI 5568 / WCAG 2.4.7). ButtonBase clears the
+    // browser outline, so the design system puts a blue ring back — keyboard only,
+    // so a mouse user never sees it. Blue, so it reads as a system state and never
+    // as the brand green or purple.
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focusVisible': {
+            outline: `3px solid ${blue[700]}`,
+            outlineOffset: 2,
+          },
+        },
+      },
+    },
     // RTL at the design-system level. Layout/spacing already flip via
     // stylis-plugin-rtl + logical props. Directional glyphs (arrows, chevrons)
     // do NOT auto-mirror, so author them in LTR-forward orientation and add
