@@ -37,7 +37,11 @@ const base = {
         root: {
           ...FREDOKA,
           fontWeight: 700,
+          // 18.8px is the smallest size that counts as "large text" once bold, which
+          // drops the contrast bar from 4.5:1 to 3:1 and lets the brand green stay.
+          fontSize: '1.175rem',
         },
+        sizeSmall: { fontSize: '1.175rem' },
       },
     },
     MuiListItemButton: {
