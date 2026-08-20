@@ -42,6 +42,12 @@ const base = {
         },
       },
     },
+    // a keyboard-focused card shows the blue ring only — no grey wash over it
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: { '&.Mui-focusVisible .MuiCardActionArea-focusHighlight': { opacity: 0 } },
+      },
+    },
     // one weight for every button, over the per-screen sx values
     MuiButton: {
       styleOverrides: {
