@@ -13,6 +13,9 @@ const base = {
   // so the size lives here instead of being hardcoded per screen.
   typography: {
     subtitle1: { fontSize: '1.25rem', fontWeight: 700 },
+    // `button` is MUI's own token for button text — every button reads from it,
+    // so the family, size, weight and spacing live here and nowhere else.
+    button: { ...FREDOKA, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.04em' },
   },
   components: {
     // Keyboard focus has to be visible (SI 5568 / WCAG 2.4.7). ButtonBase clears the
@@ -29,24 +32,15 @@ const base = {
         },
       },
     },
-    // The blue ring is the focus marker, so the grey wash behind a focused row
-    // drops to the same weight as hover instead of MUI's heavier action.focus.
-    // every button speaks in Fredoka, at its heaviest weight
+    // one weight for every button, over the per-screen sx values
     MuiButton: {
       styleOverrides: {
-        root: {
-          ...FREDOKA,
-          // buttons get a touch more air between the letters than the rest of Fredoka
-          letterSpacing: '0.04em',
-          // doubled selector so one weight wins over the per-screen sx values
-          '&&': { fontWeight: 600 },
-          // h6's size — the smallest canonical step that clears WCAG's large-text
-          // cutoff, so the contrast bar drops to 3:1 and the brand green stays.
-          fontSize: '1.25rem',
-        },
+        root: { '&&': { fontWeight: 600 } },
         sizeSmall: { fontSize: '1.25rem' },
       },
     },
+    // The blue ring is the focus marker, so the grey wash behind a focused row
+    // drops to the same weight as hover instead of MUI's heavier action.focus.
     MuiListItemButton: {
       styleOverrides: {
         root: ({ theme }: { theme: { palette: { action: { hover: string } } } }) => ({
