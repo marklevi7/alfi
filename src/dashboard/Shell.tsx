@@ -303,7 +303,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       '&:hover': { bgcolor: (t) => alpha(t.palette.text.primary, 0.04), transform: 'scale(1.02)' },
                       '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.dark' },
                       '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
-                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 800 },
+                      // Fredoka tops out at 700, so the selected item goes there
+                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 700 },
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
                     }}
                   >
@@ -313,7 +314,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       primaryTypographyProps={{
                         variant: 'subtitle1',
                         textAlign: 'start',
-                        sx: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+                        // trying Fredoka on the main nav only — the rest of the app keeps its font
+                        sx: { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
                       }}
                     />
                   </ListItemButton>
@@ -403,7 +405,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           borderRadius: 3,
           // full nav names, same as desktop — they need to fit three across a phone
           '& .MuiBottomNavigationAction-root': { minWidth: 0, px: 0.5 },
-          '& .MuiBottomNavigationAction-label': { fontSize: '0.72rem', whiteSpace: 'nowrap' },
+          '& .MuiBottomNavigationAction-label': { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', fontSize: '0.72rem', whiteSpace: 'nowrap' },
           '& .MuiBottomNavigationAction-label.Mui-selected': { fontSize: '0.72rem' },
           '& .MuiBottomNavigationAction-root.Mui-selected': {
             bgcolor: 'primary.main',
