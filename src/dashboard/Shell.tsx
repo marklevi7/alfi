@@ -47,7 +47,6 @@ export const SHOW_BOT = false;
 // the shade is painted by the strip itself, just under its bottom edge, so it never
 // spills sideways over the logo or the sidebar the way a box-shadow would.
 const liftSx = (on: boolean) => ({
-  position: 'relative' as const,
   transition: (t: Theme) => t.transitions.create('background-color'),
   ...(on && { bgcolor: 'background.paper' }),
   '&::after': {
