@@ -70,6 +70,8 @@ const Eq = ({ children }: { children: ReactNode }) => (
 );
 
 type Turn = { title?: string; body: ReactNode };
+// one round of the back-and-forth: what the student sent, and what Alfi answered
+type PriorTurn = { answer: string; reply: ReactNode };
 // solution is an array of lines — each gets a grey number so the AI can be asked about a specific line
 type Question = { points: number; short: string; prompt: ReactNode; guide: Turn; solution: ReactNode[]; sampleAnswer?: string;
   // plain-text full solution — the secret click drops it straight into the answer box
@@ -77,7 +79,91 @@ type Question = { points: number; short: string; prompt: ReactNode; guide: Turn;
   // demo: the first submission is treated as wrong and Alfi replies with this hint
   wrongHint?: ReactNode;
   // a half-solved question opens with this earlier attempt already in the chat, plus Alfi's correction
-  priorAttempt?: string };
+  priorAttempt?: string;
+  // a long question opens with a whole conversation already behind it — attempt after attempt
+  priorTurns?: PriorTurn[] };
+
+/* ---------- question 3: the long conversation ----------
+   The full solution, and the ten submissions that led up to it. Each try is the
+   solution cut off at a line, with the lines the student got wrong swapped in —
+   so every correction Alfi gives points at a line that really is wrong. */
+const Q3_SOLUTION = [
+  'א. תחום הגדרה: המכנה x²−9 מתאפס כאשר x=3 או x=−3',
+  'לכן תחום ההגדרה: כל x ממשי פרט ל-x=3 ו-x=−3',
+  'ב. חיתוך עם ציר x: המונה x²−4x=0',
+  'x(x−4)=0 ולכן x=0 או x=4',
+  'הנקודות: (0,0) ו-(4,0)',
+  'חיתוך עם ציר y: מציבים x=0 ומקבלים y=0, אותה נקודה (0,0)',
+  'ג. אסימפטוטות אנכיות: x=3 ו-x=−3',
+  'סביב x=3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
+  'סביב x=−3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
+  'אסימפטוטה אופקית: מקדמי x² שווים במונה ובמכנה, לכן y=1',
+  'ד. נגזרת: y′ = (4x²−18x+36)/(x²−9)²',
+  'הדיסקרימינטה של המונה שלילית, לכן המונה לא מתאפס',
+  'מכאן שאין נקודות קיצון',
+  'ה. y′ חיובית בכל תחום ההגדרה',
+  'לכן הפונקציה עולה בכל אחד משלושת הקטעים',
+  'הסקיצה: שני ענפים עולים בין האסימפטוטות ועוד ענף עולה מימין ל-x=3',
+];
+
+const Q3_TRIES: { upto: number; bad?: [number, string][]; reply: ReactNode }[] = [
+  {
+    upto: 2,
+    bad: [[1, 'א. תחום הגדרה: המכנה x²−9 מתאפס כאשר x=3'], [2, 'לכן תחום ההגדרה: כל x ממשי פרט ל-x=3']],
+    reply: <>התחלה טובה. ב<b>שורה 1</b> — למשוואה x²−9=0 יש שני פתרונות, לא אחד. מה הפתרון השני?</>,
+  },
+  {
+    upto: 4,
+    bad: [[4, 'ולכן x=4']],
+    reply: <>סעיף א׳ נכון עכשיו. ב<b>שורה 4</b> — הוצאת גורם משותף: x(x−4)=0. כמה פתרונות יש למכפלה שמתאפסת?</>,
+  },
+  {
+    upto: 6,
+    bad: [[6, 'חיתוך עם ציר y: אין חיתוך עם ציר y']],
+    reply: <>שתי הנקודות נכונות. ב<b>שורה 6</b> — כדי למצוא חיתוך עם ציר y מציבים x=0 בפונקציה. מה מקבלים?</>,
+  },
+  {
+    upto: 8,
+    bad: [[7, 'ג. אסימפטוטה אנכית: x=3'], [8, 'אסימפטוטה אופקית: y=0']],
+    reply: <>שתי הערות: ב<b>שורה 7</b> המכנה מתאפס בשתי נקודות, לא באחת. ב<b>שורה 8</b> — כשהחזקה הגבוהה במונה ובמכנה שווה, האסימפטוטה האופקית היא היחס בין המקדמים.</>,
+  },
+  {
+    upto: 10,
+    bad: [[8, 'סביב x=3: משמאל y שואף ל-−∞, מימין y שואף ל-+∞']],
+    reply: <>האסימפטוטות נכונות. ב<b>שורה 8</b> — הצב x=2.9 ואחר כך x=3.1 ובדוק את הסימן בכל צד. יצא לך הפוך.</>,
+  },
+  {
+    upto: 10,
+    bad: [[9, 'סביב x=−3: משמאל y שואף ל-−∞, מימין y שואף ל-+∞']],
+    reply: <>שורה 8 מתוקנת, יפה. עכשיו ב<b>שורה 9</b> — עשה בדיוק את אותה בדיקה עם x=−3.1 ועם x=−2.9.</>,
+  },
+  {
+    upto: 11,
+    bad: [[11, 'ד. נגזרת: y′ = (2x−4)/(2x)']],
+    reply: <>ב<b>שורה 11</b> — אי אפשר לגזור מונה ומכנה בנפרד. השתמש בכלל המנה: (u/v)′ = (u′v − uv′)/v².</>,
+  },
+  {
+    upto: 13,
+    bad: [[12, 'הדיסקרימינטה של המונה חיובית, לכן המונה מתאפס'], [13, 'נקודות קיצון: x=1.5 ו-x=3']],
+    reply: <>הנגזרת נכונה עכשיו. ב<b>שורה 12</b> — חשב שוב: 18² − 4·4·36 = −252. מה זה אומר על מספר הפתרונות?</>,
+  },
+  {
+    upto: 15,
+    bad: [[14, 'ה. y′ שלילית בכל תחום ההגדרה'], [15, 'לכן הפונקציה יורדת בכל אחד משלושת הקטעים']],
+    reply: <>מצוין, אין נקודות קיצון. ב<b>שורה 14</b> — הצב x=0 בנגזרת ובדוק איזה סימן יוצא.</>,
+  },
+  {
+    upto: 16,
+    bad: [[16, 'הסקיצה: הגרף עולה לאורך כל הישר הממשי']],
+    reply: <>כמעט סיימת! ב<b>שורה 16</b> — הפונקציה לא מוגדרת ב-x=3 וב-x=−3, אז אי אפשר לומר "כל הישר". תאר את הגרף לפי שלושת הקטעים ושלח שוב.</>,
+  },
+];
+
+const Q3_PRIOR: PriorTurn[] = Q3_TRIES.map((t) => {
+  const lines = Q3_SOLUTION.slice(0, t.upto);
+  t.bad?.forEach(([n, text]) => { lines[n - 1] = text; });
+  return { answer: lines.join('\n'), reply: t.reply };
+});
 
 const QUESTIONS: Question[] = [
   {
@@ -133,25 +219,10 @@ const QUESTIONS: Question[] = [
       <><b>נקודות קיצון:</b> המונה 4x² − 18x + 36 חסר שורשים ממשיים, לכן אין נקודות קיצון.</>,
       <><b>עלייה וירידה:</b> y′ &gt; 0 בכל תחום ההגדרה — הפונקציה עולה בכל אחד משלושת הקטעים.</>,
     ],
-    sampleAnswer: [
-      'א. תחום הגדרה: המכנה x²−9 מתאפס כאשר x=3 או x=−3',
-      'לכן תחום ההגדרה: כל x ממשי פרט ל-x=3 ו-x=−3',
-      'ב. חיתוך עם ציר x: המונה x²−4x=0',
-      'x(x−4)=0 ולכן x=0 או x=4',
-      'הנקודות: (0,0) ו-(4,0)',
-      'חיתוך עם ציר y: מציבים x=0 ומקבלים y=0, אותה נקודה (0,0)',
-      'ג. אסימפטוטות אנכיות: x=3 ו-x=−3',
-      'סביב x=3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
-      'סביב x=−3: משמאל y שואף ל-+∞, מימין y שואף ל-−∞',
-      'אסימפטוטה אופקית: מקדמי x² שווים במונה ובמכנה, לכן y=1',
-      'ד. נגזרת: y′ = (4x²−18x+36)/(x²−9)²',
-      'הדיסקרימינטה של המונה שלילית, לכן המונה לא מתאפס',
-      'מכאן שאין נקודות קיצון',
-      'ה. y′ חיובית בכל תחום ההגדרה',
-      'לכן הפונקציה עולה בכל אחד משלושת הקטעים',
-      'הסקיצה: שני ענפים עולים בין האסימפטוטות ועוד ענף עולה מימין ל-x=3',
-    ].join('\n'),
+    sampleAnswer: Q3_SOLUTION.join('\n'),
     get solutionText() { return this.sampleAnswer; },
+    // ten attempts already behind the student — the long-page case
+    priorTurns: Q3_PRIOR,
   },
   {
     points: 20, short: 'תחום, נגזרת וקיצון',
@@ -614,6 +685,13 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
   const [msgs, setMsgs] = useState<Msg[]>(() => {
     if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }];
+    // a long question carries its whole history: every attempt and every correction
+    if (q.priorTurns) {
+      return q.priorTurns.flatMap((t): Msg[] => [
+        { from: 'student', node: <NumberedAnswer text={t.answer} /> },
+        { from: 'ai', node: hintNode(t.reply) },
+      ]);
+    }
     // half-solved: the earlier attempt and Alfi's correction are already on screen
     if (started && q.priorAttempt) {
       const bad = firstBadLine(q.priorAttempt, q.solutionText);
@@ -627,7 +705,7 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
   // some questions ship with a full worked answer already typed in, ready to send
   const [draft, setDraft] = useState(q.sampleAnswer ?? '');
   const [thinking, setThinking] = useState(false);
-  const [tries, setTries] = useState(started && q.priorAttempt ? 1 : 0);
+  const [tries, setTries] = useState(q.priorTurns?.length ?? (started && q.priorAttempt ? 1 : 0));
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
@@ -930,8 +1008,9 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const seedSolved = Math.min(task.solved, questions.length);
   const [solved, setSolved] = useState<Set<number>>(() => new Set(Array.from({ length: seedSolved }, (_, i) => i)));
   // opened and answered at least once, but not solved yet — half-filled dot
+  // every unsolved question that already carries an attempt in its chat is a started one
   const [started, setStarted] = useState<Set<number>>(() => new Set(
-    seedSolved > 0 && seedSolved < questions.length && questions[seedSolved].priorAttempt ? [seedSolved] : []
+    questions.flatMap((q, i) => (i >= seedSolved && (q.priorAttempt || q.priorTurns) ? [i] : []))
   ));
   const [openQ, setOpenQ] = useState<number | null>(null);
   const [hoverQ, setHoverQ] = useState<number | null>(null);
