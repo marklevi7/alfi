@@ -36,6 +36,8 @@ const base = {
       styleOverrides: {
         root: {
           ...FREDOKA,
+          // buttons get a touch more air between the letters than the rest of Fredoka
+          letterSpacing: '0.04em',
           // doubled selector so one weight wins over the per-screen sx values
           '&&': { fontWeight: 600 },
           // 18.8px is the smallest size that counts as "large text" once bold, which
