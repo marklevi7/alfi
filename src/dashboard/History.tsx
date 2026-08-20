@@ -293,7 +293,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
               );
               const value = s.label === 'תרגולים השבוע'
                 ? <Medal tier={tier} size={phone ? 40 : 54} />
-                : <Typography variant="h4" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>;
+                : <Typography variant="h4" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>;
 
               // phone: two lines for the whole card — icon + number, label underneath
               if (phone) return (
@@ -302,7 +302,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
                     <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: '1.4rem' }, flexShrink: 0 }}>{s.icon}</Box>
                     {s.label === 'תרגולים השבוע'
                       ? <Medal tier={tier} size={30} />
-                      : <Typography variant="h5" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
+                      : <Typography variant="h5" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
                   </Stack>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>{s.label}</Typography>
                 </Stack>
@@ -338,6 +338,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="חיפוש לפי שם"
+            inputProps={{ 'aria-label': 'חיפוש לפי שם' }}
             InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
             sx={{ flex: 1, minWidth: 180 }}
           />
@@ -373,6 +374,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="חיפוש לפי שם"
+            inputProps={{ 'aria-label': 'חיפוש לפי שם' }}
             InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
             sx={{ flex: 1, minWidth: 0 }}
           />
