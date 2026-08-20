@@ -112,7 +112,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     ? undefined
     : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
-  const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.to === null && !dateLabel && { color: 'text.disabled' }), ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
+  const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
   // no status words on the card at all — the red date, the bar and the pill carry it
   const dateNode = <Typography sx={dateSx}>{dateText}</Typography>;
   // bar and count: beside the meta on desktop, a full-width line of its own on a phone
