@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
+import { GREEN } from '../theme';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT, FREDOKA } from './Shell';
 import { TermsDialog } from './TermsDialog';
@@ -176,7 +177,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             maxWidth: '100%',
             objectFit: 'contain',
             display: 'block',
-            filter: `drop-shadow(0 24px 40px ${alpha(green[700], 0.35)})`,
+            filter: `drop-shadow(0 24px 40px ${alpha(GREEN[700], 0.35)})`,
           }}
         />
         )}

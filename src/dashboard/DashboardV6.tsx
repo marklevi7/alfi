@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
+import { GREEN } from '../theme';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Shell, SHOW_BOT } from './Shell';
 import { useNav } from '../nav';
@@ -166,7 +167,7 @@ export function DashboardV6() {
             maxWidth: '100%',
             objectFit: 'contain',
             display: 'block',
-            filter: `drop-shadow(0 24px 40px ${alpha(green[700], 0.35)})`,
+            filter: `drop-shadow(0 24px 40px ${alpha(GREEN[700], 0.35)})`,
           }}
         />
         )}

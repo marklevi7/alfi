@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { alpha, keyframes, useTheme } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -33,7 +33,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useNav, type Screen } from '../nav';
-import { FREDOKA } from '../theme';
+import { FREDOKA, GREEN } from '../theme';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
 
@@ -74,7 +74,7 @@ export const NAV = [
 // neutral circle behind it: the PNG is transparent, and a tinted disc would read as a state color.
 export function AlfiAvatar({ size = 40 }: { size?: number }) {
   const theme = useTheme();
-  const src = theme.palette.primary.main === green[700] ? 'alfi-green-head.png' : 'alfi.png';
+  const src = theme.palette.primary.main === GREEN[700] ? 'alfi-green-head.png' : 'alfi.png';
   // the source art has a lot of air around the head — zoom in so the face fills the circle
   return (
     <Avatar
@@ -274,7 +274,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
-  const sidebarRobot = theme.palette.primary.main === green[700] ? 'alfi-green-body.png' : robotImg;
+  const sidebarRobot = theme.palette.primary.main === GREEN[700] ? 'alfi-green-body.png' : robotImg;
   const [confirmLogout, setConfirmLogout] = useState(false);
   // the header lifts off the page once content starts sliding under it
   const [scrolled, setScrolled] = useState(false);

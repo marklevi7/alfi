@@ -24,6 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { deepPurple, blue, cyan, amber, brown, green, red, pink, grey } from '@mui/material/colors';
+import { GREEN } from '../theme';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -596,7 +597,7 @@ export function QMeta({ index, solved, started, size = 'h6' }: { index: number; 
       >
         {index + 1}
       </Box>
-      {solved && <CheckCircleTwoToneIcon sx={{ color: green[700] }} />}
+      {solved && <CheckCircleTwoToneIcon sx={{ color: GREEN[700] }} />}
       {half && (
         <Box sx={{
           width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
