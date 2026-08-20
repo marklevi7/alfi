@@ -96,11 +96,11 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
         <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGauge)" strokeWidth={13.5} strokeLinecap="round" />
         <circle cx={mx} cy={my} r={11} fill={common.white} stroke={deepPurple[500]} strokeWidth={5} />
       </Box>
-      <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>
-        <Typography sx={{ fontWeight: 900, fontSize: '3rem', lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
+      {/* the number stands ON the gauge's base line — y=100 of the 120-tall viewBox */}
+      <Box sx={{ position: 'absolute', insetInline: 0, bottom: '16.7%', textAlign: 'center' }}>
+        <Typography sx={{ fontWeight: 900, fontSize: '4.25rem', lineHeight: 0.82, color: 'text.primary', letterSpacing: '-0.02em' }}>
           {value}
         </Typography>
-        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>מתוך {max}</Typography>
       </Box>
     </Box>
   );
@@ -136,7 +136,7 @@ export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.25rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: '1.25rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>

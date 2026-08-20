@@ -82,7 +82,7 @@ function MathSigns() {
 }
 
 // Semicircle score gauge: red -> amber -> green, marker at value
-function ScoreGauge({ value, max = 100, showMax = true }: { value: number; max?: number; showMax?: boolean }) {
+function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   const cx = 100, cy = 100, r = 84;
   const deg = 180 - (value / max) * 180;
   const rad = (deg * Math.PI) / 180;
@@ -102,11 +102,11 @@ function ScoreGauge({ value, max = 100, showMax = true }: { value: number; max?:
         <path d="M16,100 A84,84 0 0 1 184,100" fill="none" stroke="url(#alfiGaugeV7)" strokeWidth={13.5} strokeLinecap="round" />
         <circle cx={mx} cy={my} r={11} fill={common.white} stroke={green[500]} strokeWidth={5} />
       </Box>
-      <Box sx={{ position: 'absolute', inset: 0, top: '34%', textAlign: 'center' }}>
-        <Typography sx={{ fontWeight: 900, fontSize: { xs: '2rem', md: '3rem' }, lineHeight: 1, color: 'text.primary', letterSpacing: '-0.02em' }}>
+      {/* the number stands ON the gauge's base line — y=100 of the 120-tall viewBox */}
+      <Box sx={{ position: 'absolute', insetInline: 0, bottom: '16.7%', textAlign: 'center' }}>
+        <Typography sx={{ fontWeight: 900, fontSize: { xs: '2.9rem', md: '4.25rem' }, lineHeight: 0.82, color: 'text.primary', letterSpacing: '-0.02em' }}>
           {value}
         </Typography>
-        {showMax && <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>מתוך {max}</Typography>}
       </Box>
     </Box>
   );
@@ -146,7 +146,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>
@@ -189,7 +189,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             <Stack direction="row" spacing={2} alignItems="center" divider={<Divider orientation="vertical" flexItem />}>
               {variant !== 'noGrade' && (
                 <Box sx={{ width: 118, flexShrink: 0 }}>
-                  <ScoreGauge value={78} showMax={false} />
+                  <ScoreGauge value={78} />
                   <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>
                     הממוצע שלי
                   </Typography>

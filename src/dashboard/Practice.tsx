@@ -209,7 +209,10 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             starting at the same edge as the bar below it */}
         {/* phone: one line — the pill, then the count, then the bar filling what is left */}
         <Stack direction="row-reverse" alignItems="center" spacing={4} sx={{ display: { xs: 'flex', md: 'none' } }}>
-          {progressNode}
+          {/* the count hugs the bar — the wide gap belongs only before the pill */}
+          <Stack direction="row-reverse" alignItems="center" spacing={1} sx={{ flex: 1, minWidth: 0 }}>
+            {progressNode}
+          </Stack>
           {traffic && <TrafficPill solved={t.solved} total={t.total} />}
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Stack>

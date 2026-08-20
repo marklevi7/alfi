@@ -257,6 +257,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
   const sidebarRobot = theme.palette.primary.main === green[700] ? 'alfi-green-body.png' : robotImg;
   const [confirmLogout, setConfirmLogout] = useState(false);
+  // the header lifts off the page once content starts sliding under it
+  const [scrolled, setScrolled] = useState(false);
   return (
     <Box
       sx={{
@@ -375,7 +377,14 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Stack>
 
             {/* Header strip — a screen with no title (a task, a question) keeps its space back */}
-            <Box sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 4 }, pt: { xs: 1.5, md: 7 }, pb: { xs: 2, md: 3 }, display: title ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <Box sx={{
+              position: 'relative', zIndex: 2, px: { xs: 2.5, md: 4 }, pt: { xs: 1.5, md: 3.5 }, pb: { xs: 2, md: 3 },
+              display: title ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center',
+              bgcolor: 'background.paper',
+              transition: (t) => t.transitions.create('box-shadow'),
+              ...(scrolled && { boxShadow: 3 }),
+              '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+            }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 {headerAction ?? (
                 <Typography variant="h4" component="h1"
@@ -390,7 +399,10 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             </Box>
 
             {/* Scrollable content */}
-            <Box sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <Box
+              onScroll={(e) => setScrolled((e.target as HTMLElement).scrollTop > 0)}
+              sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}
+            >
               <Box sx={{ px: { xs: 2.5, md: 4 }, pb: { xs: 2.5, md: 3 }, pt: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {children}
                 {/* Spacer so content clears the fixed mobile bottom nav */}
