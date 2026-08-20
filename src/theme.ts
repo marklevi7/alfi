@@ -51,7 +51,11 @@ const base = {
     // one weight for every button, over the per-screen sx values
     MuiButton: {
       styleOverrides: {
-        root: { '&&': { fontWeight: 600 } },
+        root: ({ theme }: { theme: { palette: { text: { secondary: string } } } }) => ({
+          '&&': { fontWeight: 600 },
+          // a switched-off button still has to be readable
+          '&.Mui-disabled': { color: theme.palette.text.secondary },
+        }),
       },
     },
     // The blue ring is the focus marker, so the grey wash behind a focused row

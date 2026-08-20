@@ -158,6 +158,7 @@ function AlfiChat({ onClose, full = false }: { onClose: () => void; full?: boole
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }}
           placeholder="כתוב לאלפי…"
+          inputProps={{ 'aria-label': 'הודעה לאלפי' }}
         />
         <IconButton color="primary" onClick={send} disabled={!draft.trim()} aria-label="שליחה">
           <SendRoundedIcon className="dir-icon" />

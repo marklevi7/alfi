@@ -420,7 +420,7 @@ function QrDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ fontWeight: 800, pr: 6 }}>
         העלאת פתרון דרך הטלפון
-        <IconButton onClick={onClose} sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}><CloseRoundedIcon /></IconButton>
+        <IconButton onClick={onClose} aria-label="סגירה" sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}><CloseRoundedIcon /></IconButton>
       </DialogTitle>
       <DialogContent sx={{ textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>סרוק את ה-QR בטלפון וצלם את הפתרון הכתוב.</Typography>
@@ -808,6 +808,7 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
           placeholder="כתוב כאן את התשובה שלך…"
+          inputProps={{ 'aria-label': 'הפתרון שלי' }}
           disabled={thinking}
         />
         {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
