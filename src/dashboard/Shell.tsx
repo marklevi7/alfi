@@ -340,6 +340,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       primary={item.label}
                       primaryTypographyProps={{
                         variant: 'subtitle1',
+                        // a menu name is not a chapter title — plain text, so the page
+                        // outline a screen reader announces holds only real headings
+                        component: 'span',
                         textAlign: 'start',
                         // trying Fredoka on the main nav only — the rest of the app keeps its font
                         sx: { ...FREDOKA, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
