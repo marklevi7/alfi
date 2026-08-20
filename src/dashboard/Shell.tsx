@@ -43,6 +43,17 @@ export const SHOW_BOT = false;
 
 // trying Fredoka on the nav and the page titles only — everything else keeps the default font.
 // Fredoka stops at 700, so nothing wearing it asks for 800.
+// the strip right above the scrolling content lifts off it once scrolling starts.
+// downward only — a full MUI shadow would spill over the logo sitting above the strip.
+const liftSx = (on: boolean) => ({
+  transition: (t: Theme) => t.transitions.create(['box-shadow', 'background-color']),
+  '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+  ...(on && {
+    bgcolor: 'background.paper',
+    boxShadow: (t: Theme) => `0px 6px 8px -4px ${alpha(t.palette.common.black, 0.2)}`,
+  }),
+});
+
 export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
 
 export const NAV = [
@@ -356,7 +367,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             {/* Mobile top bar */}
             <Stack direction="row" justifyContent="space-between" alignItems="center"
               spacing={1.5}
-              sx={{ position: 'relative', zIndex: 1, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5 }}>
+              sx={{ position: 'relative', zIndex: 2, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, ...liftSx(scrolled && !title) }}>
               {mobileBack ? (
                 <>
                   <IconButton aria-label="חזרה" onClick={mobileBack}>
@@ -380,11 +391,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
             <Box sx={{
               position: 'relative', zIndex: 2, px: { xs: 2.5, md: 4 }, pt: { xs: 1.5, md: 3.5 }, pb: { xs: 2, md: 3 },
               display: title ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center',
-              bgcolor: 'background.paper',
-              transition: (t) => t.transitions.create('box-shadow'),
-              // downward only — a full MUI shadow would spill over the logo above the strip
-              ...(scrolled && { boxShadow: (t: Theme) => `0px 6px 8px -4px ${alpha(t.palette.common.black, 0.2)}` }),
-              '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+              ...liftSx(scrolled),
             }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 {headerAction ?? (
