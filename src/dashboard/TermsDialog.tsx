@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
+import { TAP_AREA } from '../login/parts';
 
 // First-login popup: the student must accept the terms of use before using ALFI.
 // Not dismissable — no backdrop/Esc close; the only way through is the CTA.
@@ -52,9 +53,9 @@ export function TermsDialog() {
           label={
             <Typography variant="body2">
               קראתי ואני מסכים/ה ל
-              <Link href="#" underline="hover" sx={{ fontWeight: 700 }}>תנאי השימוש</Link>
+              <Link href="#" underline="hover" sx={{ fontWeight: 700, ...TAP_AREA }}>תנאי השימוש</Link>
               {' '}ול
-              <Link href="#" underline="hover" sx={{ fontWeight: 700 }}>מדיניות הפרטיות</Link>
+              <Link href="#" underline="hover" sx={{ fontWeight: 700, ...TAP_AREA }}>מדיניות הפרטיות</Link>
             </Typography>
           }
         />

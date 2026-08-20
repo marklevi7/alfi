@@ -400,6 +400,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               )}
             </Stack>
 
+            {/* the page names itself even when the strip that would show it is hidden */}
+            {!title && <Typography component="h1" sx={visuallyHidden}>{NAV.find((n) => n.screen === active)?.label ?? ''}</Typography>}
+
             {/* Header strip — a screen with no title (a task, a question) keeps its space back */}
             <Box sx={{
               position: 'relative', zIndex: 2, px: { xs: 2.5, md: 4 }, pt: { xs: 1.5, md: 3.5 }, pb: { xs: 2, md: 3 },
@@ -415,10 +418,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                   {title}
                 </Typography>
                 ) : (
-                <>
-                  <Typography component="h1" sx={visuallyHidden}>{NAV.find((n) => n.screen === active)?.label ?? ''}</Typography>
-                  {headerAction}
-                </>
+                headerAction
                 )}
                 <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
                   <LogoutRoundedIcon className="dir-icon" />

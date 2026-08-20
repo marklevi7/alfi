@@ -4,6 +4,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { visuallyHidden } from '@mui/utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
@@ -36,7 +37,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v210',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v211',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -175,6 +176,16 @@ export const AUTH_VIEWS: { label: string; view: AuthView }[] = [
 ];
 export const AuthViewContext = createContext<{ view: AuthView; setView: (v: AuthView) => void } | null>(null);
 
+// A text link inside a sentence stays exactly as it looks, but takes a finger-sized
+// area around it — the extra height is invisible and never moves the text.
+export const TAP_AREA = {
+  position: 'relative' as const,
+  '&::after': {
+    content: '""', position: 'absolute' as const, insetInline: 0, top: '50%',
+    transform: 'translateY(-50%)', height: (t: Theme) => t.spacing(5.5),
+  },
+};
+
 export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: boolean; showFooter?: boolean }) {
   const [showPassword, setShowPassword] = useState(false);
   // the control bar owns the view when it's mounted; otherwise the card keeps its own
@@ -280,7 +291,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
               inputProps={{ inputMode: 'numeric', maxLength: 6, style: { letterSpacing: '0.5em', fontWeight: 700 } }}
             />
             <Typography variant="body2" color="text.secondary">
-              לא הגיע קוד? <Link component="button" type="button" underline="hover" variant="body2" sx={{ fontWeight: 700 }}>שליחה מחדש</Link>
+              לא הגיע קוד? <Link component="button" type="button" underline="hover" variant="body2" sx={{ fontWeight: 700, ...TAP_AREA }}>שליחה מחדש</Link>
             </Typography>
           </>
         )}
@@ -334,6 +345,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
 
   return (
     <Box sx={{ width: '100%' }}>
+      {!showTitle && <Typography component="h1" sx={visuallyHidden}>{COPY.welcomeTitle}</Typography>}
       {showTitle && (
         <Stack spacing={1} sx={{ mb: 3 }}>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 800 }}>
@@ -417,7 +429,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
               control={<Checkbox size="small" defaultChecked />}
               label={<Typography variant="body2">זכור אותי</Typography>}
             />
-            <Link component="button" type="button" onClick={() => setReset('email')} variant="body2" underline="hover" sx={{ fontWeight: 600 }}>
+            <Link component="button" type="button" onClick={() => setReset('email')} variant="body2" underline="hover" sx={{ fontWeight: 600, ...TAP_AREA }}>
               שכחת את הסיסמה?
             </Link>
           </Stack>
@@ -426,7 +438,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
             control={<Checkbox size="small" />}
             label={
               <Typography variant="body2">
-                קראתי ואני מסכים ל<Link href="#" underline="hover" sx={{ fontWeight: 600 }}>תנאי השימוש</Link>
+                קראתי ואני מסכים ל<Link href="#" underline="hover" sx={{ fontWeight: 600, ...TAP_AREA }}>תנאי השימוש</Link>
               </Typography>
             }
           />
