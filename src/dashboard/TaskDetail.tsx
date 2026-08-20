@@ -39,7 +39,7 @@ import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell, AlfiAvatar } from './Shell';
+import { Shell, AlfiAvatar, FREDOKA } from './Shell';
 import { GradePill } from './Practice';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
@@ -1090,7 +1090,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       {/* header — title, then meta line with the progress tucked under it as helper text */}
       <Box sx={{ mt: 2 }}>
         <Stack direction="row" alignItems="baseline" spacing={1}>
-          <Typography variant="h4" sx={{ fontWeight: 800 }}>{task.title}</Typography>
+          <Typography variant="h4" sx={{ ...FREDOKA, fontWeight: 600 }}>{task.title}</Typography>
           {/* finished test: the grade pill sits right by the title, same style as the list card */}
           {task.grade != null && (
             <Box sx={{ alignSelf: 'center' }}><GradePill grade={task.grade} /></Box>

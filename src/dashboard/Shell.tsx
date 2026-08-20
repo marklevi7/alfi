@@ -41,6 +41,10 @@ export { robotImg };
 // Bot is hidden while it gets redesigned — flip to true to bring him back everywhere.
 export const SHOW_BOT = false;
 
+// trying Fredoka on the nav and the page titles only — everything else keeps the default font.
+// Fredoka stops at 700, so nothing wearing it asks for 800.
+export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
+
 export const NAV = [
   { label: 'מסך ראשי', short: 'מסך ראשי', icon: <HomeTwoToneIcon />, screen: 'dashboard' as const },
   { label: 'תרגולים ובחנים', short: 'תרגולים', icon: <AssignmentTwoToneIcon />, screen: 'practice' as const },
@@ -304,7 +308,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       // one notch brighter than primary.dark, so the live item reads as the brand green
                       '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.main' },
                       '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
-                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 600 },
+                      // every item wears the same weight — the live one is told apart by colour alone
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
                     }}
                   >
@@ -315,7 +319,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                         variant: 'subtitle1',
                         textAlign: 'start',
                         // trying Fredoka on the main nav only — the rest of the app keeps its font
-                        sx: { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, letterSpacing: '0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+                        sx: { ...FREDOKA, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
                       }}
                     />
                   </ListItemButton>
@@ -374,7 +378,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
                 {headerAction ?? (
                 <Typography variant="h4" component="h1"
-                  sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
+                  sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   {title}
                 </Typography>
                 )}
@@ -405,7 +409,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           borderRadius: 3,
           // full nav names, same as desktop — they need to fit three across a phone
           '& .MuiBottomNavigationAction-root': { minWidth: 0, px: 0.5 },
-          '& .MuiBottomNavigationAction-label': { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em', fontSize: '0.72rem', whiteSpace: 'nowrap' },
+          '& .MuiBottomNavigationAction-label': { ...FREDOKA, fontSize: '0.72rem', whiteSpace: 'nowrap' },
           '& .MuiBottomNavigationAction-label.Mui-selected': { fontSize: '0.72rem' },
           '& .MuiBottomNavigationAction-root.Mui-selected': {
             bgcolor: 'primary.main',
