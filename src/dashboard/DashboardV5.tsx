@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { deepPurple, blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import { Shell, SHOW_BOT } from './Shell';
+import { Shell, SHOW_BOT, FREDOKA } from './Shell';
 import { TermsDialog } from './TermsDialog';
 import { useNav } from '../nav';
 
@@ -136,7 +136,7 @@ export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.25rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.25rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>
@@ -178,7 +178,7 @@ export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         {/* Score gauge card */}
         <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>הציון הממוצע שלי</Typography>
+            <Typography variant="h6" sx={{ ...FREDOKA, fontWeight: 600, mb: 1 }}>הציון הממוצע שלי</Typography>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
               <ScoreGauge value={78} />
             </Box>
@@ -188,7 +188,7 @@ export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         {/* Next task CTA card — simple white card, green primary CTA */}
         <Card sx={{ minHeight: 220, borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>התרגול הבא שלי</Typography>
+            <Typography variant="h6" sx={{ ...FREDOKA, fontWeight: 600, mb: 1.5 }}>התרגול הבא שלי</Typography>
             <Typography sx={{ textAlign: 'start', mb: 2.5, flex: 1, textWrap: 'pretty', color: 'text.secondary' }}>
               יש לי 2 תרגולים חדשים מהמורה. בוא נתחיל עם אלגברה!
             </Typography>

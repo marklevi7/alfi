@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { blue, cyan, amber, orange, green, red, pink, common } from '@mui/material/colors';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import { Shell, SHOW_BOT } from './Shell';
+import { Shell, SHOW_BOT, FREDOKA } from './Shell';
 import { TermsDialog } from './TermsDialog';
 import { useNav } from '../nav';
 
@@ -146,7 +146,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
             },
           }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
+          <Typography sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.1rem', md: '1.75rem' }, whiteSpace: 'nowrap' }}>
             שלום, מארק! 👋
           </Typography>
         </Box>
@@ -225,7 +225,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         <Card sx={{ minHeight: { xs: 0, md: 220 }, borderRadius: 4, boxShadow: theme.shadows[8], bgcolor: (t) => alpha(t.palette.background.paper, 0.96) }}>
           <CardContent sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* empty state mirrors the task card: headline as title, start-aligned body */}
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+            <Typography variant="h6" sx={{ ...FREDOKA, fontWeight: 600, mb: 1 }}>
               {variant === 'noGrade' ? 'עדיין אין ציון ממוצע' : 'הציון הממוצע שלי'}
             </Typography>
             {variant === 'noGrade' ? (
@@ -243,7 +243,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
         {/* Next task CTA card — simple white card, green primary CTA */}
         <Card sx={{ minHeight: { xs: 0, md: 220 }, borderRadius: 4, boxShadow: theme.shadows[8] }}>
           <CardContent sx={{ p: { xs: 2, md: 3 }, height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
-            <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
+            <Typography variant="h6" sx={{ ...FREDOKA, fontWeight: 600, mb: 1.5 }}>
               {variant === 'noNext' ? 'אין תרגולים חדשים כרגע' : 'התרגול הבא שלי'}
             </Typography>
             {variant === 'noNext' ? (
