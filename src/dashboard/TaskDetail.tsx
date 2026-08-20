@@ -872,7 +872,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
             {solved && (
               <Stack direction="row" spacing={0.5} alignItems="center" sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, border: 2, borderColor: 'primary.main', color: 'primary.dark', transform: 'rotate(-4deg)' }}>
                 <CheckRoundedIcon sx={{ fontSize: 18 }} />
-                <Typography variant="body2" sx={{ fontWeight: 900, letterSpacing: '0.04em' }}>הצלחת!</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 900, letterSpacing: (t) => t.typography.caption.letterSpacing }}>הצלחת!</Typography>
               </Stack>
             )}
             {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}

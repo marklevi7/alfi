@@ -98,7 +98,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
       </Box>
       {/* the number stands ON the gauge's base line — y=100 of the 120-tall viewBox */}
       <Box sx={{ position: 'absolute', insetInline: 0, bottom: '16.7%', textAlign: 'center' }}>
-        <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: (t) => t.typography.h2.fontSize, lineHeight: 0.82, color: 'text.primary', letterSpacing: '-0.01em' }}>
+        <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: (t) => t.typography.h2.fontSize, lineHeight: 0.82, color: 'text.primary', letterSpacing: (t) => t.typography.h2.letterSpacing }}>
           {value}
         </Typography>
       </Box>

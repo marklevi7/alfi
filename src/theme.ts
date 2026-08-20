@@ -11,7 +11,7 @@ const defaultTheme = createTheme();
 
 // Fredoka: the nav, the page titles and every button wear it. It stops at 700,
 // so nothing wearing it asks for 800.
-export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
+export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: defaultTheme.typography.button.letterSpacing } as const;
 
 // Shared options both themes use (RTL, shape, dir-icon mirroring).
 const base = {
