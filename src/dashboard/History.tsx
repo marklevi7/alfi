@@ -13,7 +13,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { type Kind } from './KindIcon';
 import { useNav } from '../nav';
 import { TaskCard, type TaskStatus } from './Practice';
-import { SummaryDialog, type Summary, type SummaryQuestion } from './SummaryDialog';
+import { SummaryDialog, type Summary, type SummaryQuestion, type SummaryTurn } from './SummaryDialog';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { green, amber, grey, brown, blueGrey, red, deepOrange, blue } from '@mui/material/colors';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -92,6 +92,34 @@ const ANSWER_FIRST_TRY = [
 const HINT = 'כמעט! יש טעות בשורה 2. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.';
 const APPROVED = 'כל הכבוד! תשובה נכונה! 🎉';
 
+// the long case: an exercise that took five attempts, so the summary really has a conversation in it
+const LONG_TRIES: { answer: string[]; hint: string }[] = [
+  {
+    answer: ['שיפוע הישר: m = (3−1)/(9−5) = 0.5'],
+    hint: 'יש טעות בשורה 1. בנוסחת השיפוע ההפרש של ה-y נמצא למעלה וההפרש של ה-x למטה. הפכת ביניהם.',
+  },
+  {
+    answer: ['שיפוע הישר: m = (9−5)/(3−1) = 2', 'משוואת הישר: y = 2x'],
+    hint: 'השיפוע נכון עכשיו. בשורה 2 חסר לך המספר החופשי. הצב את אחת הנקודות במשוואה כדי למצוא אותו.',
+  },
+  {
+    answer: ['שיפוע הישר: m = (9−5)/(3−1) = 2', 'מציבים את הנקודה A(1,5): 5 = 2·1 + b', 'b = 7'],
+    hint: 'ההצבה נכונה. בשורה 3 — כדי לבודד את b צריך לחסר 2 משני האגפים, לא לחבר.',
+  },
+  {
+    answer: ['שיפוע הישר: m = (9−5)/(3−1) = 2', 'מציבים את הנקודה A(1,5): 5 = 2·1 + b', 'b = 3', 'משוואת הישר: y = 2x + 3', 'בדיקה עבור B(3,9): 2·3 + 3 = 8'],
+    hint: 'המשוואה נכונה! בשורה 5 יש טעות חישוב קטנה: 2·3 + 3. חשב שוב ובדוק אם זה יוצא בדיוק 9.',
+  },
+  {
+    answer: ['שיפוע הישר: m = (9−5)/(3−1) = 2', 'מציבים את הנקודה A(1,5): 5 = 2·1 + b', 'b = 3', 'משוואת הישר: y = 2x + 3', 'בדיקה עבור A(1,5): 2·1 + 3 = 5 ✓', 'בדיקה עבור B(3,9): 2·3 + 3 = 9 ✓'],
+    hint: APPROVED,
+  },
+];
+const LONG_TURNS: SummaryTurn[] = LONG_TRIES.flatMap((t, i) => [
+  { from: 'student' as const, text: t.answer.join('\n') },
+  { from: 'alfi' as const, text: t.hint, tone: (i === LONG_TRIES.length - 1 ? 'ok' : 'hint') as 'ok' | 'hint' },
+]);
+
 function questionsFor(it: Item): SummaryQuestion[] {
   const perQ = it.kind === 'בוחן' ? Math.round(100 / it.total) : 0;
   const test = it.kind === 'בוחן';
@@ -104,8 +132,12 @@ function questionsFor(it: Item): SummaryQuestion[] {
     if (!answered) return { short, prompt, turns: [], status: 'notStarted' as const };
     const dropped = lost && i === 1;
     const answer = test ? ANSWER_FULL : ANSWER_PARTIAL;
+    // the last exercise of a practice is the long one — five attempts before it came out right
+    const long = !test && i === it.total - 1;
     // the ones that lost points got there the long way: a try, a correction, then the answer
-    const turns = dropped
+    const turns = long
+      ? LONG_TURNS
+      : dropped
       ? [
           { from: 'student' as const, text: ANSWER_FIRST_TRY },
           { from: 'alfi' as const, text: HINT, tone: 'hint' as const },

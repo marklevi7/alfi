@@ -205,14 +205,15 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
       // the box never resizes — the question slides in over the list, inside the same frame
       PaperProps={{ sx: { borderRadius: phone ? 0 : 4, height: phone ? '100%' : 'min(760px, 90vh)' } }}
     >
-      <DialogTitle component="div" sx={{ pb: 1 }}>
+      <DialogTitle component="div" sx={{ pb: 1, position: 'relative' }}>
         {/* phone: the close button gets a bar of its own, so the title keeps the full width */}
         {!open && (
           <Stack direction="row" justifyContent="flex-end" sx={{ display: { xs: 'flex', md: 'none' }, mx: -1, mt: -1, mb: 0.5 }}>
             <IconButton onClick={onClose} aria-label="סגירה"><CloseRoundedIcon /></IconButton>
           </Stack>
         )}
-        <Stack direction="row" spacing={2} alignItems="flex-start">
+        {/* room kept clear for the corner close button, so a long title never runs under it */}
+        <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ paddingInlineEnd: { md: open ? 0 : 5 } }}>
           {/* inside a question there is only a way back; the list closes from the far side */}
           {open && (
             <Box sx={{ height: 24, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
@@ -251,8 +252,8 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               /* everything the card carried: subject, date, progress */
               <>
                 {/* phone: the badge gets its own line, so the title never has to share the row */}
-                <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 1.25 }}>{badge}</Box>
-                <Stack direction="row" alignItems="baseline" flexWrap="wrap" sx={{ mt: 1.25, columnGap: 2, rowGap: 0.5 }}>
+                <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 0.75 }}>{badge}</Box>
+                <Stack direction="row" alignItems="baseline" flexWrap="wrap" sx={{ mt: 0.25, columnGap: 2, rowGap: 0.5 }}>
                   <Typography variant="body2" color="text.secondary">
                     {summary.subTopic}
                   </Typography>
@@ -263,7 +264,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                     <Typography variant="body2" sx={{ fontWeight: 700, color: 'error.dark', whiteSpace: 'nowrap' }}>פג תוקף</Typography>
                   )}
                 </Stack>
-                <Stack direction="row" alignItems="center" sx={{ mt: 1.25, columnGap: 2 }}>
+                <Stack direction="row" alignItems="center" sx={{ mt: 1, columnGap: 2 }}>
                   <LinearProgress
                     variant="determinate"
                     value={pct}
@@ -285,8 +286,13 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               </>
             )}
           </Box>
+          {/* the close button lives in the physical top-left corner of the dialog */}
           {!open && (
-            <IconButton onClick={onClose} aria-label="סגירה" sx={{ display: { xs: 'none', md: 'inline-flex' }, alignSelf: 'center' }}>
+            <IconButton
+              onClick={onClose}
+              aria-label="סגירה"
+              sx={{ display: { xs: 'none', md: 'inline-flex' }, position: 'absolute', top: 8, insetInlineEnd: 8 }}
+            >
               <CloseRoundedIcon />
             </IconButton>
           )}
