@@ -1,6 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 import { deepPurple, green, teal, blue } from '@mui/material/colors';
 
+// every raw length in this file comes off MUI's own spacing scale
+const defaultTheme = createTheme();
+
 // Fredoka: the nav, the page titles and every button wear it. It stops at 700,
 // so nothing wearing it asks for 800.
 export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
@@ -15,7 +18,7 @@ const base = {
     subtitle1: { fontSize: '1.25rem', fontWeight: 700 },
     // `button` is MUI's own token for button text — every button reads from it,
     // so the family, size, weight and spacing live here and nowhere else.
-    button: { ...FREDOKA, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.04em' },
+    button: { ...FREDOKA, fontSize: '1.25rem', fontWeight: 600, letterSpacing: '0.02857em' },
   },
   components: {
     // Keyboard focus has to be visible (SI 5568 / WCAG 2.4.7). ButtonBase clears the
@@ -26,8 +29,8 @@ const base = {
       styleOverrides: {
         root: {
           '&.Mui-focusVisible': {
-            outline: `3px solid ${blue[700]}`,
-            outlineOffset: 2,
+            outline: `${defaultTheme.spacing(0.375)} solid ${blue[700]}`,
+            outlineOffset: defaultTheme.spacing(0.25),
           },
         },
       },

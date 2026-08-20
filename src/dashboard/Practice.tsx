@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { alpha } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { green, amber, red, brown, blue } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -136,7 +137,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         borderRadius: 3,
         display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: 'pointer', p: 0,
         // the card is a plain button, so it needs the design system's focus ring spelled out
-        '&:focus-visible': { outline: `3px solid ${blue[700]}`, outlineOffset: 2 },
+        '&:focus-visible': { outline: (th: Theme) => `${th.spacing(0.375)} solid ${blue[700]}`, outlineOffset: (th: Theme) => th.spacing(0.25) },
         ...(t.status === 'done' && { bgcolor: green[50] }),
         transition: (th) => th.transitions.create(['box-shadow', 'border-color']),
         '&:hover': { boxShadow: 4, borderColor: `${kind}.main` },

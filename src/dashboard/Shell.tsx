@@ -53,10 +53,10 @@ const liftSx = (on: boolean) => ({
   '&::after': {
     // runs to the far rim of the page on the open side, and stops short of the
     // column edge on the side where the logo sits
-    content: '""', position: 'absolute', insetInlineStart: { xs: 20, md: 32 }, insetInlineEnd: 0, top: '100%', height: 8,
+    content: '""', position: 'absolute', insetInlineStart: { xs: 2.5, md: 4 }, insetInlineEnd: 0, top: '100%', height: (t: Theme) => t.spacing(1),
     pointerEvents: 'none', opacity: on ? 1 : 0,
     transition: (t: Theme) => t.transitions.create('opacity'),
-    background: (t: Theme) => `linear-gradient(to bottom, ${alpha(t.palette.common.black, 0.16)}, ${alpha(t.palette.common.black, 0)})`,
+    background: (t: Theme) => `linear-gradient(to bottom, ${t.palette.action.disabled}, ${alpha(t.palette.common.black, 0)})`,
   },
   '@media (prefers-reduced-motion: reduce)': { transition: 'none', '&::after': { transition: 'none' } },
 });
