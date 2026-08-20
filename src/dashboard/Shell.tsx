@@ -50,9 +50,9 @@ const liftSx = (on: boolean) => ({
   transition: (t: Theme) => t.transitions.create('background-color'),
   ...(on && { bgcolor: 'background.paper' }),
   '&::after': {
-    // inset by the strip's own padding, so the shade lines up with the cards and
-    // stops well before the column edge next to the logo
-    content: '""', position: 'absolute', insetInline: { xs: 20, md: 32 }, top: '100%', height: 8,
+    // runs to the far rim of the page on the open side, and stops short of the
+    // column edge on the side where the logo sits
+    content: '""', position: 'absolute', insetInlineStart: { xs: 20, md: 32 }, insetInlineEnd: 0, top: '100%', height: 8,
     pointerEvents: 'none', opacity: on ? 1 : 0,
     transition: (t: Theme) => t.transitions.create('opacity'),
     background: (t: Theme) => `linear-gradient(to bottom, ${alpha(t.palette.common.black, 0.16)}, ${alpha(t.palette.common.black, 0)})`,
