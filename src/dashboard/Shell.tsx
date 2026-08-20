@@ -44,14 +44,19 @@ export const SHOW_BOT = false;
 // trying Fredoka on the nav and the page titles only — everything else keeps the default font.
 // Fredoka stops at 700, so nothing wearing it asks for 800.
 // the strip right above the scrolling content lifts off it once scrolling starts.
-// downward only — a full MUI shadow would spill over the logo sitting above the strip.
+// the shade is painted by the strip itself, just under its bottom edge, so it never
+// spills sideways over the logo or the sidebar the way a box-shadow would.
 const liftSx = (on: boolean) => ({
-  transition: (t: Theme) => t.transitions.create(['box-shadow', 'background-color']),
-  '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-  ...(on && {
-    bgcolor: 'background.paper',
-    boxShadow: (t: Theme) => `0px 6px 8px -4px ${alpha(t.palette.common.black, 0.2)}`,
-  }),
+  position: 'relative' as const,
+  transition: (t: Theme) => t.transitions.create('background-color'),
+  ...(on && { bgcolor: 'background.paper' }),
+  '&::after': {
+    content: '""', position: 'absolute', insetInline: 0, top: '100%', height: 8,
+    pointerEvents: 'none', opacity: on ? 1 : 0,
+    transition: (t: Theme) => t.transitions.create('opacity'),
+    background: (t: Theme) => `linear-gradient(to bottom, ${alpha(t.palette.common.black, 0.16)}, ${alpha(t.palette.common.black, 0)})`,
+  },
+  '@media (prefers-reduced-motion: reduce)': { transition: 'none', '&::after': { transition: 'none' } },
 });
 
 export const FREDOKA = { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', letterSpacing: '0.02em' } as const;
