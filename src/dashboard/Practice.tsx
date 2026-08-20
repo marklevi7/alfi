@@ -140,7 +140,12 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
         '&:focus-visible': { outline: (th: Theme) => `${th.spacing(0.375)} solid ${blue[700]}`, outlineOffset: (th: Theme) => th.spacing(0.25) },
         ...(t.status === 'done' && { bgcolor: green[50] }),
         transition: (th) => th.transitions.create(['box-shadow', 'border-color']),
-        '&:hover': { boxShadow: 4, borderColor: `${kind}.main` },
+        // the whole card is the button, so hovering it also lights up the call to action inside
+        '&:hover': {
+          boxShadow: 4, borderColor: `${kind}.main`,
+          '& .MuiButton-contained': { bgcolor: `${kind}.dark` },
+          '& .MuiButton-outlined': { bgcolor: (th: Theme) => alpha(th.palette[kind].main, th.palette.action.hoverOpacity) },
+        },
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >

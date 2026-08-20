@@ -549,7 +549,9 @@ function QuestProgress({ total, solved, started, current, size: sizeProp, onPick
                 width: size, height: size, borderRadius: '50%', flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontWeight: 800, fontSize: size * 0.42, fontFeatureSettings: '"tnum","lnum"',
-                ...(onPick && { cursor: 'pointer', p: 0, font: 'inherit', fontWeight: 800 }),
+                ...(onPick && { cursor: 'pointer', p: 0, font: 'inherit', fontWeight: 800,
+                  // plain buttons, so the design system's keyboard ring is spelled out here
+                  '&:focus-visible': { outline: (th: Theme) => `${th.spacing(0.375)} solid ${blue[700]}`, outlineOffset: (th: Theme) => th.spacing(0.25) } }),
                 // linked to the matching question card: hovering either one lifts both
                 transition: (t) => t.transitions.create(['transform', 'box-shadow']),
                 ...(hovered === i && { transform: 'scale(1.18)', boxShadow: 6 }),

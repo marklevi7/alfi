@@ -31,6 +31,8 @@ const base = {
     // so a mouse user never sees it. Blue, so it reads as a system state and never
     // as the brand green or purple.
     MuiButtonBase: {
+      // no pulsing circle when a key lands on a control — the ring says it already
+      defaultProps: { focusRipple: false },
       styleOverrides: {
         root: {
           '&.Mui-focusVisible': {
