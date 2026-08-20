@@ -141,7 +141,7 @@ function Preview({ q }: { q: SummaryQuestion }) {
           }),
         }}
       >
-        <Typography variant="body2" sx={{ lineHeight: 1.8, textAlign: 'start' }}>{q.prompt}</Typography>
+        <Typography variant="body2" sx={{ lineHeight: (t) => t.typography.button.lineHeight, textAlign: 'start' }}>{q.prompt}</Typography>
         {first && (
           <Box sx={{ mt: 1 }}>
             <NumberedAnswer text={first.text} />
@@ -362,10 +362,10 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
                 <Typography variant="h6" sx={{ fontWeight: 800, display: { xs: 'block', md: 'none' } }}>מה אלפי אומר</Typography>
                 <Box sx={{ flex: 1, minWidth: 0, display: { xs: 'none', md: 'block' } }}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>מה אלפי אומר</Typography>
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, textWrap: 'pretty' }}>{summary.insight}</Typography>
+                  <Typography variant="body1" sx={{ lineHeight: (t) => t.typography.button.lineHeight, textWrap: 'pretty' }}>{summary.insight}</Typography>
                 </Box>
               </Stack>
-              <Typography sx={{ display: { xs: 'block', md: 'none' }, lineHeight: 1.8, textWrap: 'pretty' }}>
+              <Typography sx={{ display: { xs: 'block', md: 'none' }, lineHeight: (t) => t.typography.button.lineHeight, textWrap: 'pretty' }}>
                 {summary.insight}
               </Typography>
             </Paper>

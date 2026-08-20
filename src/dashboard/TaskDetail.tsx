@@ -60,7 +60,7 @@ function hebrewWeekday(dateStr: string): string {
 /* ---------- tiny math renderer (no external lib) ---------- */
 function Frac({ n, d }: { n: ReactNode; d: ReactNode }) {
   return (
-    <Box component="span" sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', mx: 0.5, lineHeight: 1.1 }}>
+    <Box component="span" sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', mx: 0.5, lineHeight: (t: Theme) => t.typography.h1.lineHeight }}>
       <Box component="span" sx={{ px: 0.5 }}>{n}</Box>
       <Box component="span" sx={{ px: 0.5, borderTop: `1.5px solid currentColor`, width: '100%', textAlign: 'center' }}>{d}</Box>
     </Box>
@@ -982,7 +982,7 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, sho
                 }),
               }}
             >
-              <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: 1.8 }}>
+              <Typography component="div" sx={{ color: 'text.primary', textAlign: 'start', lineHeight: (t) => t.typography.button.lineHeight }}>
                 {q.prompt}
               </Typography>
             </Box>

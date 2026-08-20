@@ -37,7 +37,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v216',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v217',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -129,7 +129,7 @@ export function FeatureGrid() {
             >
               {f.icon}
             </Avatar>
-            <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: 1.25 }}>
+            <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: (t) => t.typography.h4.lineHeight }}>
               {f.text}
             </Typography>
           </Stack>
@@ -463,7 +463,7 @@ export const gradientBrand = (t: Theme) =>
 export function Tagline({ align = 'center' }: { align?: 'center' | 'inherit' }) {
   return (
     <Box sx={{ textAlign: align }}>
-      <Typography variant="h3" component="p" sx={{ fontWeight: 800, lineHeight: 1.05 }}>
+      <Typography variant="h3" component="p" sx={{ fontWeight: 800, lineHeight: (t) => t.typography.h1.lineHeight }}>
         {COPY.brandName}
       </Typography>
       <Typography variant="h6" component="p" sx={{ fontWeight: 400, opacity: 0.92 }}>

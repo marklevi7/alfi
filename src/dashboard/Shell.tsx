@@ -128,7 +128,7 @@ function AlfiChat({ onClose, full = false }: { onClose: () => void; full?: boole
     >
       <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 1.5, bgcolor: 'grey.100' }}>
         <Box sx={{ flex: 1 }}>
-          <Typography sx={{ fontWeight: 800, lineHeight: 1.2 }}>אלפי</Typography>
+          <Typography sx={{ fontWeight: 800, lineHeight: (t) => t.typography.h2.lineHeight }}>אלפי</Typography>
           <Typography variant="caption" color="text.secondary">כאן לכל שאלה</Typography>
         </Box>
         <IconButton size="small" onClick={onClose} aria-label="סגירת הצ׳אט"><CloseRoundedIcon fontSize="small" /></IconButton>

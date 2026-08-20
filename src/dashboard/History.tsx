@@ -304,7 +304,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
                       ? <Medal tier={tier} size={30} />
                       : <Typography variant="h5" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
                   </Stack>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>{s.label}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textAlign: 'center', lineHeight: (t) => t.typography.h2.lineHeight }}>{s.label}</Typography>
                 </Stack>
               );
 
