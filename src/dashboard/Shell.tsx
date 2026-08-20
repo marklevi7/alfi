@@ -304,8 +304,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       // one notch brighter than primary.dark, so the live item reads as the brand green
                       '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.main' },
                       '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
-                      // Fredoka tops out at 700, so the selected item goes there
-                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 700 },
+                      '&.Mui-selected .MuiListItemText-primary': { fontWeight: 600 },
                       '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
                     }}
                   >
@@ -316,7 +315,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                         variant: 'subtitle1',
                         textAlign: 'start',
                         // trying Fredoka on the main nav only — the rest of the app keeps its font
-                        sx: { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', fontWeight: 500, letterSpacing: '0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+                        sx: { fontFamily: '"Fredoka", Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, letterSpacing: '0.02em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
                       }}
                     />
                   </ListItemButton>
