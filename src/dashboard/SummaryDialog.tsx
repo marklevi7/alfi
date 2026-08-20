@@ -59,7 +59,7 @@ function NumberedAnswer({ text }: { text: string }) {
     <Stack spacing={0.25}>
       {lines.map((line, i) => (
         <Stack key={i} direction="row" spacing={1.25} alignItems="baseline">
-          <Typography component="span" variant="caption" sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, opacity: 0.55, fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}>
+          <Typography component="span" variant="caption" sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: 'text.secondary', fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}>
             {i + 1}
           </Typography>
           <Typography component="span" variant="body2" sx={{ textAlign: 'start', whiteSpace: 'pre-wrap' }}>{line}</Typography>

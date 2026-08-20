@@ -60,7 +60,7 @@ export function Logo({ variant = 'dark', tagline = false, size = 'medium', sx }:
       {tagline && (
         <Typography
           variant={s.tag}
-          sx={{ opacity: 0.85, textAlign: 'center', color: isLight ? 'common.white' : 'text.secondary' }}
+          sx={{ textAlign: 'center', color: isLight ? 'common.white' : 'text.secondary' }}
         >
           הלמידה החכמה שמתאימה לכל תלמיד
         </Typography>
