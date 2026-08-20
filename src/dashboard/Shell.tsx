@@ -382,7 +382,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               display: title ? 'flex' : { xs: 'none', md: 'flex' }, alignItems: 'center',
               bgcolor: 'background.paper',
               transition: (t) => t.transitions.create('box-shadow'),
-              ...(scrolled && { boxShadow: 3 }),
+              // downward only — a full MUI shadow would spill over the logo above the strip
+              ...(scrolled && { boxShadow: (t: Theme) => `0px 6px 8px -4px ${alpha(t.palette.common.black, 0.2)}` }),
               '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
             }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
