@@ -302,14 +302,15 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                       px: 2.5,
                       bgcolor: 'transparent',
                       transition: (t) => t.transitions.create(['background-color', 'transform']),
-                      '& .MuiListItemIcon-root': { color: 'text.disabled' },
+                      // label and icon always carry the same colour, in both states
+                      '& .MuiListItemIcon-root, & .MuiListItemText-primary': { color: 'text.disabled' },
                       '& .MuiSvgIcon-root': { fontSize: 30 },
                       '&:hover': { bgcolor: (t) => alpha(t.palette.text.primary, 0.04), transform: 'scale(1.02)' },
                       // one notch brighter than primary.dark, so the live item reads as the brand green
                       '&.Mui-selected': { bgcolor: (t) => alpha(t.palette.primary.main, 0.12), color: 'primary.main' },
                       '&.Mui-selected:hover': { bgcolor: (t) => alpha(t.palette.primary.main, 0.18) },
                       // every item wears the same weight — the live one is told apart by colour alone
-                      '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
+                      '&.Mui-selected .MuiListItemIcon-root, &.Mui-selected .MuiListItemText-primary': { color: 'primary.main' },
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 46 }}>{item.icon}</ListItemIcon>
