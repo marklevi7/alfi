@@ -35,8 +35,6 @@ const base = {
       defaultProps: { focusRipple: false },
       styleOverrides: {
         root: {
-          // nothing clickable highlights its own text when you drag across it
-          userSelect: 'none' as const,
           '&.Mui-focusVisible': {
             outline: `${defaultTheme.spacing(0.375)} solid ${blue[700]}`,
             outlineOffset: defaultTheme.spacing(0.25),

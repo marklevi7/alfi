@@ -135,7 +135,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       onClick={onOpen}
       sx={{
         borderRadius: 3,
-        display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: 'pointer', p: 0, userSelect: 'none',
+        display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: 'pointer', p: 0,
         // the card is a plain button, so it needs the design system's focus ring spelled out
         '&:focus-visible': { outline: (th: Theme) => `${th.spacing(0.375)} solid ${blue[700]}`, outlineOffset: (th: Theme) => th.spacing(0.25) },
         ...(t.status === 'done' && { bgcolor: green[50] }),
