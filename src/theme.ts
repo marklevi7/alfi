@@ -25,6 +25,15 @@ const base = {
         },
       },
     },
+    // The blue ring is the focus marker, so the grey wash behind a focused row
+    // drops to the same weight as hover instead of MUI's heavier action.focus.
+    MuiListItemButton: {
+      styleOverrides: {
+        root: ({ theme }: { theme: { palette: { action: { hover: string } } } }) => ({
+          '&.Mui-focusVisible:not(.Mui-selected)': { backgroundColor: theme.palette.action.hover },
+        }),
+      },
+    },
     // RTL at the design-system level. Layout/spacing already flip via
     // stylis-plugin-rtl + logical props. Directional glyphs (arrows, chevrons)
     // do NOT auto-mirror, so author them in LTR-forward orientation and add
