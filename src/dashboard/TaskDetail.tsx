@@ -985,7 +985,6 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, sho
             {/* one fixed-height line for the status and the "there's more" hint */}
             <Stack direction="row" alignItems="center" sx={{ height: 22, mt: 1 }}>
               {solved && <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700 }}>סיכום צ׳אט · התשובה נשמרה</Typography>}
-              {!solved && started && <Typography variant="caption" sx={{ color: brown[900], fontWeight: 700 }}>התחלתי · עוד לא נפתר</Typography>}
               {clipped && (
                 <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 800, marginInlineStart: 'auto' }}>
                   ראה עוד
