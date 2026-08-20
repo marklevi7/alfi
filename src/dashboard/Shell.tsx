@@ -32,6 +32,7 @@ import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import { visuallyHidden } from '@mui/utils';
 import { useNav, type Screen } from '../nav';
 import { FREDOKA, GREEN } from '../theme';
 import { Logo } from '../components/Logo';
@@ -406,11 +407,18 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               ...liftSx(scrolled),
             }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
-                {headerAction ?? (
+                {/* every screen carries a real page title. Screens that show no title on
+                    the page still name themselves for a screen reader, off-screen. */}
+                {title ? (
                 <Typography variant="h4" component="h1"
                   sx={{ ...FREDOKA, fontWeight: 600, fontSize: { xs: '1.5rem', sm: '2rem' }, textWrap: 'balance' }}>
                   {title}
                 </Typography>
+                ) : (
+                <>
+                  <Typography component="h1" sx={visuallyHidden}>{NAV.find((n) => n.screen === active)?.label ?? ''}</Typography>
+                  {headerAction}
+                </>
                 )}
                 <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
                   <LogoutRoundedIcon className="dir-icon" />
