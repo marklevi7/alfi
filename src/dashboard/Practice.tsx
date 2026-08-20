@@ -41,7 +41,7 @@ const rankOf = (t: Task) =>
 // Canonical MUI palette roles per kind / status.
 const KIND: Record<Kind, 'primary'> = { תרגול: 'primary', בוחן: 'primary' };
 // One shared style for all the small meta text in a card (date, topic, count).
-const META = { fontSize: '0.8rem', fontWeight: 400, color: 'text.secondary' } as const;
+const META = { fontSize: (t: Theme) => t.typography.body2.fontSize, fontWeight: 400, color: 'text.secondary' } as const;
 
 // The one task card, shared by תרגולים and the תמונת מצב timeline.
 // dateLabel overrides the deadline text (the timeline shows "היום" etc.).
@@ -183,7 +183,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
               {tag && (
                 <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, marginInlineStart: 1, verticalAlign: 'middle' }}>
                   <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: tag.dot, flexShrink: 0 }} />
-                  <Box component="span" sx={{ fontSize: '0.8rem', fontWeight: 700, color: tag.text }}>{tag.label}</Box>
+                  <Box component="span" sx={{ fontSize: (th: Theme) => th.typography.body2.fontSize, fontWeight: 700, color: tag.text }}>{tag.label}</Box>
                 </Box>
               )}
             </Typography>

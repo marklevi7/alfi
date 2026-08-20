@@ -1103,7 +1103,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           {done === 0 && (
             <Stack direction="row" spacing={0.5} alignItems="center" sx={{ alignSelf: 'center' }}>
               <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }} />
-              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: 'info.dark' }}>חדש</Typography>
             </Stack>
           )}
         </Stack>
