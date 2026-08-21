@@ -37,7 +37,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v233',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v234',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -363,7 +363,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
         </Alert>
       )}
       {loginError && (
-        <Alert severity="error" sx={{ mb: 2.5, fontWeight: 600 }}>
+        <Alert id="login-error" role="alert" severity="error" sx={{ mb: 2.5, fontWeight: 600 }}>
           האימייל או הסיסמה שגויים. בדקו ונסו שוב.
         </Alert>
       )}
@@ -397,7 +397,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
           key={`email-${view}`}
           label="אימייל" type="email" placeholder="הזינו כתובת אימייל" fullWidth autoComplete="email"
           error={loginError}
-          {...(loginError && { defaultValue: 'mark@school.co.il' })}
+          {...(loginError && { defaultValue: 'mark@school.co.il', inputProps: { 'aria-invalid': true, 'aria-errormessage': 'login-error', 'aria-describedby': 'login-error' } })}
         />
         <TextField
           key={`password-${view}`}
@@ -407,7 +407,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
           fullWidth
           autoComplete={tab === 0 ? 'current-password' : 'new-password'}
           error={loginError}
-          {...(loginError && { defaultValue: '12345678' })}
+          {...(loginError && { defaultValue: '12345678', inputProps: { 'aria-invalid': true, 'aria-errormessage': 'login-error', 'aria-describedby': 'login-error' } })}
           helperText={loginError ? 'שכחתם את הסיסמה? אפשר לאפס אותה כאן למטה.' : tab === 1 ? 'לפחות 8 תווים' : undefined}
           InputProps={{
             endAdornment: (
