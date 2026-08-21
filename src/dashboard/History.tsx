@@ -91,6 +91,14 @@ const ANSWER_FIRST_TRY = [
 ].join('\n');
 const HINT = 'כמעט! יש טעות בשורה 2. בדוק אותה שוב, תקן ושלח לי את הפתרון עוד פעם.';
 const APPROVED = 'כל הכבוד! תשובה נכונה! 🎉';
+// the half-done question: the second try fixes the mistake but leaves one part out,
+// so it closes on most of the points instead of a clean 🎉
+const ANSWER_ALMOST = [
+  'תחום הגדרה: x²−9 ≠ 0, לכן x ≠ 3 וגם x ≠ −3',
+  'חיתוך עם ציר x: x²−4x = 0 → x = 0 או x = 4',
+  'אסימפטוטה אופקית: y = 1',
+].join('\n');
+const PARTIAL_CLOSE = 'שורה 2 מתוקנת, יפה. חסרות לך האסימפטוטות האנכיות — x = 3 ו-x = −3. על החלק הזה ירדו נקודות.';
 
 // the long case: an exercise that took five attempts, so the summary really has a conversation in it
 const LONG_TRIES: { answer: string[]; hint: string }[] = [
@@ -141,8 +149,8 @@ function questionsFor(it: Item): SummaryQuestion[] {
       ? [
           { from: 'student' as const, text: ANSWER_FIRST_TRY },
           { from: 'alfi' as const, text: HINT, tone: 'hint' as const },
-          { from: 'student' as const, text: answer },
-          { from: 'alfi' as const, text: APPROVED, tone: 'ok' as const },
+          { from: 'student' as const, text: ANSWER_ALMOST },
+          { from: 'alfi' as const, text: PARTIAL_CLOSE, tone: 'hint' as const },
         ]
       : [
           { from: 'student' as const, text: answer },
