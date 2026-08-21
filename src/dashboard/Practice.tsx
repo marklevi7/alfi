@@ -233,18 +233,21 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Stack>
 
-        {/* an expired task has no summary to open, so it carries no button at all */}
-        {t.status !== 'expired' && (
+        {/* an expired task has no summary to open — the slot stays, and says so in red */}
         <Button
           component="span"
-          variant={locked ? 'outlined' : 'contained'}
-          color={kind}
+          variant="outlined"
+          color={t.status === 'expired' ? 'error' : kind}
+          disabled={t.status === 'expired'}
+          {...(t.status !== 'expired' && { variant: locked ? 'outlined' : 'contained' })}
           // one fixed width on desktop so the CTAs line up in a single column; full width on a phone
-          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 } }}
+          sx={{
+            fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 },
+            ...(t.status === 'expired' && { '&.Mui-disabled': { color: 'error.dark', borderColor: 'error.light' } }),
+          }}
         >
-          {cta}
+          {t.status === 'expired' ? 'פג תוקף' : cta}
         </Button>
-        )}
       </Stack>
     </Card>
   );
