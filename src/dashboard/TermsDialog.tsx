@@ -52,9 +52,9 @@ export function TermsDialog() {
           control={<Checkbox checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />}
           label={
             <Typography variant="body2">
-              קראתי ואני מסכים/ה ל
+              קראנו ומאשרים את{' '}
               <Link href="#" underline="hover" sx={{ fontWeight: 700, ...TAP_AREA }}>תנאי השימוש</Link>
-              {' '}ול
+              {' '}ואת{' '}
               <Link href="#" underline="hover" sx={{ fontWeight: 700, ...TAP_AREA }}>מדיניות הפרטיות</Link>
             </Typography>
           }
@@ -69,7 +69,7 @@ export function TermsDialog() {
           onClick={() => setOpen(false)}
           sx={{ fontWeight: 800 }}
         >
-          מאשר/ת, בואו נתחיל!
+          מאשרים, בואו נתחיל!
         </Button>
       </DialogActions>
     </Dialog>
