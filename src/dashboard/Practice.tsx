@@ -113,16 +113,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
-  // no status words on the card at all — the red date, the bar and the pill carry it.
-  // the timeline hands us its own date wording, so an expired task says so beside it.
-  const dateNode = (
-    <Stack direction="row" alignItems="baseline" spacing={1}>
-      <Typography sx={dateSx}>{dateText}</Typography>
-      {t.status === 'expired' && !!dateLabel && (
-        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
-      )}
-    </Stack>
-  );
+  // no status words on the card at all — the button says פג תוקף, the date just dates
+  const dateNode = <Typography sx={dateSx}>{dateText}</Typography>;
   // bar and count: beside the meta on desktop, a full-width line of its own on a phone
   const progressNode = (
     <>
@@ -134,26 +126,29 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
       <Typography sx={{ ...META, whiteSpace: 'nowrap' }}>{t.solved}/{t.total} שאלות</Typography>
     </>
   );
+  // an expired task has nothing to open, so its card is not a button at all
+  const dead = t.status === 'expired';
   return (
     <Card
       variant="outlined"
       // the WHOLE card opens the task — click or tab anywhere on it
-      component="button"
-      type="button"
-      onClick={onOpen}
+      component={dead ? 'div' : 'button'}
+      {...(!dead && { type: 'button' as const, onClick: onOpen })}
       sx={{
         borderRadius: 3,
-        display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: 'pointer', p: 0,
+        display: 'block', width: '100%', textAlign: 'start', font: 'inherit', cursor: dead ? 'default' : 'pointer', p: 0,
         // the card is a plain button, so it needs the design system's focus ring spelled out
         '&:focus-visible': { outline: (th: Theme) => `${th.spacing(0.375)} solid ${blue[700]}`, outlineOffset: (th: Theme) => th.spacing(0.25) },
         ...(t.status === 'done' && { bgcolor: green[50] }),
         transition: (th) => th.transitions.create(['box-shadow', 'border-color']),
         // the whole card is the button, so hovering it also lights up the call to action inside
-        '&:hover': {
-          boxShadow: 4, borderColor: `${kind}.main`,
-          '& .MuiButton-contained': { bgcolor: `${kind}.dark` },
-          '& .MuiButton-outlined': { bgcolor: (th: Theme) => alpha(th.palette[kind].main, th.palette.action.hoverOpacity) },
-        },
+        ...(dead ? {} : {
+          '&:hover': {
+            boxShadow: 4, borderColor: `${kind}.main`,
+            '& .MuiButton-contained': { bgcolor: `${kind}.dark` },
+            '& .MuiButton-outlined': { bgcolor: (th: Theme) => alpha(th.palette[kind].main, th.palette.action.hoverOpacity) },
+          },
+        }),
         '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
       }}
     >
