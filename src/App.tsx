@@ -116,8 +116,9 @@ export function App() {
   // every menu tap counts, even onto the screen you are already on: the counter
   // remounts the section, so a tap always lands on its main page, however deep you are.
   const [navTick, setNavTick] = useState(0);
-  // one switch for every animation in the app — the menu flips it
-  const [motion, setMotion] = useState(true);
+  // The Ministry says content must not move by itself unless the user asks for it,
+  // so the app opens still and the menu switch turns the motion on.
+  const [motion, setMotion] = useState(false);
   const go = (s: Screen) => { setScreen(s); setNavTick((n) => n + 1); };
   return (
     <NavContext.Provider value={{ go }}>
