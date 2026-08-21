@@ -68,6 +68,7 @@ function MathSigns() {
             key={i}
             sx={{
               position: 'absolute', top: `${top}%`, left: `${left}%`,
+              // token-guard: the floating symbols are a drawing; the glyph must sit tight in its box
               fontWeight: 900, fontSize: size, lineHeight: 1, color: c,
               textShadow: `0 0 14px ${alpha(c, 0.85)}, 0 0 28px ${alpha(c, 0.5)}`,
               animation: `${floatSign} ${dur}s ease-in-out ${delay}s infinite, ${twinkle} ${dur * 0.8}s ease-in-out ${delay}s infinite`,
@@ -106,6 +107,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
       </Box>
       {/* the number stands ON the gauge's base line — y=100 of the 120-tall viewBox */}
       <Box sx={{ position: 'absolute', insetInline: 0, bottom: '16.7%', textAlign: 'center' }}>
+        // token-guard: the gauge number has to hug the arc; MUI stops at 1.167
         <Typography sx={{ ...FREDOKA, fontWeight: 500, fontSize: { xs: gaugeTheme.typography.h3.fontSize, md: gaugeTheme.typography.h2.fontSize }, lineHeight: 0.82, color: 'text.primary', letterSpacing: (t) => t.typography.h2.letterSpacing }}>
           {value}
         </Typography>

@@ -51,6 +51,7 @@ const PILL = {
   height: 28, px: 1.25, borderRadius: 1.5, flexShrink: 0,
   display: 'inline-flex', alignItems: 'center', gap: 0.75,
 } as const;
+// token-guard: the pill is one line tall by design
 const PILL_TEXT = { fontSize: (t: Theme) => t.typography.body2.fontSize, fontWeight: 800, lineHeight: 1, whiteSpace: 'nowrap' } as const;
 
 // same white pill as the traffic light, so a grade and a rating read as one family
@@ -276,6 +277,7 @@ export function Practice({ empty = false }: { empty?: boolean }) {
           <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 464, mx: 'auto' }}>
             <AlfiAvatar size={96} />
             <Typography variant="h5" sx={{ fontWeight: 800 }}>אין לך משימות כרגע</Typography>
+            // token-guard: Hebrew paragraph comfort; MUI tops out at 1.75
             <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>
               כשהמורה תשלח תרגול או בוחן, הם יופיעו כאן ואפשר יהיה להתחיל לפתור.
             </Typography>

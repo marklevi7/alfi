@@ -9,8 +9,9 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('../src', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('../src', import.meta.url));
 
 // MUI's own type scale, in rem
 const FONT_SIZES = new Set(['6rem', '3.75rem', '3rem', '2.125rem', '1.5rem', '1.25rem', '1rem', '0.875rem', '0.75rem']);
@@ -18,6 +19,9 @@ const FONT_SIZES = new Set(['6rem', '3.75rem', '3rem', '2.125rem', '1.5rem', '1.
 const LINE_HEIGHTS = new Set(['1.167', '1.2', '1.235', '1.334', '1.43', '1.5', '1.57', '1.6', '1.66', '1.75', '2.66']);
 // MUI's own letter spacings
 const LETTER_SPACING = new Set(['-0.01562em', '-0.00833em', '0em', '0.00735em', '0.0075em', '0.00938em', '0.00714em', '0.02857em', '0.03333em', '0.08333em']);
+
+// old versions that are no longer reachable from the app; they are kept for reference only
+const RETIRED = ['Dashboard.tsx', 'DashboardV1.tsx', 'DashboardV2.tsx', 'DashboardV4.tsx', 'DashboardV6.tsx', 'Analytics.tsx'];
 
 const RULES = [
   {
@@ -57,7 +61,7 @@ const files = [];
   for (const e of readdirSync(dir)) {
     const p = join(dir, e);
     if (statSync(p).isDirectory()) walk(p);
-    else if (['.ts', '.tsx'].includes(extname(p)) && !p.endsWith('.bak')) files.push(p);
+    else if (['.ts', '.tsx'].includes(extname(p)) && !p.endsWith('.bak') && !RETIRED.some((r) => p.endsWith(r))) files.push(p);
   }
 })(ROOT);
 

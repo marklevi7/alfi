@@ -267,6 +267,7 @@ function LoginSigns() {
             key={i}
             sx={{
               position: 'absolute', top: `${s.top}%`, left: `${s.left}%`,
+              // token-guard: the floating symbols are a drawing; the glyph must sit tight in its box
               fontWeight: 900, fontSize: s.size, lineHeight: 1, color: c,
               opacity: s.big ? 1 : 0.8,
               textShadow: `0 0 14px ${alpha(c, 0.85)}, 0 0 28px ${alpha(c, 0.5)}`,

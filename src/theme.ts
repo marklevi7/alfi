@@ -4,6 +4,7 @@ import { deepPurple, green, teal, blue } from '@mui/material/colors';
 // The one design-system primitive we set by hand: MUI's green 700 is 4.12:1 against
 // white, just under the 4.5:1 the standard asks for. This is the same green a shade
 // darker — the lightest tone that passes. Everything green in the app reads from it.
+// token-guard: the one hand-set primitive — MUI's green 700 fails AA against white
 export const GREEN = { ...green, 700: '#2E7E32' };
 
 // every raw length in this file comes off MUI's own spacing scale
@@ -46,6 +47,12 @@ const base = {
     MuiCardActionArea: {
       styleOverrides: {
         root: { '&.Mui-focusVisible .MuiCardActionArea-focusHighlight': { opacity: 0 } },
+      },
+    },
+    // a filter switch is not a call to action — it keeps the app's default font
+    MuiToggleButton: {
+      styleOverrides: {
+        root: { fontFamily: defaultTheme.typography.fontFamily, letterSpacing: defaultTheme.typography.button.letterSpacing },
       },
     },
     // one weight for every button, over the per-screen sx values

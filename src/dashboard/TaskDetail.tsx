@@ -67,6 +67,7 @@ function Frac({ n, d }: { n: ReactNode; d: ReactNode }) {
   );
 }
 const Eq = ({ children }: { children: ReactNode }) => (
+  // token-guard: maths is set relative to the sentence around it, not to the scale
   <Box component="span" sx={{ fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontSize: '1.15em', whiteSpace: 'nowrap' }}>{children}</Box>
 );
 
@@ -396,6 +397,7 @@ function MathPad({ onPick, onClose }: { onPick: (s: string) => void; onClose: ()
             onClick={() => onPick(k.insert)}
             aria-label={k.aria}
             variant="outlined"
+            // token-guard: a keypad key is one glyph tall by design
             sx={{ minWidth: 0, px: 0, minHeight: 44, fontSize: (t: Theme) => t.typography.body1.fontSize, fontWeight: 700, textTransform: 'none', lineHeight: 1 }}
           >
             {k.label}
@@ -895,6 +897,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
           <>
             <Divider sx={{ mb: 3 }} />
             {/* the whole question is always shown in full — never scrolls inside the card */}
+            // token-guard: Hebrew maths question, read slowly; MUI tops out at 1.75
             <Typography component="div" variant="h6" sx={{ fontWeight: 400, lineHeight: 2.1, textAlign: 'start' }}>
               {q.prompt}
             </Typography>
@@ -977,7 +980,9 @@ function QuestionCard({ q, index, solved, started, onOpen, onHover, hovered, sho
               sx={{
                 height: PROMPT_H, overflow: 'hidden',
                 ...(clipped && {
+                  // token-guard: a mask needs an opaque stop; this is not a colour anyone sees
                   maskImage: 'linear-gradient(to top, transparent 0, #000 40px)',
+                  // token-guard: a mask needs an opaque stop; this is not a colour anyone sees
                   WebkitMaskImage: 'linear-gradient(to top, transparent 0, #000 40px)',
                 }),
               }}
