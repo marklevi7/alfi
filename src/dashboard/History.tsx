@@ -56,9 +56,9 @@ const ITEMS: Item[] = [
   { title: 'תרגול גיאומטריה אנליטית', kind: 'תרגול', when: 'אתמול', status: 'partial', topic: 'גיאומטריה אנליטית', unit: '5 יח"ל', subTopic: 'הישר והמעגל', solved: 2, total: 5 },
   { title: 'בוחן בטריגונומטריה', kind: 'בוחן', when: 'לפני יומיים', status: 'notStarted', topic: 'טריגונומטריה', unit: '4 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 0, total: 6 },
   { title: 'תרגול חקירת פונקציות', kind: 'תרגול', when: 'לפני 3 ימים', status: 'done', topic: 'חקירת פונקציות', unit: '5 יח"ל', subTopic: 'נגזרות', solved: 4, total: 4 },
-  { title: 'בוחן בהסתברות', kind: 'בוחן', when: 'לפני 4 ימים', status: 'expired', topic: 'הסתברות', unit: '5 יח"ל', subTopic: 'עץ הסתברות', solved: 2, total: 5 },
+  { title: 'בוחן בהסתברות', kind: 'בוחן', when: 'לפני 4 ימים', status: 'expired', topic: 'הסתברות', unit: '5 יח"ל', subTopic: 'עץ הסתברות', solved: 0, total: 5 },
   // a תרגול whose deadline passed — no grade, only the state
-  { title: 'תרגול טריגונומטריה', kind: 'תרגול', when: 'לפני 5 ימים', status: 'expired', topic: 'טריגונומטריה', unit: '5 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 1, total: 4 },
+  { title: 'תרגול טריגונומטריה', kind: 'תרגול', when: 'לפני 5 ימים', status: 'expired', topic: 'טריגונומטריה', unit: '5 יח"ל', subTopic: 'זהויות טריגונומטריות', solved: 0, total: 4 },
   { title: 'בוחן בסדרות', kind: 'בוחן', when: 'לפני 5 ימים', status: 'done', score: 91, topic: 'סדרות', unit: '5 יח"ל', subTopic: 'סדרה חשבונית', solved: 5, total: 5 },
   { title: 'תרגול הסתברות', kind: 'תרגול', when: '10/08/26', status: 'partial', topic: 'הסתברות', unit: '4 יח"ל', subTopic: 'הסתברות מותנית', solved: 2, total: 4 },
   // nothing was solved before the deadline — the red end of the traffic light

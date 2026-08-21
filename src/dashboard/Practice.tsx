@@ -113,8 +113,16 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
     : STATUS_TAG[t.status];
   const dateText = dateLabel ?? (t.status === 'expired' ? `הסתיים ב-${t.to}` : t.to ? `עד ${t.to}` : 'עד סוף השנה');
   const dateSx = { ...META, whiteSpace: 'nowrap' as const, ...(t.status === 'expired' && !dateLabel && { color: 'error.dark', fontWeight: 700 }) };
-  // no status words on the card at all — the red date, the bar and the pill carry it
-  const dateNode = <Typography sx={dateSx}>{dateText}</Typography>;
+  // no status words on the card at all — the red date, the bar and the pill carry it.
+  // the timeline hands us its own date wording, so an expired task says so beside it.
+  const dateNode = (
+    <Stack direction="row" alignItems="baseline" spacing={1}>
+      <Typography sx={dateSx}>{dateText}</Typography>
+      {t.status === 'expired' && !!dateLabel && (
+        <Typography sx={{ ...META, whiteSpace: 'nowrap', color: 'error.dark', fontWeight: 700 }}>פג תוקף</Typography>
+      )}
+    </Stack>
+  );
   // bar and count: beside the meta on desktop, a full-width line of its own on a phone
   const progressNode = (
     <>
@@ -229,6 +237,8 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={kind}
+          // an expired task has nothing inside to look at, so its button is switched off
+          disabled={t.status === 'expired'}
           // one fixed width on desktop so the CTAs line up in a single column; full width on a phone
           sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 } }}
         >
