@@ -32,8 +32,15 @@ import HistoryTwoToneIcon from '@mui/icons-material/HistoryTwoTone';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Switch from '@mui/material/Switch';
+import Divider from '@mui/material/Divider';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import AnimationRoundedIcon from '@mui/icons-material/AnimationRounded';
 import { visuallyHidden } from '@mui/utils';
 import { useNav, type Screen } from '../nav';
+import { useMotion } from '../motion';
 import { FREDOKA, GREEN } from '../theme';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -73,6 +80,39 @@ export const NAV = [
 
 // the real Alfi avatar — head shot, per theme version (green v7 / purple v5).
 // neutral circle behind it: the PNG is transparent, and a tinted disc would read as a state color.
+/** The app menu: the animation switch the Ministry asks for, and signing out. */
+function AppMenu({ onLogout }: { onLogout: () => void }) {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const motion = useMotion();
+  return (
+    <>
+      <IconButton aria-label="תפריט" aria-haspopup="true" onClick={(e) => setAnchor(e.currentTarget)}>
+        <MenuRoundedIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchor}
+        open={!!anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { minWidth: 240, borderRadius: 3 } } }}
+      >
+        {/* the switch stays put when tapped — the menu is where you come to set it */}
+        <MenuItem onClick={motion.toggle}>
+          <ListItemIcon><AnimationRoundedIcon /></ListItemIcon>
+          <ListItemText primary="אנימציות" />
+          <Switch edge="end" size="small" checked={motion.on} inputProps={{ 'aria-label': 'אנימציות' }} />
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => { setAnchor(null); onLogout(); }}>
+          <ListItemIcon><LogoutRoundedIcon className="dir-icon" /></ListItemIcon>
+          <ListItemText primary="התנתקות" />
+        </MenuItem>
+      </Menu>
+    </>
+  );
+}
+
 export function AlfiAvatar({ size = 40 }: { size?: number }) {
   const theme = useTheme();
   const src = theme.palette.primary.main === GREEN[700] ? 'alfi-green-head.png' : 'alfi.png';
@@ -394,9 +434,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                 <>
                   {/* the wordmark takes the whole width of the bar, next to the sign-out button */}
                   <Logo variant="dark" size="small" sx={{ flex: 1, minWidth: 0, alignItems: 'stretch', '& svg': { width: '67%', height: 'auto', marginInlineStart: 'auto' } }} />
-                  <IconButton aria-label="התנתקות" onClick={() => setConfirmLogout(true)}>
-                    <LogoutRoundedIcon className="dir-icon" />
-                  </IconButton>
+                  <AppMenu onLogout={() => setConfirmLogout(true)} />
                 </>
               )}
             </Stack>
@@ -425,9 +463,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                   headerAction
                   )}
                 </Box>
-                <IconButton aria-label="התנתקות" sx={{ display: { xs: 'none', md: 'inline-flex' } }} onClick={() => setConfirmLogout(true)}>
-                  <LogoutRoundedIcon className="dir-icon" />
-                </IconButton>
+                <Box sx={{ display: { xs: 'none', md: 'inline-flex' } }}>
+                  <AppMenu onLogout={() => setConfirmLogout(true)} />
+                </Box>
               </Stack>
             </Box>
 

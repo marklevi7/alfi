@@ -15,6 +15,7 @@ import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
 import { NavContext, type Screen } from './nav';
+import { MotionContext } from './motion';
 import { AuthViewContext, AUTH_VIEWS, type AuthView } from './login/parts';
 import { theme, greenTheme } from './theme';
 
@@ -115,10 +116,18 @@ export function App() {
   // every menu tap counts, even onto the screen you are already on: the counter
   // remounts the section, so a tap always lands on its main page, however deep you are.
   const [navTick, setNavTick] = useState(0);
+  // one switch for every animation in the app — the menu flips it
+  const [motion, setMotion] = useState(true);
   const go = (s: Screen) => { setScreen(s); setNavTick((n) => n + 1); };
   return (
     <NavContext.Provider value={{ go }}>
+      <MotionContext.Provider value={{ on: motion, toggle: () => setMotion((v) => !v) }}>
       <ThemeProvider theme={activeTheme}>
+        {/* motion off: every animation and transition in the app stops at once */}
+        <Box
+          data-motion={motion ? 'on' : 'off'}
+          sx={{ '&[data-motion="off"] *': { animation: 'none !important', transition: 'none !important' } }}
+        >
         {/* invisible hotspot — top-right corner toggles the dev control bar (hidden by default) */}
         <Box
           onClick={() => setShowBar((v) => !v)}
@@ -160,7 +169,9 @@ export function App() {
               : <DashVariant key={navTick} variant={variant} />}
           </>
         )}
+        </Box>
       </ThemeProvider>
+      </MotionContext.Provider>
     </NavContext.Provider>
   );
 }
