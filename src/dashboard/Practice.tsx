@@ -233,17 +233,18 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Stack>
 
+        {/* an expired task has no summary to open, so it carries no button at all */}
+        {t.status !== 'expired' && (
         <Button
           component="span"
           variant={locked ? 'outlined' : 'contained'}
           color={kind}
-          // an expired task has nothing inside to look at, so its button is switched off
-          disabled={t.status === 'expired'}
           // one fixed width on desktop so the CTAs line up in a single column; full width on a phone
           sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 } }}
         >
           {cta}
         </Button>
+        )}
       </Stack>
     </Card>
   );
