@@ -223,7 +223,7 @@ function FirstUse() {
   const navTo = useNav();
   return (
     <Shell active="history" title="תמונת מצב">
-      <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 460, mx: 'auto' }}>
+      <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 464, mx: 'auto' }}>
         <AlfiAvatar size={96} />
         <Typography variant="h5" sx={{ fontWeight: 800 }}>עוד אין כאן כלום</Typography>
         <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>
@@ -315,7 +315,7 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{s.label}</Typography>
                   </Stack>
                   {/* value slot — fixed height keeps number & medal on one baseline */}
-                  <Box sx={{ height: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Box sx={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {s.label === 'תרגולים השבוע' ? <Box sx={{ mt: '-6px', display: 'flex' }}>{value}</Box> : value}
                   </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5 }}>{s.sub}</Typography>
@@ -340,9 +340,9 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
             placeholder="חיפוש לפי שם"
             inputProps={{ 'aria-label': 'חיפוש לפי שם' }}
             InputProps={{ startAdornment: (<InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment>) }}
-            sx={{ flex: 1, minWidth: 180 }}
+            sx={{ flex: 1, minWidth: 184 }}
           />
-          <TextField select size="small" label="יחידות" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ width: 140 }}>
+          <TextField select size="small" label="יחידות" value={unit} onChange={(e) => setUnit(e.target.value)} sx={{ width: 144 }}>
             <MenuItem value="">כל היחידות</MenuItem>
             {UNITS.map((u) => <MenuItem key={u} value={u}>{u}</MenuItem>)}
           </TextField>

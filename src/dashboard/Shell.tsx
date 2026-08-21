@@ -475,7 +475,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
       <Dialog
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}
-        PaperProps={{ sx: { borderRadius: 4, px: 1, py: 0.5, maxWidth: 380 } }}
+        PaperProps={{ sx: { borderRadius: 4, px: 1, py: 0.5, maxWidth: 384 } }}
       >
         <DialogTitle sx={{ fontWeight: 800, textAlign: 'center' }}>להתנתק מאלפי?</DialogTitle>
         <DialogContent>

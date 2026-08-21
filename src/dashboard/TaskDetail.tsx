@@ -460,10 +460,10 @@ function FinderDialog({ open, onClose, onPick }: { open: boolean; onClose: () =>
           {[red[400], amber[400], green[400]].map((c) => <Box key={c} sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: c }} />)}
         </Stack>
         <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>בחירת קובץ</Typography>
-        <Box sx={{ width: 54 }} />
+        <Box sx={{ width: 56 }} />
       </Box>
       <Box sx={{ display: 'flex', height: 320 }}>
-        <Box sx={{ width: 190, flexShrink: 0, bgcolor: grey[50], borderInlineEnd: 1, borderColor: 'divider', py: 1, display: { xs: 'none', sm: 'block' } }}>
+        <Box sx={{ width: 192, flexShrink: 0, bgcolor: grey[50], borderInlineEnd: 1, borderColor: 'divider', py: 1, display: { xs: 'none', sm: 'block' } }}>
           <Typography variant="caption" sx={{ px: 2, color: 'text.disabled', fontWeight: 700 }}>מועדפים</Typography>
           <List dense>
             {FINDER_FAV.map((f, i) => (

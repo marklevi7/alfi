@@ -37,7 +37,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v220',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v221',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -223,7 +223,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
       <Stack
         component="form"
         spacing={2.5}
-        sx={{ minHeight: 355 }}
+        sx={{ minHeight: 352 }}
         onSubmit={(e) => { e.preventDefault(); nav.go('dashboard'); }}
       >
         <TextField
@@ -271,7 +271,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
       <Stack
         component="form"
         spacing={2.5}
-        sx={{ minHeight: 355 }}
+        sx={{ minHeight: 352 }}
         onSubmit={(e) => {
           e.preventDefault();
           if (reset === 'email') setReset('code');
@@ -383,7 +383,7 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
         component="form"
         spacing={2.5}
         // fixed to the taller (signup) layout so switching tabs never resizes the card
-        sx={{ minHeight: 355 }}
+        sx={{ minHeight: 352 }}
         onSubmit={(e) => {
           e.preventDefault();
           nav.go('dashboard');

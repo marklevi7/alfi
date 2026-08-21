@@ -264,7 +264,7 @@ export function Practice({ empty = false }: { empty?: boolean }) {
         {tasks.map((t) => <TaskCard key={t.id} t={t} onOpen={() => setOpenId(t.id)} />)}
         {tasks.length === 0 && (
           /* nothing was sent yet — same empty state Alfi uses on תמונת מצב */
-          <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 460, mx: 'auto' }}>
+          <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 464, mx: 'auto' }}>
             <AlfiAvatar size={96} />
             <Typography variant="h5" sx={{ fontWeight: 800 }}>אין לך משימות כרגע</Typography>
             <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>

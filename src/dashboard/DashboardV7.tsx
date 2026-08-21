@@ -91,7 +91,7 @@ function ScoreGauge({ value, max = 100 }: { value: number; max?: number }) {
   const mx = cx + r * Math.cos(rad);
   const my = cy - r * Math.sin(rad);
   return (
-    <Box sx={{ position: 'relative', width: '100%', maxWidth: { xs: 150, md: 220 }, mx: 'auto' }}>
+    <Box sx={{ position: 'relative', width: '100%', maxWidth: { xs: 152, md: 224 }, mx: 'auto' }}>
       <Box component="svg" viewBox="0 0 200 120" sx={{ width: '100%', display: 'block', overflow: 'visible' }}>
         <defs>
           <linearGradient id="alfiGaugeV7" x1="0" y1="0" x2="1" y2="0">
@@ -190,7 +190,7 @@ export function DashboardV7({ variant = 'full' }: { variant?: 'full' | 'noGrade'
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
             <Stack direction="row" spacing={2} alignItems="center" divider={<Divider orientation="vertical" flexItem />}>
               {variant !== 'noGrade' && (
-                <Box sx={{ width: 118, flexShrink: 0 }}>
+                <Box sx={{ width: 120, flexShrink: 0 }}>
                   <ScoreGauge value={78} />
                   <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', fontWeight: 700, color: 'text.secondary' }}>
                     הממוצע שלי

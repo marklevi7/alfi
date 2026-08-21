@@ -134,7 +134,7 @@ function Preview({ q }: { q: SummaryQuestion }) {
       <Box
         ref={ref}
         sx={{
-          height: 76, overflow: 'hidden',
+          height: 80, overflow: 'hidden',
           ...(clipped && {
             maskImage: 'linear-gradient(to top, transparent 0, #000 34px)',
             WebkitMaskImage: 'linear-gradient(to top, transparent 0, #000 34px)',

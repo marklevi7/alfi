@@ -37,7 +37,7 @@ export function TermsDialog() {
         <Typography sx={{ color: 'text.secondary', mb: 2, textWrap: 'pretty' }}>
           לפני שמתחילים לתרגל, נשאר רק דבר אחד קטן: לאשר את תנאי השימוש.
         </Typography>
-        <Box sx={{ maxHeight: 180, overflowY: 'auto' }}>
+        <Box sx={{ maxHeight: 184, overflowY: 'auto' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
             {`1. אלפי היא מערכת לימוד ותרגול במתמטיקה לתלמידים.
 2. השימוש במערכת מיועד ללמידה אישית בלבד.
