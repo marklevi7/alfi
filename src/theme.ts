@@ -6,6 +6,10 @@ import { deepPurple, green, teal, blue } from '@mui/material/colors';
 // darker — the lightest tone that passes. Everything green in the app reads from it.
 export const GREEN = { ...green, 700: '#2E7E32' };
 
+// The smallest text the Ministry of Education allows on a responsive site.
+// 0.9375rem = 15px. Nothing in the app may go below it.
+const MIN_TEXT = '0.9375rem';
+
 // every raw length in this file comes off MUI's own spacing scale
 const defaultTheme = createTheme();
 
@@ -20,10 +24,18 @@ const base = {
   // subtitle1 is the label token — nav items and other actionable labels use it,
   // so the size lives here instead of being hardcoded per screen.
   typography: {
+    // The Ministry of Education sets a hard floor for text on a responsive site:
+    // nothing under 15px. MUI's small variants sit at 12 and 14, so the design
+    // system raises them all to the floor. Every screen reads from these tokens,
+    // so the whole app moves at once.
+    body2: { fontSize: MIN_TEXT },
+    subtitle2: { fontSize: MIN_TEXT },
+    caption: { fontSize: MIN_TEXT },
+    overline: { fontSize: MIN_TEXT },
     subtitle1: { fontSize: '1.25rem', fontWeight: 700 },
     // `button` is MUI's own token for button text — every button reads from it,
     // so the family, size, weight and spacing live here and nowhere else.
-    button: { ...FREDOKA, fontWeight: 600, letterSpacing: '0.02857em' },
+    button: { ...FREDOKA, fontSize: MIN_TEXT, fontWeight: 600, letterSpacing: '0.02857em' },
   },
   components: {
     // Keyboard focus has to be visible (SI 5568 / WCAG 2.4.7). ButtonBase clears the
@@ -48,10 +60,13 @@ const base = {
         root: { '&.Mui-focusVisible .MuiCardActionArea-focusHighlight': { opacity: 0 } },
       },
     },
+    // the login tabs sit on MUI's own small size — lift them to the floor too
+    MuiTab: { styleOverrides: { root: { fontSize: MIN_TEXT } } },
     // a filter switch is not a call to action — it keeps the app's default font
     MuiToggleButton: {
       styleOverrides: {
         root: { fontFamily: defaultTheme.typography.fontFamily, letterSpacing: defaultTheme.typography.button.letterSpacing },
+        sizeSmall: { fontSize: MIN_TEXT },
       },
     },
     // one weight for every button, over the per-screen sx values
