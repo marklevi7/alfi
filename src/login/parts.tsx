@@ -37,7 +37,7 @@ export const COPY = {
   welcomeSubtitle: 'התחברו כדי להמשיך מהנקודה שבה הפסקתם.',
   brandName: 'ALFI',
   tagline: 'עוזר הלמידה החכם שלך',
-  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v228',
+  footer: 'פלטפורמת EDU-AI · Know-Problem · כל הזכויות שמורות · v229',
   features: [
     'תובנות מבוססות AI למורים ולתלמידים',
     'תרגול מותאם לתוכנית הלימודים עם משוב מיידי',
@@ -288,7 +288,6 @@ export function AuthForm({ showTitle = true, showFooter = true }: { showTitle?: 
           <>
             <TextField
               label="קוד אימות" placeholder="6 ספרות" fullWidth autoFocus autoComplete="one-time-code"
-              // token-guard: six digits need real air between them; no MUI spacing goes this wide
               inputProps={{ inputMode: 'numeric', maxLength: 6, style: { letterSpacing: '0.5em', fontWeight: 700 } }}
             />
             <Typography variant="body2" color="text.secondary">

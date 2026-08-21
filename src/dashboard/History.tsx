@@ -234,7 +234,6 @@ function FirstUse() {
       <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: { xs: 6, md: 10 }, px: 2, maxWidth: 464, mx: 'auto' }}>
         <AlfiAvatar size={96} />
         <Typography variant="h5" sx={{ fontWeight: 800 }}>עוד אין כאן כלום</Typography>
-        // token-guard: Hebrew paragraph comfort; MUI tops out at 1.75
         <Typography color="text.secondary" sx={{ lineHeight: 1.9, textWrap: 'pretty' }}>
           כאן יופיעו התרגולים והבחנים שכבר סיימת, עם הסיכום של אלפי על כל אחד מהם.
           אחרי התרגול הראשון תמצא אותם כאן.
@@ -302,7 +301,6 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
               );
               const value = s.label === 'תרגולים השבוע'
                 ? <Medal tier={tier} size={phone ? 40 : 54} />
-                // token-guard: a stat number stands alone and must not carry extra height
                 : <Typography variant="h4" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>;
 
               // phone: two lines for the whole card — icon + number, label underneath
@@ -312,7 +310,6 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
                     <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { fontSize: 'medium' }, flexShrink: 0 }}>{s.icon}</Box>
                     {s.label === 'תרגולים השבוע'
                       ? <Medal tier={tier} size={30} />
-                      // token-guard: a stat number stands alone and must not carry extra height
                       : <Typography variant="h5" component="span" sx={{ fontWeight: 900, lineHeight: 1 }}>{s.value}</Typography>}
                   </Stack>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textAlign: 'center', lineHeight: (t) => t.typography.h2.lineHeight }}>{s.label}</Typography>
@@ -327,7 +324,6 @@ export function History({ firstUse = false }: { firstUse?: boolean }) {
                   </Stack>
                   {/* value slot — fixed height keeps number & medal on one baseline */}
                   <Box sx={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    // token-guard: optical nudge on the medal, smaller than the spacing scale allows
                     {s.label === 'תרגולים השבוע' ? <Box sx={{ mt: '-6px', display: 'flex' }}>{value}</Box> : value}
                   </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ mt: 1.5 }}>{s.sub}</Typography>

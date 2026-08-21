@@ -136,9 +136,7 @@ function Preview({ q }: { q: SummaryQuestion }) {
         sx={{
           height: 80, overflow: 'hidden',
           ...(clipped && {
-            // token-guard: a mask needs an opaque stop; this is not a colour anyone sees
             maskImage: 'linear-gradient(to top, transparent 0, #000 34px)',
-            // token-guard: a mask needs an opaque stop; this is not a colour anyone sees
             WebkitMaskImage: 'linear-gradient(to top, transparent 0, #000 34px)',
           }),
         }}
@@ -330,7 +328,6 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
             </Stack>
 
             <Paper variant="outlined" sx={{ borderRadius: 3, p: 2.5 }}>
-              // token-guard: Hebrew paragraph comfort; MUI tops out at 1.75
               <Typography variant="body1" sx={{ lineHeight: 1.9, textAlign: 'start' }}>{open.prompt}</Typography>
             </Paper>
 
