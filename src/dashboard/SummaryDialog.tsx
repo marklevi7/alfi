@@ -104,7 +104,7 @@ function Turn({ turn }: { turn: SummaryTurn }) {
         ) : (
           <Stack direction="row" spacing={0.75} alignItems="flex-start">
             {turn.tone === 'ok' && <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />}
-            {turn.tone === 'hint' && <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />}
+            {turn.tone === 'hint' && <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: 0.25 }} />}
             <Typography variant="body2" sx={{ textAlign: 'start', fontWeight: turn.tone === 'ok' ? 800 : 400 }}>{turn.text}</Typography>
           </Stack>
         )}

@@ -677,7 +677,7 @@ function firstBadLine(answer: string, expected?: string) {
 
 const hintNode = (body: ReactNode) => (
   <Stack direction="row" spacing={0.75} alignItems="flex-start">
-    <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: '2px' }} />
+    <ErrorOutlineRoundedIcon sx={{ color: 'warning.dark', mt: 0.25 }} />
     <Typography component="div">{body}</Typography>
   </Stack>
 );
