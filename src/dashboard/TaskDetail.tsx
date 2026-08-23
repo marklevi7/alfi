@@ -621,7 +621,7 @@ function NumberedAnswer({ text }: { text: string }) {
           <Typography
             component="span"
             variant="caption"
-            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: 'text.secondary', fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
+            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: (t) => alpha(t.palette.common.white, 0.7), fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
           >
             {i + 1}
           </Typography>
