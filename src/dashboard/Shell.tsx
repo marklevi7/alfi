@@ -42,7 +42,6 @@ import AccessibilityNewRoundedIcon from '@mui/icons-material/AccessibilityNewRou
 import { visuallyHidden } from '@mui/utils';
 import { useNav, type Screen } from '../nav';
 import { useMotion } from '../motion';
-import { AccessibilityDialog } from './AccessibilityDialog';
 import { FREDOKA, GREEN } from '../theme';
 import { Logo } from '../components/Logo';
 import robotImg from './assets/magnific_3d-a-white-robot-with-pur_ONKIwE6ynm.png';
@@ -85,8 +84,8 @@ export const NAV = [
 /** The app menu: the animation switch the Ministry asks for, and signing out. */
 function AppMenu({ onLogout }: { onLogout: () => void }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  const [statement, setStatement] = useState(false);
   const motion = useMotion();
+  const nav = useNav();
   return (
     <>
       <IconButton aria-label="תפריט" aria-haspopup="true" onClick={(e) => setAnchor(e.currentTarget)}>
@@ -107,7 +106,7 @@ function AppMenu({ onLogout }: { onLogout: () => void }) {
           <Switch edge="end" size="small" checked={motion.on} inputProps={{ 'aria-label': 'אנימציות' }} />
         </MenuItem>
         {/* the law asks for this to sit in a fixed, obvious place */}
-        <MenuItem onClick={() => { setAnchor(null); setStatement(true); }}>
+        <MenuItem onClick={() => { setAnchor(null); nav.go('accessibility'); }}>
           <ListItemIcon><AccessibilityNewRoundedIcon /></ListItemIcon>
           <ListItemText primary="הצהרת נגישות" />
         </MenuItem>
@@ -117,7 +116,6 @@ function AppMenu({ onLogout }: { onLogout: () => void }) {
           <ListItemText primary="התנתקות" />
         </MenuItem>
       </Menu>
-      <AccessibilityDialog open={statement} onClose={() => setStatement(false)} />
     </>
   );
 }

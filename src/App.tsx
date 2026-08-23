@@ -14,6 +14,7 @@ import { VersionBar, DASH_VERSIONS, type Device } from './dashboard/MainScreen';
 import { Analytics } from './dashboard/Analytics';
 import { Practice } from './dashboard/Practice';
 import { History } from './dashboard/History';
+import { Accessibility } from './dashboard/Accessibility';
 import { NavContext, type Screen } from './nav';
 import { MotionContext } from './motion';
 import { AuthViewContext, AUTH_VIEWS, type AuthView } from './login/parts';
@@ -167,6 +168,7 @@ export function App() {
               : screen === 'analytics' ? <Analytics key={navTick} />
               : screen === 'practice' ? <Practice key={navTick} empty={practiceView === 1} />
               : screen === 'history' ? <History key={navTick} firstUse={historyView === 1} />
+              : screen === 'accessibility' ? <Accessibility key={navTick} />
               : <DashVariant key={navTick} variant={variant} />}
           </>
         )}

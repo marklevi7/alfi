@@ -308,7 +308,7 @@ const burst = keyframes`
 /** Big game-style confetti burst. Fills its positioned parent; harmless when reduced-motion is on. */
 export function Confetti({ pieces = 80 }: { pieces?: number }) {
   return (
-    <Box aria-hidden sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 4 }}>
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 4 }}>
       {Array.from({ length: pieces }).map((_, i) => {
         const dx = (i % 2 ? 1 : -1) * (60 + (i * 37) % 520);
         const dy = -180 - (i * 53) % 420;
