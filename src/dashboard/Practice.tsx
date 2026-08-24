@@ -76,6 +76,16 @@ export const trafficFor = (solved: number, total: number) => {
   return TRAFFIC[pct >= 100 ? 2 : pct < 34 ? 0 : 1];
 };
 
+// the same pill again, saying the deadline closed the task. It sits where a grade
+// or a rating would, because that is what it replaces.
+export function ExpiredPill() {
+  return (
+    <Box sx={{ ...PILL, bgcolor: 'background.paper', border: 1, borderColor: 'grey.400' }}>
+      <Typography component="span" sx={{ ...PILL_TEXT, color: 'error.dark' }}>פג תוקף</Typography>
+    </Box>
+  );
+}
+
 export function TrafficPill({ solved, total }: { solved: number; total: number }) {
   if (!solved) return null;
   const t = trafficFor(solved, total);
@@ -192,6 +202,7 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
             </Typography>
             {/* תרגול gets the traffic light in the slot where a בוחן shows its grade */}
             <Box sx={{ display: { xs: 'none', md: 'inline-flex' }, gap: 1 }}>
+              {t.status === 'expired' && <ExpiredPill />}
               {traffic && <TrafficPill solved={t.solved} total={t.total} />}
               {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
             </Box>
@@ -224,24 +235,21 @@ export function TaskCard({ t, onOpen, dateLabel }: { t: Task; onOpen: () => void
           <Stack direction="row-reverse" alignItems="center" spacing={1} sx={{ flex: 1, minWidth: 0 }}>
             {progressNode}
           </Stack>
+          {t.status === 'expired' && <ExpiredPill />}
           {traffic && <TrafficPill solved={t.solved} total={t.total} />}
           {t.status === 'done' && t.grade != null && <GradePill grade={t.grade} />}
         </Stack>
 
-        {/* an expired task has no summary to open — the slot stays, and says so in red */}
+        {/* an expired task has nothing to open, so its button is simply switched off */}
         <Button
           component="span"
-          variant="outlined"
-          color={t.status === 'expired' ? 'error' : kind}
+          variant={locked ? 'outlined' : 'contained'}
+          color={kind}
           disabled={t.status === 'expired'}
-          {...(t.status !== 'expired' && { variant: locked ? 'outlined' : 'contained' })}
           // one fixed width on desktop so the CTAs line up in a single column; full width on a phone
-          sx={{
-            fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 },
-            ...(t.status === 'expired' && { '&.Mui-disabled': { color: 'error.dark', borderColor: 'error.light' } }),
-          }}
+          sx={{ fontWeight: 800, pointerEvents: 'none', flexShrink: 0, whiteSpace: 'nowrap', width: { xs: '100%', md: 160 } }}
         >
-          {t.status === 'expired' ? 'פג תוקף' : cta}
+          {cta}
         </Button>
       </Stack>
     </Card>
