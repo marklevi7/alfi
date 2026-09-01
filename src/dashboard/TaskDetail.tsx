@@ -657,6 +657,9 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
 }
 
 /* ---------- the AI chat / answer panel ---------- */
+/** Alfi's opening line on a fresh question. No gendered forms — Ministry rule. */
+const KICKOFF = ['יאללה, מתחילים!', 'קדימה, מתחילים מכאן!', 'נצא לדרך!', 'מתחילים — אני כאן לכל שאלה.', 'אפשר להתחיל!'];
+
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
 const approvedNode = (
   <Stack direction="row" spacing={1} alignItems="center">
@@ -686,10 +689,12 @@ const hintNode = (body: ReactNode) => (
   </Stack>
 );
 
-function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q: Question; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean }) {
+function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, started }: { q: Question; qIndex: number; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean }) {
   // re-entering a solved question replays the conversation instead of an empty box.
   // questions that were already solved before this session have no saved text — show the solution itself.
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
+  // one line per question, always the same one for the same question
+  const kickoff = qIndex % KICKOFF.length;
   const [msgs, setMsgs] = useState<Msg[]>(() => {
     if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }];
     // a long question carries its whole history: every attempt and every correction
@@ -777,18 +782,35 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
 
       {!locked && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          כתוב כאן את{' '}
-          {/* secret: clicking this word drops the full solution into the box */}
+        /* every new question opens with Alfi kicking it off */
+        <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mb: 2 }}>
+          <AlfiAvatar size={44} pose="point" />
           <Box
-            component="span"
-            onClick={() => q.solutionText && setDraft(q.solutionText)}
-            sx={{ cursor: 'text' }}
+            sx={{
+              position: 'relative', bgcolor: 'grey.100', color: 'text.primary',
+              borderRadius: 3, px: 2, py: 1.25,
+              '&::before': {
+                content: '\"\"', position: 'absolute', top: 14, insetInlineStart: -8,
+                borderWidth: '8px 8px 8px 0', borderStyle: 'solid',
+                borderColor: (t) => `transparent ${t.palette.grey[100]} transparent transparent`,
+              },
+            }}
           >
-            הפתרון
-          </Box>{' '}
-          שלך.
-        </Typography>
+            <Typography sx={{ ...FREDOKA, fontWeight: 600, color: 'primary.dark' }}>{KICKOFF[kickoff]}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              כתוב כאן את{' '}
+              {/* secret: clicking this word drops the full solution into the box */}
+              <Box
+                component="span"
+                onClick={() => q.solutionText && setDraft(q.solutionText)}
+                sx={{ cursor: 'text' }}
+              >
+                הפתרון
+              </Box>{' '}
+              שלך.
+            </Typography>
+          </Box>
+        </Stack>
       )}
 
       <Stack spacing={1.5} sx={{ mb: msgs.length || thinking ? 2 : 0 }}>
@@ -941,7 +963,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
     </Stack>
   );
 
-  const chat = <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />;
+  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />;
 
   // unpinned: the old single column, the whole page scrolls as one
   if (!pinned) {
