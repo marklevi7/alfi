@@ -36,7 +36,8 @@ import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
-import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
+import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
@@ -840,93 +841,113 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   showPoints?: boolean;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
-  // a question counts as "long" when its solution runs past ~6 steps (the A4-page case)
-  const isLong = q.solution.length >= 6;
-  const [collapsed, setCollapsed] = useState(false);
-  useEffect(() => { setCollapsed(false); }, [index]);
-  return (
-    <>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
+  // Students asked to keep the question in sight while they answer, so the screen
+  // splits in two: the question on top, the answer under it, each scrolling on its
+  // own. Unpinning gives the old single column back.
+  const [pinned, setPinned] = useState(true);
+  useEffect(() => { setPinned(true); }, [index]);
 
-        {/* same quest track as the task page, so progress feels continuous */}
+  const header = (
+    <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: 2 }}>
+      <QMeta index={index} solved={solved} started={started} size="h5" />
+      <Stack direction="row" spacing={1.5} alignItems="center">
+        {/* solved questions get a stamp instead of a whole different layout */}
+        {solved && (
+          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, border: 2, borderColor: 'primary.main', color: 'primary.dark', transform: 'rotate(-4deg)' }}>
+            <CheckRoundedIcon sx={{ fontSize: 18 }} />
+            <Typography variant="body2" sx={{ fontWeight: 900, letterSpacing: (t) => t.typography.caption.letterSpacing }}>הצלחת!</Typography>
+          </Stack>
+        )}
+        {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
+        <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
+        <Button
+          size="small"
+          color={pinned ? 'primary' : 'inherit'}
+          onClick={() => setPinned((v) => !v)}
+          startIcon={pinned ? <PushPinRoundedIcon /> : <PushPinOutlinedIcon />}
+          sx={{ fontWeight: 700, ...(pinned ? {} : { color: 'text.secondary' }) }}
+        >
+          הצמדת השאלה
+        </Button>
+      </Stack>
+    </Stack>
+  );
+
+  const questionBody = (
+    <>
+      <Divider sx={{ mb: 3 }} />
+      <Typography component="div" variant="h6" sx={{ fontWeight: 400, lineHeight: 2.1, textAlign: 'start' }}>
+        {q.prompt}
+      </Typography>
+    </>
+  );
+
+  const nextButton = (onNext || solved) && (
+    <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
+      {onNext
+        ? <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
+            sx={{
+              fontWeight: 800,
+              ...(solved && {
+                animation: `${nudge} 2.2s ease-in-out infinite`,
+                '&:hover': { animationPlayState: 'paused' },
+                '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+              }),
+            }}
+          >
+            לשאלה הבאה
+          </Button>
+        : <Button variant="contained" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
+    </Stack>
+  );
+
+  const chat = <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />;
+
+  // unpinned: the old single column, the whole page scrolls as one
+  if (!pinned) {
+    return (
+      <>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
+          <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
+        </Stack>
+        <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
+          {header}
+          {questionBody}
+        </Paper>
+        {chat}
+        {nextButton}
+      </>
+    );
+  }
+
+  // pinned: the screen splits down the middle, each half scrolls on its own
+  return (
+    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, flexShrink: 0 }}>
         <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
       </Stack>
 
-      {/* The question sheet. Long questions stick to the top and can be collapsed to one line,
-          so the student keeps the question in view while the answer area scrolls under it. */}
+      {/* top half — the question, always in view */}
       <Paper
         elevation={2}
         sx={{
-          borderRadius: 3, p: { xs: 3, md: 4.5 },
-          // sticky only once collapsed — a full-height question has nothing to stick to
-          ...(collapsed && { position: 'sticky', top: 0, zIndex: 2 }),
-          transition: (t) => t.transitions.create(['padding', 'box-shadow']),
-          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-          ...(collapsed && { py: { xs: 1.5, md: 2 }, boxShadow: 6 }),
+          borderRadius: 3, px: { xs: 3, md: 4.5 }, py: { xs: 2.5, md: 3 },
+          flex: '1 1 50%', minHeight: 0, overflowY: 'auto',
         }}
       >
-        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: collapsed ? 0 : 2.5 }}>
-          <QMeta index={index} solved={solved} started={started} size="h5" />
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            {/* solved questions get a stamp instead of a whole different layout */}
-            {solved && (
-              <Stack direction="row" spacing={0.5} alignItems="center" sx={{ px: 1.25, py: 0.5, borderRadius: 1.5, border: 2, borderColor: 'primary.main', color: 'primary.dark', transform: 'rotate(-4deg)' }}>
-                <CheckRoundedIcon sx={{ fontSize: 18 }} />
-                <Typography variant="body2" sx={{ fontWeight: 900, letterSpacing: (t) => t.typography.caption.letterSpacing }}>הצלחת!</Typography>
-              </Stack>
-            )}
-            {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
-            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
-            {/* only long questions get the collapse control */}
-            {isLong && (
-              <Button
-                size="small"
-                color="inherit"
-                onClick={() => setCollapsed((v) => !v)}
-                endIcon={<ExpandLessRoundedIcon sx={{ transition: '200ms', transform: collapsed ? 'rotate(180deg)' : 'none' }} />}
-                sx={{ fontWeight: 700, color: 'text.secondary' }}
-              >
-                {collapsed ? 'הצג שאלה מלאה' : 'כווץ שאלה'}
-              </Button>
-            )}
-          </Stack>
-        </Stack>
-        {!collapsed && (
-          <>
-            <Divider sx={{ mb: 3 }} />
-            {/* the whole question is always shown in full — never scrolls inside the card */}
-            <Typography component="div" variant="h6" sx={{ fontWeight: 400, lineHeight: 2.1, textAlign: 'start' }}>
-              {q.prompt}
-            </Typography>
-          </>
-        )}
+        {header}
+        {questionBody}
       </Paper>
 
-      <ChatPanel q={q} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />
-
-      {/* always reachable at the bottom — solved styles it as the primary action */}
-      {(onNext || solved) && (
-        <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
-          {onNext
-            ? <Button
-                variant="contained"
-                onClick={onNext}
-                endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-                sx={{
-                  fontWeight: 800,
-                  ...(solved && {
-                    animation: `${nudge} 2.2s ease-in-out infinite`,
-                    '&:hover': { animationPlayState: 'paused' },
-                    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
-                  }),
-                }}
-              >
-                לשאלה הבאה
-              </Button>
-            : <Button variant="contained" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
-        </Stack>
-      )}
-    </>
+      {/* bottom half — the answer and the whole conversation */}
+      <Box sx={{ flex: '1 1 50%', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {chat}
+        {nextButton}
+      </Box>
+    </Box>
   );
 }
 
