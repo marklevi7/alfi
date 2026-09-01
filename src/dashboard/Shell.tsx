@@ -39,6 +39,7 @@ import Divider from '@mui/material/Divider';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import AnimationRoundedIcon from '@mui/icons-material/AnimationRounded';
 import AccessibilityNewRoundedIcon from '@mui/icons-material/AccessibilityNewRounded';
+import { green, lightGreen } from '@mui/material/colors';
 import { visuallyHidden } from '@mui/utils';
 import { useNav, type Screen } from '../nav';
 import { useMotion } from '../motion';
@@ -131,15 +132,22 @@ export const ALFI_POSE = {
   ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
 } as const;
 
-export function AlfiAvatar({ size = 40, pose }: { size?: number; pose?: keyof typeof ALFI_POSE }) {
+export function AlfiAvatar({ size = 40, pose, brand = false, zoom = 1 }: { size?: number; pose?: keyof typeof ALFI_POSE;
+  // brand: the logo's own green → lightGreen gradient behind the art
+  brand?: boolean;
+  // zoom < 1 keeps the art its old size inside a bigger circle
+  zoom?: number }) {
   const theme = useTheme();
+  const bg = brand
+    ? { background: `linear-gradient(180deg, ${green[500]} 7%, ${lightGreen[500]} 87%)` }
+    : { bgcolor: 'grey.100' };
   if (pose) {
     const p = ALFI_POSE[pose];
     return (
       <Avatar
         src={p.src}
         alt="אלפי"
-        sx={{ width: size, height: size, flexShrink: 0, bgcolor: 'grey.100', '& .MuiAvatar-img': { transform: `scale(${p.scale})`, transformOrigin: p.origin } }}
+        sx={{ width: size, height: size, flexShrink: 0, ...bg, '& .MuiAvatar-img': { transform: `scale(${p.scale * zoom})`, transformOrigin: p.origin } }}
       />
     );
   }

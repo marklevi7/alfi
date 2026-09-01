@@ -783,8 +783,9 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 
       {!locked && (
         /* every new question opens with Alfi kicking it off */
-        <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mb: 2 }}>
-          <AlfiAvatar size={44} pose="point" />
+        <Stack direction="row" spacing={1.5} alignItems="flex-start" justifyContent="flex-end" sx={{ mb: 2 }}>
+          {/* a bigger circle, the art itself unchanged, on the logo's own gradient */}
+          <AlfiAvatar size={66} pose="point" brand zoom={44 / 66} />
           <Box
             sx={{
               position: 'relative', bgcolor: 'grey.100', color: 'text.primary',
@@ -796,7 +797,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               },
             }}
           >
-            <Typography sx={{ ...FREDOKA, fontWeight: 600, color: 'primary.dark' }}>{KICKOFF[kickoff]}</Typography>
+            <Typography sx={{ ...FREDOKA, fontWeight: 600 }}>{KICKOFF[kickoff]}</Typography>
             <Typography variant="body2" color="text.secondary">
               כתוב כאן את{' '}
               {/* secret: clicking this word drops the full solution into the box */}
