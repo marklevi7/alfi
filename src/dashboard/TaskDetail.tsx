@@ -31,6 +31,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
+import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 // the dialog still shows a real QR to scan — only the button wears the camera
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -41,7 +42,7 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell, AlfiAvatar, FREDOKA } from './Shell';
+import { Shell, AlfiAvatar, AlfiChat, FREDOKA } from './Shell';
 import { GradePill } from './Practice';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
@@ -650,7 +651,7 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
       }}>
         {children}
       </Box>
-      {isAi && <AlfiAvatar size={40} />}
+      {isAi && <AlfiAvatar size={40} pose="point" />}
     </Stack>
   );
 }
@@ -658,7 +659,9 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
 /* ---------- the AI chat / answer panel ---------- */
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
 const approvedNode = (
-  <Stack direction="row" spacing={0.75} alignItems="center">
+  <Stack direction="row" spacing={1} alignItems="center">
+    {/* the thumbs-up pose is reserved for a correct answer */}
+    <AlfiAvatar size={56} pose="ok" />
     <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
     <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה! 🎉</Typography>
   </Stack>
@@ -713,6 +716,8 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
+  const [askAlfi, setAskAlfi] = useState(false);
+  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -794,38 +799,70 @@ function ChatPanel({ q, onSolved, onStarted, savedAnswer, locked, started }: { q
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
             </Box>
-            <AlfiAvatar size={40} />
+            <AlfiAvatar size={40} pose="point" />
           </Stack>
         )}
         <Box ref={endRef} />
       </Stack>
 
       {!locked && <>
-      {/* starts at 2 lines and grows as the student writes; the keypad sits alongside it */}
+      {/* One box holds everything: the answer on top, the tools and the two actions
+          along the bottom. The keypad opens beside it. */}
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
-        <TextField
-          fullWidth multiline minRows={mathOpen ? 8 : 2} value={draft}
-          inputRef={inputRef}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
-          placeholder="כתוב כאן את התשובה שלך…"
-          inputProps={{ 'aria-label': 'הפתרון שלי' }}
-          disabled={thinking}
-        />
+        <Paper
+          variant="outlined"
+          sx={{
+            flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
+            borderColor: 'primary.main',
+            display: 'flex', flexDirection: 'column', gap: 1.5,
+          }}
+        >
+          <TextField
+            fullWidth multiline minRows={mathOpen ? 8 : 3} value={draft}
+            inputRef={inputRef}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
+            placeholder="כתוב כאן את התשובה שלך…"
+            inputProps={{ 'aria-label': 'הפתרון שלי' }}
+            disabled={thinking}
+            variant="standard"
+            InputProps={{ disableUnderline: true }}
+          />
+          <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
+            {/* the three tools sit at the start of the line */}
+            <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
+              <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
+              <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
+              <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
+            </Stack>
+            {/* and the two actions at the far end */}
+            <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
+              <Button
+                size="small" variant="contained" color="secondary" disableElevation
+                startIcon={<HelpRoundedIcon />}
+                onClick={() => setAskAlfi(true)}
+                sx={{ fontWeight: 800 }}
+              >
+                שאלה לאלפי
+              </Button>
+              <Button
+                size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
+                endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
+                sx={{ fontWeight: 800 }}
+              >
+                {thinking ? 'שולח…' : 'שלח תשובה'}
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
         {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
       </Stack>
-      <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ rowGap: 1, mb: 1.5 }}>
-        <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
-        <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>מחשבון</Button>
-        <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
-      </Stack>
-      <Button
-        fullWidth variant="contained" onClick={send} disabled={thinking || !draft.trim()}
-        endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
-        sx={{ fontWeight: 800, py: 1.1 }}
-      >
-        {thinking ? 'שולח…' : 'שלח תשובה'}
-      </Button>
+
+      {/* asking Alfi opens the same chat the balloon opens */}
+      <Dialog open={askAlfi} onClose={() => setAskAlfi(false)} fullScreen={phone} maxWidth="xs" fullWidth
+        PaperProps={{ sx: { borderRadius: phone ? 0 : 3, overflow: 'hidden' } }}>
+        <AlfiChat onClose={() => setAskAlfi(false)} full={phone} />
+      </Dialog>
       </>}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
@@ -930,20 +967,20 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
         <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
       </Stack>
 
-      {/* top half — the question, always in view */}
+      {/* the question takes the height it needs, and never more than half the screen */}
       <Paper
         elevation={2}
         sx={{
           borderRadius: 3, px: { xs: 3, md: 4.5 }, py: { xs: 2.5, md: 3 },
-          flex: '1 1 50%', minHeight: 0, overflowY: 'auto',
+          flexShrink: 0, maxHeight: '50%', minHeight: 0, overflowY: 'auto',
         }}
       >
         {header}
         {questionBody}
       </Paper>
 
-      {/* bottom half — the answer and the whole conversation */}
-      <Box sx={{ flex: '1 1 50%', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
+      {/* the answer takes whatever is left */}
+      <Box sx={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
         {chat}
         {nextButton}
       </Box>

@@ -50,6 +50,9 @@ export { robotImg };
 
 // Bot is hidden while it gets redesigned — flip to true to bring him back everywhere.
 export const SHOW_BOT = false;
+/** The sidebar "יש לי שאלה" balloon and its phone twin. The same chat now opens
+ *  from שאלה לאלפי inside the answer box, so this entry point is off. */
+export const SHOW_SIDEBAR_ALFI = false;
 
 // trying Fredoka on the nav and the page titles only — everything else keeps the default font.
 // Fredoka stops at 700, so nothing wearing it asks for 800.
@@ -120,8 +123,26 @@ function AppMenu({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-export function AlfiAvatar({ size = 40 }: { size?: number }) {
+/** The approved ALFI art. Three poses: waving hello, pointing at you, thumbs up.
+ *  Each one is framed so the head lands in the middle of the circle. */
+export const ALFI_POSE = {
+  hi:    { src: 'alfi-hi.png',    scale: 1.2,  origin: '60% 50%' },
+  point: { src: 'alfi-point.png', scale: 1.05, origin: '50% 42%' },
+  ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
+} as const;
+
+export function AlfiAvatar({ size = 40, pose }: { size?: number; pose?: keyof typeof ALFI_POSE }) {
   const theme = useTheme();
+  if (pose) {
+    const p = ALFI_POSE[pose];
+    return (
+      <Avatar
+        src={p.src}
+        alt="אלפי"
+        sx={{ width: size, height: size, flexShrink: 0, bgcolor: 'grey.100', '& .MuiAvatar-img': { transform: `scale(${p.scale})`, transformOrigin: p.origin } }}
+      />
+    );
+  }
   const src = theme.palette.primary.main === GREEN[700] ? 'alfi-green-head.png' : 'alfi.png';
   // the source art has a lot of air around the head — zoom in so the face fills the circle
   return (
@@ -141,7 +162,7 @@ const ALFI_REPLIES = [
   'אני כאן איתך 🙂 תסביר לי מה לא ברור ונפתור את זה יחד.',
 ];
 
-function AlfiChat({ onClose, full = false }: { onClose: () => void; full?: boolean }) {
+export function AlfiChat({ onClose, full = false }: { onClose: () => void; full?: boolean }) {
   const [msgs, setMsgs] = useState<ChatMsg[]>([{ from: 'alfi', text: 'היי! אני אלפי 👋 אפשר לשאול אותי כל שאלה — במתמטיקה או על המערכת.' }]);
   const [draft, setDraft] = useState('');
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -402,7 +423,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               </List>
 
               {/* "יש לי שאלה" lives at the bottom of the sidebar, part of the chrome */}
-              {alfi && (
+              {alfi && SHOW_SIDEBAR_ALFI && (
                 <Box sx={{ mt: 'auto', flexShrink: 0, pt: 3 }}>
                   <AlfiWidget />
                 </Box>
@@ -435,7 +456,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
                     <ArrowForwardRoundedIcon />
                   </IconButton>
                   {/* Alfi sits at the far end of the bar — the corner a thumb reaches, out of the back button's way */}
-                  {alfi && <AlfiMobileButton />}
+                  {alfi && SHOW_SIDEBAR_ALFI && <AlfiMobileButton />}
                 </>
               ) : (
                 <>

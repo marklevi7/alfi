@@ -50,7 +50,7 @@ const SIGN_POS = buildOrbit();
 
 function MathSigns() {
   return (
-    <Box aria-hidden role="presentation" sx={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden', userSelect: 'none' }}>
+    <Box aria-hidden role="presentation" sx={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden', userSelect: 'none' }}>
       {SIGN_POS.map(([top, left], i) => {
         const c = SIGN_COLORS[i % SIGN_COLORS.length];
         const size = 30 + (i % 3) * 5;
@@ -141,7 +141,17 @@ export function DashboardV5({ variant = 'full' }: { variant?: 'full' | 'noGrade'
           </Typography>
         </Box>
         {!SHOW_BOT && (
-          <Box sx={{ position: 'relative', zIndex: 1, width: { xs: 220, md: 340 }, height: { xs: 300, md: 470 }, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08) }} />
+          <Box
+            component="img"
+            src="alfi-hi.png"
+            alt="אלפי"
+            sx={{
+              position: 'relative', zIndex: 1,
+              width: { xs: 260, md: 440 }, maxWidth: '100%',
+              objectFit: 'contain', display: 'block',
+              filter: (t) => `drop-shadow(0 24px 40px ${alpha(t.palette.primary.dark, 0.25)})`,
+            }}
+          />
         )}
         <MathSigns />
         {/* colorful glow halo behind ALFI */}
