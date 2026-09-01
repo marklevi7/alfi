@@ -658,7 +658,13 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
 
 /* ---------- the AI chat / answer panel ---------- */
 /** Alfi's opening line on a fresh question. No gendered forms — Ministry rule. */
-const KICKOFF = ['יאללה, מתחילים!', 'קדימה, מתחילים מכאן!', 'נצא לדרך!', 'מתחילים — אני כאן לכל שאלה.', 'אפשר להתחיל!'];
+const KICKOFF: [string, string][] = [
+  ['יאללה, מתחילים!', 'אני כאן לכל שאלה בדרך.'],
+  ['קדימה, מתחילים מכאן!', 'שלב אחרי שלב, בקצב שלך.'],
+  ['נצא לדרך!', 'לא צריך לדעת הכול מראש.'],
+  ['נפתור את זה יחד.', 'כל טעות בדרך היא חלק מהפתרון.'],
+  ['אפשר להתחיל!', 'תמיד אפשר לשאול אותי באמצע.'],
+];
 
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
 const approvedNode = (
@@ -782,8 +788,23 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
 
       {!locked && (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          כתוב כאן את{' '}
+          {/* secret: clicking this word drops the full solution into the box */}
+          <Box
+            component="span"
+            onClick={() => q.solutionText && setDraft(q.solutionText)}
+            sx={{ cursor: 'text' }}
+          >
+            הפתרון
+          </Box>{' '}
+          שלך.
+        </Typography>
+      )}
+
+      {!locked && (
         /* every new question opens with Alfi kicking it off */
-        <Stack direction="row" spacing={1.5} alignItems="flex-start" justifyContent="flex-end" sx={{ mb: 2 }}>
+        <Stack direction="row-reverse" spacing={1.5} alignItems="flex-start" justifyContent="flex-start" sx={{ mb: 2 }}>
           {/* a bigger circle, the art itself unchanged, on the logo's own gradient */}
           <AlfiAvatar size={66} pose="point" brand zoom={44 / 66} />
           <Box
@@ -791,25 +812,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               position: 'relative', bgcolor: 'grey.100', color: 'text.primary',
               borderRadius: 3, px: 2, py: 1.25,
               '&::before': {
-                content: '\"\"', position: 'absolute', top: 14, insetInlineStart: -8,
-                borderWidth: '8px 8px 8px 0', borderStyle: 'solid',
-                borderColor: (t) => `transparent ${t.palette.grey[100]} transparent transparent`,
+                content: '""', position: 'absolute', top: 14, insetInlineEnd: -8,
+                borderWidth: '8px 0 8px 8px', borderStyle: 'solid',
+                borderColor: (t) => `transparent transparent transparent ${t.palette.grey[100]}`,
               },
             }}
           >
-            <Typography sx={{ ...FREDOKA, fontWeight: 600 }}>{KICKOFF[kickoff]}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              כתוב כאן את{' '}
-              {/* secret: clicking this word drops the full solution into the box */}
-              <Box
-                component="span"
-                onClick={() => q.solutionText && setDraft(q.solutionText)}
-                sx={{ cursor: 'text' }}
-              >
-                הפתרון
-              </Box>{' '}
-              שלך.
-            </Typography>
+            <Typography sx={{ ...FREDOKA, fontWeight: 600 }}>{KICKOFF[kickoff][0]}</Typography>
+            <Typography variant="body2" color="text.secondary">{KICKOFF[kickoff][1]}</Typography>
           </Box>
         </Stack>
       )}
@@ -862,7 +872,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
               <Button
                 size="small" variant="contained" color="secondary" disableElevation
-                startIcon={<HelpRoundedIcon />}
+                endIcon={<HelpRoundedIcon />}
                 onClick={() => setAskAlfi(true)}
                 sx={{ fontWeight: 800 }}
               >
