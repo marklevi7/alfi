@@ -132,22 +132,24 @@ export const ALFI_POSE = {
   ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
 } as const;
 
-export function AlfiAvatar({ size = 40, pose, brand = false, zoom = 1 }: { size?: number; pose?: keyof typeof ALFI_POSE;
-  // brand: the logo's own green → lightGreen gradient behind the art
-  brand?: boolean;
-  // zoom < 1 keeps the art its old size inside a bigger circle
-  zoom?: number }) {
+/** One size and one background for every posed Alfi in the app. */
+export const ALFI_SIZE = 56;
+const ALFI_ART = 44 / ALFI_SIZE;   // the art keeps its old size inside the bigger circle
+
+export function AlfiAvatar({ size = 40, pose }: { size?: number; pose?: keyof typeof ALFI_POSE }) {
   const theme = useTheme();
-  const bg = brand
-    ? { background: `linear-gradient(180deg, ${green[500]} 7%, ${lightGreen[500]} 87%)` }
-    : { bgcolor: 'grey.100' };
   if (pose) {
     const p = ALFI_POSE[pose];
     return (
       <Avatar
         src={p.src}
         alt="אלפי"
-        sx={{ width: size, height: size, flexShrink: 0, ...bg, '& .MuiAvatar-img': { transform: `scale(${p.scale * zoom})`, transformOrigin: p.origin } }}
+        sx={{
+          width: ALFI_SIZE, height: ALFI_SIZE, flexShrink: 0,
+          // no stop percentages: the RTL plugin rewrites them and breaks the ramp
+          background: `linear-gradient(to bottom, ${green[500]}, ${lightGreen[500]})`,
+          '& .MuiAvatar-img': { transform: `scale(${p.scale * ALFI_ART})`, transformOrigin: p.origin },
+        }}
       />
     );
   }

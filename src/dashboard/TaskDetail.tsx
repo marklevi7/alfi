@@ -651,7 +651,7 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
       }}>
         {children}
       </Box>
-      {isAi && <AlfiAvatar size={40} pose="point" />}
+      {isAi && <AlfiAvatar pose="point" />}
     </Stack>
   );
 }
@@ -670,7 +670,7 @@ type Msg = { from: 'student' | 'ai'; node: ReactNode };
 const approvedNode = (
   <Stack direction="row" spacing={1} alignItems="center">
     {/* the thumbs-up pose is reserved for a correct answer */}
-    <AlfiAvatar size={56} pose="ok" />
+    <AlfiAvatar pose="ok" />
     <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
     <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה! 🎉</Typography>
   </Stack>
@@ -806,7 +806,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         /* every new question opens with Alfi kicking it off */
         <Stack direction="row-reverse" spacing={1.5} alignItems="flex-start" justifyContent="flex-start" sx={{ mb: 2 }}>
           {/* a bigger circle, the art itself unchanged, on the logo's own gradient */}
-          <AlfiAvatar size={66} pose="point" brand zoom={44 / 66} />
+          <AlfiAvatar pose="point" />
           <Box
             sx={{
               position: 'relative', bgcolor: 'grey.100', color: 'text.primary',
@@ -832,7 +832,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
             </Box>
-            <AlfiAvatar size={40} pose="point" />
+            <AlfiAvatar pose="point" />
           </Stack>
         )}
         <Box ref={endRef} />

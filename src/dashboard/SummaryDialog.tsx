@@ -90,7 +90,7 @@ function Turn({ turn }: { turn: SummaryTurn }) {
   const mine = turn.from === 'student';
   return (
     <Stack direction="row" spacing={1.25} alignItems="flex-start" justifyContent={mine ? 'flex-start' : 'flex-end'}>
-      {!mine && <AlfiAvatar size={36} pose="point" />}
+      {!mine && <AlfiAvatar pose="point" />}
       <Box
         sx={{
           maxWidth: '85%', px: 2, py: 1.25, borderRadius: 3,
@@ -358,7 +358,7 @@ export function SummaryDialog({ summary, onClose }: { summary: Summary | null; o
               {/* a phone has no room for a column beside a 64px head: Alfi sits on the
                   heading line and the text runs the full width underneath */}
               <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: { xs: 1.5, md: 0 } }}>
-                <AlfiAvatar size={phone ? 48 : 64} pose="ok" />
+                <AlfiAvatar pose="ok" />
                 <Typography variant="h6" sx={{ fontWeight: 800, display: { xs: 'block', md: 'none' } }}>מה אלפי אומר</Typography>
                 <Box sx={{ flex: 1, minWidth: 0, display: { xs: 'none', md: 'block' } }}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>מה אלפי אומר</Typography>
