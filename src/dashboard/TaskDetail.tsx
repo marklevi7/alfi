@@ -518,7 +518,7 @@ const railFill = keyframes`
   to   { transform: scaleX(1); }
 `;
 
-function QuestProgress({ total, solved, started, current, size: sizeProp, onPick, onHover, hovered }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
+function QuestProgress({ total, solved, started, current, size: sizeProp, onPick, onHover, hovered, hideCount }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null; hideCount?: boolean }) {
   const done = solved.size;
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   // the circles shrink on a phone so the "x/y שאלות" caption always fits beside them
@@ -575,9 +575,11 @@ function QuestProgress({ total, solved, started, current, size: sizeProp, onPick
           );
         })}
       </Box>
+      {!hideCount && (
       <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap', fontWeight: 700, flexShrink: 0 }}>
         {done === total ? 'סיימת! כל הכבוד 🎉' : `${done}/${total} שאלות`}
       </Typography>
+      )}
     </Stack>
   );
 }
@@ -933,8 +935,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer, showPoints, canAsk }: {
-  q: Question; index: number; total: number; solved: boolean; started: boolean; solvedSet: Set<number>; startedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string; canAsk?: boolean;
+function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk }: {
+  q: Question; index: number; total: number; solved: boolean; started: boolean; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; savedAnswer?: string; canAsk?: boolean;
   // points are a בוחן thing — תרגול is never scored, anywhere
   showPoints?: boolean;
 }) {
@@ -1008,10 +1010,6 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   if (!pinned) {
     return (
       <>
-        {/* on a desktop the strip already lives in the header, pinned or not */}
-        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, display: { xs: 'flex', md: 'none' } }}>
-          <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
-        </Stack>
         <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
           {header}
           {questionBody}
@@ -1025,10 +1023,6 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   // pinned: the screen splits down the middle, each half scrolls on its own
   return (
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, flexShrink: 0, display: { xs: 'flex', md: 'none' } }}>
-        <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
-      </Stack>
-
       {/* the question takes the height it needs, and never more than half the screen */}
       <Paper
         elevation={2}
@@ -1168,6 +1162,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
     return (
       <Shell
         active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}
+        mobileHeader={<QuestProgress total={questions.length} solved={solved} started={started} current={openQ} onPick={setOpenQ} hideCount />}
         headerAction={
           /* the 50/50 split needs every pixel, so the question strip sits in the header */
           <Stack direction="row" alignItems="center" spacing={2} sx={{ minWidth: 0 }}>
@@ -1186,9 +1181,6 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           total={questions.length}
           solved={solved.has(openQ)}
           started={started.has(openQ)}
-          solvedSet={solved}
-          startedSet={started}
-          onPick={setOpenQ}
           onBack={() => setOpenQ(null)}
           onSolved={(answer) => markSolved(openQ, answer)}
           onStarted={() => setStarted((s) => new Set(s).add(openQ))}

@@ -346,10 +346,12 @@ function AlfiMobileButton() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100dvh', bgLayer, alfi = false, mobileBack, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100dvh', bgLayer, alfi = false, mobileBack, mobileHeader, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
   // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
   mobileBack?: () => void;
   // sits in the header strip on desktop, inline with the sign-out button
+  // rides in the phone's top bar beside the back arrow, where there is room to spare
+  mobileHeader?: ReactNode;
   headerAction?: ReactNode }) {
   const navTo = useNav();
   const theme = useTheme();
@@ -462,9 +464,10 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               sx={{ position: 'relative', zIndex: 2, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, ...liftSx(scrolled && !title) }}>
               {mobileBack ? (
                 <>
-                  <IconButton aria-label="חזרה" onClick={mobileBack}>
+                  <IconButton aria-label="חזרה" onClick={mobileBack} sx={{ flexShrink: 0 }}>
                     <ArrowForwardRoundedIcon />
                   </IconButton>
+                  {mobileHeader && <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'center' }}>{mobileHeader}</Box>}
                   {/* Alfi sits at the far end of the bar — the corner a thumb reaches, out of the back button's way */}
                   {alfi && SHOW_SIDEBAR_ALFI && <AlfiMobileButton />}
                 </>
@@ -526,7 +529,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
       {/* Mobile bottom navigation */}
       <Paper
         elevation={3}
-        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.appBar, borderRadius: 3, overflow: 'hidden' }}
+        // pinned to the bottom of the screen and above everything the page can draw;
+        // a dialog still covers it
+        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.drawer + 1, borderRadius: 3, overflow: 'hidden' }}
       >
         <BottomNavigation showLabels value={NAV.findIndex((n) => n.screen === active)} sx={{
           borderRadius: 3,
