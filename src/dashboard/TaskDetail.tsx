@@ -42,8 +42,6 @@ import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
-import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded';
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
@@ -1117,14 +1115,6 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
   kbOpen?: boolean; onKeyboard?: (open: boolean) => void;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
-  // Students asked to keep the question in sight while they answer, so the screen
-  // splits in two: the question on top, the answer under it, each scrolling on its
-  // own. Unpinning gives the old single column back.
-  const [pinned, setPinned] = useState(true);
-  // splitting the screen is a desktop idea; a phone is too short for it
-  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
-
-  useEffect(() => { setPinned(true); }, [index]);
 
   const header = (
     <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, mb: 2 }}>
@@ -1139,18 +1129,7 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
         )}
         {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
         <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
-        {/* pinning splits the screen — a desktop idea, so the control lives there */}
-        {!phone && (
-          <Button
-            size="small"
-            color={pinned ? 'primary' : 'inherit'}
-            onClick={() => setPinned((v) => !v)}
-            startIcon={pinned ? <PushPinRoundedIcon /> : <PushPinOutlinedIcon />}
-            sx={{ fontWeight: 700, ...(pinned ? {} : { color: 'text.secondary' }) }}
-          >
-            הצמדת השאלה
-          </Button>
-        )}
+
       </Stack>
     </Stack>
   );
@@ -1188,44 +1167,18 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
 
   const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={onKeyboard} />;
 
-  // one column: the whole page scrolls as one. Always the case on a phone.
-  if (!pinned || phone) {
-    return (
-      <>
-        <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
-          {header}
-          {questionBody}
-        </Paper>
-        {chat}
-        {!kbOpen && nextButton}
-        {/* room to scroll the answer box clear of the keyboard */}
-        {kbOpen && <Box sx={{ height: '40vh', flexShrink: 0 }} />}
-      </>
-    );
-  }
-
-  // pinned: the screen splits down the middle, each half scrolls on its own
+  // one page, top to bottom: the question, the conversation, the answer box
   return (
-    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? '40vh' : 0 }}>
-      {/* the question takes the height it needs, and never more than half the screen */}
-      <Paper
-        elevation={2}
-        sx={{
-          borderRadius: 3, px: { xs: 3, md: 4.5 }, py: { xs: 2.5, md: 3 },
-          flexShrink: 0, maxHeight: kbOpen ? '45%' : '50%', minHeight: 0, overflowY: 'auto',
-        }}
-      >
+    <>
+      <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
         {header}
         {questionBody}
       </Paper>
-
-      {/* the answer takes whatever is left */}
-      <Box sx={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {chat}
-        {/* while the student is typing there is no room for it, and no reason */}
-        {!kbOpen && nextButton}
-      </Box>
-    </Box>
+      {chat}
+      {!kbOpen && nextButton}
+      {/* room to scroll the answer box clear of the keyboard */}
+      {kbOpen && <Box sx={{ height: '40vh', flexShrink: 0 }} />}
+    </>
   );
 }
 
