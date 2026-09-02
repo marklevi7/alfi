@@ -516,9 +516,9 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
               sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}
             >
               {/* minHeight 0 lets a screen bound itself to the viewport instead of growing */}
-              <Box sx={{ px: { xs: 2.5, md: 4 }, pb: { xs: 2.5, md: 3 }, pt: 0, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ px: { xs: 2.5, md: 4 }, pb: { xs: 0, md: 3 }, pt: 0, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {children}
-                {/* Spacer so content clears the fixed mobile bottom nav */}
+                {/* Spacer so content clears the fixed mobile bottom nav: 56 tall, 8 off the floor */}
                 <Box sx={{ height: { xs: 72, md: 0 }, flexShrink: 0 }} />
               </Box>
             </Box>

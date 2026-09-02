@@ -13,6 +13,7 @@ import TextField from '@mui/material/TextField';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -31,6 +32,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 // the dialog still shows a real QR to scan — only the button wears the camera
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
@@ -741,6 +743,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [asked, setAsked] = useState(0);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -896,31 +900,65 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             InputProps={{ disableUnderline: true }}
           />
           <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
-            {/* the three tools sit at the start of the line */}
-            <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
-              <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
-              <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
-              <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
-            </Stack>
-            {/* and the two actions at the far end */}
-            <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
-              {canAsk && (
-              <Button
-                size="small" variant="contained" color="secondary" disableElevation
-                endIcon={<HelpRoundedIcon />}
-                onClick={ask} disabled={thinking || !draft.trim()}
-                sx={{ fontWeight: 800 }}
-              >
-                שאלה לאלפי
-              </Button>
+            {/* a phone gets one line: the keypad and a plus on the start side */}
+            <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
+              {!phone && (
+                <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
               )}
-              <Button
-                size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
-                endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
-                sx={{ fontWeight: 800 }}
-              >
-                {thinking ? 'שולח…' : 'שלח תשובה'}
-              </Button>
+              <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
+              {phone ? (
+                <IconButton
+                  size="small" aria-label="עוד דרכים לענות"
+                  onClick={() => setMoreOpen(true)}
+                  sx={{ border: 1, borderColor: 'primary.main', color: 'primary.main', borderRadius: 1.5 }}
+                >
+                  <AddRoundedIcon />
+                </IconButton>
+              ) : (
+                <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
+              )}
+            </Stack>
+            {/* and the two actions at the far end — icons only on a phone */}
+            <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
+              {canAsk && (
+                phone ? (
+                  <IconButton
+                    aria-label="שאלה לאלפי" onClick={ask} disabled={thinking || !draft.trim()}
+                    sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', borderRadius: 1.5,
+                          '&:hover': { bgcolor: 'secondary.dark' },
+                          '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+                  >
+                    <HelpRoundedIcon />
+                  </IconButton>
+                ) : (
+                  <Button
+                    size="small" variant="contained" color="secondary" disableElevation
+                    endIcon={<HelpRoundedIcon />}
+                    onClick={ask} disabled={thinking || !draft.trim()}
+                    sx={{ fontWeight: 800 }}
+                  >
+                    שאלה לאלפי
+                  </Button>
+                )
+              )}
+              {phone ? (
+                <IconButton
+                  aria-label="שליחת התשובה" onClick={send} disabled={thinking || !draft.trim()}
+                  sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1.5,
+                        '&:hover': { bgcolor: 'primary.dark' },
+                        '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+                >
+                  <SendRoundedIcon className="dir-icon" />
+                </IconButton>
+              ) : (
+                <Button
+                  size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
+                  endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
+                  sx={{ fontWeight: 800 }}
+                >
+                  {thinking ? 'שולח…' : 'שלח תשובה'}
+                </Button>
+              )}
             </Stack>
           </Stack>
         </Paper>
@@ -929,6 +967,25 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       </>}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
+      {/* the plus: the two other ways to answer, from the bottom of the screen */}
+      <Drawer
+        anchor="bottom" open={moreOpen} onClose={() => setMoreOpen(false)}
+        // above the bottom nav, which is pinned higher than a drawer normally sits
+        sx={{ zIndex: (t) => t.zIndex.modal }}
+        PaperProps={{ sx: { borderStartStartRadius: 16, borderStartEndRadius: 16, pb: 1 } }}
+      >
+        <List>
+          <ListItemButton onClick={() => { setMoreOpen(false); setFileOpen(true); }}>
+            <ListItemIcon><AttachFileRoundedIcon /></ListItemIcon>
+            <ListItemText primary="צרף קובץ" />
+          </ListItemButton>
+          <ListItemButton onClick={() => { setMoreOpen(false); setQrOpen(true); }}>
+            <ListItemIcon><PhotoCameraRoundedIcon /></ListItemIcon>
+            <ListItemText primary="צלם תשובה" />
+          </ListItemButton>
+        </List>
+      </Drawer>
+
       <FinderDialog open={fileOpen} onClose={() => setFileOpen(false)} onPick={(name) => setDraft((d) => (d ? d + '\n' : '') + `📎 ${name}`)} />
     </Paper>
   );
