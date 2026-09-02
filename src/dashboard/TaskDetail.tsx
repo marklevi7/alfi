@@ -813,20 +813,24 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   return (
     <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
       {confetti && <Confetti />}
-      <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>הפתרון שלי</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
       {!locked && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          כתוב כאן את{' '}
-          {/* secret: clicking this word drops the full solution into the box */}
-          <Box
-            component="span"
-            onClick={() => q.solutionText && setDraft(q.solutionText)}
-            sx={{ cursor: 'text' }}
-          >
-            הפתרון
-          </Box>{' '}
-          שלך.
+          {/* secret: clicking the word "פתרון" drops the full solution into the box */}
+          {canAsk ? (
+            <>
+              תשאל את אלפי שאלות או תן לו לבדוק את{' '}
+              <Box component="span" onClick={() => q.solutionText && setDraft(q.solutionText)} sx={{ cursor: 'text' }}>הפיתרון</Box>{' '}
+              שלך
+            </>
+          ) : (
+            <>
+              כתוב כאן את{' '}
+              <Box component="span" onClick={() => q.solutionText && setDraft(q.solutionText)} sx={{ cursor: 'text' }}>הפתרון</Box>{' '}
+              שלך.
+            </>
+          )}
         </Typography>
       )}
 
