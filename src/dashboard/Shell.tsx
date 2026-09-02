@@ -128,11 +128,12 @@ function AppMenu({ onLogout }: { onLogout: () => void }) {
 /** The approved ALFI art. Three poses: waving hello, pointing at you, thumbs up.
  *  Each one is framed so the head lands in the middle of the circle. */
 export const ALFI_POSE = {
-  hi:    { src: 'alfi-hi.png',    scale: 1.2,  origin: '60% 50%' },
+  hi:    { src: 'alfi-hi.png',    scale: 1.25, origin: '50% 50%', fit: 'contain' },
   point: { src: 'alfi-point.png', scale: 1.05, origin: '50% 42%' },
   // head only, so the whole of it is shown rather than cropped to fill
   smile: { src: 'alfi-smile.png', scale: 0.94, origin: '50% 50%', fit: 'contain' },
-  ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
+  // fitted, not cropped, so the head reads the same size in every circle
+  ok:    { src: 'alfi-ok.png',    scale: 1.25, origin: '50% 50%', fit: 'contain' },
 } as const;
 
 /** One size and one background for every posed Alfi in the app. */
