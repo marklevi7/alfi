@@ -831,6 +831,24 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     return () => window.clearTimeout(id);
   }, [locked]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' }); }, [msgs.length, thinking]);
+  // typing pushes the box down; follow it so the student always sees what they wrote
+  useEffect(() => {
+    if (!kbOpen) return;
+    // after the field has re-measured, not before: walk up to the page's own
+    // scroller and take it to the bottom, where the field now is
+    const id = window.setTimeout(() => {
+      let el: HTMLElement | null = inputRef.current;
+      while (el) {
+        const oy = window.getComputedStyle(el).overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) {
+          el.scrollTop = el.scrollHeight;
+          return;
+        }
+        el = el.parentElement;
+      }
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [draft, kbOpen]);
 
   // symbols land where the cursor is, and the caret stays put so typing continues naturally
   const insertAtCursor = (sym: string) => {
@@ -901,7 +919,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         }}
       >
         <TextField
-          fullWidth multiline minRows={mathOpen ? 8 : 3} maxRows={phone ? 4 : undefined} value={draft}
+          fullWidth multiline minRows={mathOpen ? 8 : 3} value={draft}
           inputRef={inputRef}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
@@ -1042,24 +1060,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         <Box ref={endRef} />
       </Stack>
 
-      {!locked && (
-        phone && kbOpen ? (
-          /* while the keyboard is up the box rides on top of it, buttons always in view */
-          <Portal>
-            <Box
-              data-keyboard
-              sx={{
-                position: 'fixed', insetInline: 0, bottom: '40vh',
-                zIndex: (t) => t.zIndex.modal,
-                bgcolor: 'background.default', px: 2.5, pt: 1.5, pb: 1.5,
-                boxShadow: 8,
-              }}
-            >
-              {composer}
-            </Box>
-          </Portal>
-        ) : composer
-      )}
+      {!locked && composer}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
       {kbOpen && (
@@ -1184,15 +1185,15 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
         </Paper>
         {chat}
         {!kbOpen && nextButton}
-        {/* room for the answer box and the keyboard sitting on top of it */}
-        {kbOpen && <Box sx={{ height: 'calc(40vh + 168px)', flexShrink: 0 }} />}
+        {/* room to scroll the answer box clear of the keyboard */}
+        {kbOpen && <Box sx={{ height: '40vh', flexShrink: 0 }} />}
       </>
     );
   }
 
   // pinned: the screen splits down the middle, each half scrolls on its own
   return (
-    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? 'calc(40vh + 168px)' : 0 }}>
+    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? '40vh' : 0 }}>
       {/* the question takes the height it needs, and never more than half the screen */}
       <Paper
         elevation={2}
