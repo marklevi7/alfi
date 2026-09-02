@@ -131,7 +131,7 @@ export const ALFI_POSE = {
   hi:    { src: 'alfi-hi.png',    scale: 1.2,  origin: '60% 50%' },
   point: { src: 'alfi-point.png', scale: 1.05, origin: '50% 42%' },
   // head only, so the whole of it is shown rather than cropped to fill
-  smile: { src: 'alfi-smile.png', scale: 1.25, origin: '50% 50%', fit: 'contain' },
+  smile: { src: 'alfi-smile.png', scale: 0.94, origin: '50% 50%', fit: 'contain' },
   ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
 } as const;
 
