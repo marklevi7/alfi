@@ -218,34 +218,36 @@ const SPARK_CHARS = ['✦', '✧', '⋆', '·'];
 // deterministic "randomness" — same galaxy on every load, no hydration drift
 const pr = (n: number) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
 
-// A little galaxy: 3 concentric diagonal ellipses (tilted, rising toward the
-// card), jittered so it feels hand-scattered. Outermost ring slides behind the
-// card (container is full-bleed; the card sits above at zIndex 2).
-// +25° here renders as a visual rise toward the card: the RTL cache mirrors `left`.
+// The signs orbit Alfi himself, not the page: four concentric ellipses centred on
+// his head, the innermost one wide enough to clear it, so nothing lands on his face.
+// Angles are jittered so the ring reads as scattered by hand rather than stepped.
+// The card sits above them at zIndex 2.
 type Sign = { top: number; left: number; ch: string; size: number; big: boolean };
 function buildGalaxy(): Sign[] {
-  const th = (25 * Math.PI) / 180;
-  const cx = 50, cy = 50;
+  const th = (18 * Math.PI) / 180;
+  // the RTL cache mirrors `left`, so 73 here renders at 27 — where Alfi stands
+  const cx = 73, cy = 50;
   const rings = [
-    { a: 52, b: 26, n: 16, size: 30, signs: true },
-    { a: 37, b: 17, n: 11, size: 22, signs: true },
-    { a: 64, b: 34, n: 12, size: 16, signs: false }, // outer sparkle ring, dips behind the card
+    { a: 23, b: 27, n: 42, size: 20, signs: true },
+    { a: 30, b: 35, n: 56, size: 26, signs: true },
+    { a: 37, b: 43, n: 56, size: 16, signs: false },
+    { a: 44, b: 50, n: 52, size: 13, signs: false },
   ];
   const out: Sign[] = [];
   let k = 0;
   for (const r of rings) {
     for (let i = 0; i < r.n; i++) {
       k++;
-      const t = (i / r.n) * Math.PI * 2 + pr(k) * 0.5;           // angular jitter
-      const wob = 1 + (pr(k * 3) - 0.5) * 0.16;                  // radial jitter
+      const t = (i / r.n) * Math.PI * 2 + (pr(k) - 0.5) * 0.9;   // angular jitter
+      const wob = 1 + (pr(k * 3) - 0.5) * 0.18;                  // radial jitter
       const a = r.a * wob, b = r.b * wob;
       const left = cx + a * Math.cos(t) * Math.cos(th) - b * Math.sin(t) * Math.sin(th);
       const top = cy + a * Math.cos(t) * Math.sin(th) + b * Math.sin(t) * Math.cos(th);
-      if (top < 4 || top > 96 || left < 1 || left > 99) continue;
+      if (top < 2 || top > 98 || left < 0 || left > 99) continue;
       const ch = r.signs
         ? SIGN_CHARS[Math.floor(pr(k * 7) * SIGN_CHARS.length)]
         : SPARK_CHARS[Math.floor(pr(k * 7) * SPARK_CHARS.length)];
-      out.push({ top, left, ch, size: r.size + Math.round(pr(k * 13) * 12), big: r.signs });
+      out.push({ top, left, ch, size: r.size + Math.round(pr(k * 13) * 10), big: r.signs });
     }
   }
   return out;
@@ -257,7 +259,7 @@ function LoginSigns() {
   // primary-driven so v5 stays purple and v6/v7 stay green
   const colors = [theme.palette.primary.light, blue[400], cyan[500], pink[400], amber[500], theme.palette.primary.main, blue[300], pink[300]];
   return (
-    <Box aria-hidden sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', display: { xs: 'none', md: 'block' } }}>
+    <Box aria-hidden sx={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden', display: { xs: 'none', md: 'block' } }}>
       {GALAXY.map((s, i) => {
         const c = colors[i % colors.length];
         const dur = 3.5 + pr(i + 99) * 3;
