@@ -42,7 +42,7 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfTwoTone';
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone';
-import { Shell, AlfiAvatar, AlfiChat, FREDOKA } from './Shell';
+import { Shell, AlfiAvatar, FREDOKA } from './Shell';
 import { GradePill } from './Practice';
 
 // to = deadline; null means the teacher set no deadline (open-ended practice).
@@ -520,8 +520,8 @@ const railFill = keyframes`
 
 function QuestProgress({ total, solved, started, current, size: sizeProp, onPick, onHover, hovered }: { total: number; solved: Set<number>; started?: Set<number>; current?: number; size?: number; onPick?: (i: number) => void; onHover?: (i: number | null) => void; hovered?: number | null }) {
   const done = solved.size;
-  // the circles shrink on a phone so the "x/y שאלות" caption always fits beside them
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
+  // the circles shrink on a phone so the "x/y שאלות" caption always fits beside them
   const size = sizeProp ?? (phone ? 34 : 44);
   return (
     <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ rowGap: 1, py: 1, overflow: 'visible' }}>
@@ -666,13 +666,21 @@ const KICKOFF: [string, string][] = [
   ['אפשר להתחיל!', 'תמיד אפשר לשאול אותי באמצע.'],
 ];
 
+/** What Alfi says to a question. Nothing here judges the answer — that is the point. */
+const ALFI_ANSWERS = [
+  'שאלה טובה. נתחיל מהנתונים: מה ידוע לנו, ומה צריך למצוא?',
+  'אפשר לפרק את זה לשלבים. איזה כלל מתאים לביטוי הזה?',
+  'אין בעיה — אפשר לכתוב רק את השלב הראשון, ונמשיך משם יחד.',
+  'זה מקום נפוץ להיתקע בו. מה הדבר האחרון שהיה ברור?',
+];
+
 type Msg = { from: 'student' | 'ai'; node: ReactNode };
 const approvedNode = (
   <Stack direction="row" spacing={1} alignItems="center">
     {/* the thumbs-up pose is reserved for a correct answer */}
     <AlfiAvatar pose="ok" />
     <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
-    <Typography sx={{ fontWeight: 800 }}>כל הכבוד! תשובה נכונה! 🎉</Typography>
+    <Typography>כל הכבוד! תשובה נכונה! 🎉</Typography>
   </Stack>
 );
 
@@ -727,8 +735,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [confetti, setConfetti] = useState(false);
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
-  const [askAlfi, setAskAlfi] = useState(false);
-  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
+  const [asked, setAsked] = useState(0);
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -754,6 +761,22 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       el?.focus();
       el?.setSelectionRange(start + sym.length, start + sym.length);
     }, 0);
+  };
+
+  // "שאלה לאלפי" — the same box and the same conversation, only nothing is graded.
+  // It is the safe way to ask: no right or wrong, just an answer.
+  const ask = () => {
+    if (!draft.trim() || thinking) return;
+    const question = draft.trim();
+    setMsgs((m) => [...m, { from: 'student', node: <Typography sx={{ whiteSpace: 'pre-wrap' }}>{question}</Typography> }]);
+    setDraft('');
+    setThinking(true);
+    const reply = ALFI_ANSWERS[asked % ALFI_ANSWERS.length];
+    setAsked((n) => n + 1);
+    window.setTimeout(() => {
+      setThinking(false);
+      setMsgs((m) => [...m, { from: 'ai', node: <Typography>{reply}</Typography> }]);
+    }, 1400);
   };
 
   const send = () => {
@@ -818,8 +841,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               },
             }}
           >
-            <Typography sx={{ ...FREDOKA, fontWeight: 600 }}>{KICKOFF[kickoff][0]}</Typography>
-            <Typography variant="body2" color="text.secondary">{KICKOFF[kickoff][1]}</Typography>
+            <Typography>{KICKOFF[kickoff][0]}</Typography>
+            <Typography color="text.secondary">{KICKOFF[kickoff][1]}</Typography>
           </Box>
         </Stack>
       )}
@@ -873,7 +896,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               <Button
                 size="small" variant="contained" color="secondary" disableElevation
                 endIcon={<HelpRoundedIcon />}
-                onClick={() => setAskAlfi(true)}
+                onClick={ask} disabled={thinking || !draft.trim()}
                 sx={{ fontWeight: 800 }}
               >
                 שאלה לאלפי
@@ -890,12 +913,6 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         </Paper>
         {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
       </Stack>
-
-      {/* asking Alfi opens the same chat the balloon opens */}
-      <Dialog open={askAlfi} onClose={() => setAskAlfi(false)} fullScreen={phone} maxWidth="xs" fullWidth
-        PaperProps={{ sx: { borderRadius: phone ? 0 : 3, overflow: 'hidden' } }}>
-        <AlfiChat onClose={() => setAskAlfi(false)} full={phone} />
-      </Dialog>
       </>}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
@@ -996,7 +1013,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   // pinned: the screen splits down the middle, each half scrolls on its own
   return (
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, flexShrink: 0 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, flexShrink: 0, display: { xs: 'flex', md: 'none' } }}>
         <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
       </Stack>
 
@@ -1140,9 +1157,15 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       <Shell
         active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}
         headerAction={
-          <Button onClick={() => setOpenQ(null)} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, display: { xs: 'none', md: 'inline-flex' } }}>
-            חזרה לשאלות
-          </Button>
+          /* the 50/50 split needs every pixel, so the question strip sits in the header */
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ minWidth: 0 }}>
+            <Button onClick={() => setOpenQ(null)} variant="outlined" startIcon={<ArrowForwardRoundedIcon />} sx={{ fontWeight: 700, flexShrink: 0, display: { xs: 'none', md: 'inline-flex' } }}>
+              חזרה לשאלות
+            </Button>
+            <Box sx={{ display: { xs: 'none', md: 'block' }, minWidth: 0 }}>
+              <QuestProgress total={questions.length} solved={solved} started={started} current={openQ} onPick={setOpenQ} />
+            </Box>
+          </Stack>
         }
       >
         <QuestionPage
