@@ -1008,7 +1008,8 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
   if (!pinned) {
     return (
       <>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5 }}>
+        {/* on a desktop the strip already lives in the header, pinned or not */}
+        <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" sx={{ rowGap: 1.5, display: { xs: 'flex', md: 'none' } }}>
           <QuestProgress total={total} solved={solvedSet} started={startedSet} current={index} onPick={onPick} />
         </Stack>
         <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
