@@ -128,7 +128,13 @@ export function App() {
         {/* motion off: every animation and transition in the app stops at once */}
         <Box
           data-motion={motion ? 'on' : 'off'}
-          sx={{ '&[data-motion="off"] *': { animation: 'none !important', transition: 'none !important' } }}
+          sx={{
+            // a celebration the student triggered is not "moving content" — it stays.
+            // The OS reduced-motion setting still hides it.
+            '&[data-motion="off"] *:not([data-keep-motion]):not([data-keep-motion] *)': {
+              animation: 'none !important', transition: 'none !important',
+            },
+          }}
         >
         {/* invisible hotspot — top-right corner toggles the dev control bar (hidden by default) */}
         <Box

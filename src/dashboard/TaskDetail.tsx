@@ -310,7 +310,7 @@ const burst = keyframes`
 /** Big game-style confetti burst. Fills its positioned parent; harmless when reduced-motion is on. */
 export function Confetti({ pieces = 80 }: { pieces?: number }) {
   return (
-    <Box aria-hidden sx={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 4 }}>
+    <Box aria-hidden data-keep-motion sx={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none', zIndex: 4 }}>
       {Array.from({ length: pieces }).map((_, i) => {
         const dx = (i % 2 ? 1 : -1) * (60 + (i * 37) % 520);
         const dy = -180 - (i * 53) % 420;
@@ -635,7 +635,7 @@ function NumberedAnswer({ text }: { text: string }) {
 }
 
 /* ---------- chat bubble ---------- */
-function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNode }) {
+function Bubble({ from, children, pose = 'point' }: { from: 'student' | 'ai'; children: ReactNode; pose?: 'point' | 'ok' }) {
   const isAi = from === 'ai';
   return (
     // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT.
@@ -651,7 +651,7 @@ function Bubble({ from, children }: { from: 'student' | 'ai'; children: ReactNod
       }}>
         {children}
       </Box>
-      {isAi && <AlfiAvatar pose="point" />}
+      {isAi && <AlfiAvatar pose={pose} />}
     </Stack>
   );
 }
@@ -676,11 +676,9 @@ const ALFI_ANSWERS = [
   'זה מקום נפוץ להיתקע בו. מה הדבר האחרון שהיה ברור?',
 ];
 
-type Msg = { from: 'student' | 'ai'; node: ReactNode };
+type Msg = { from: 'student' | 'ai'; node: ReactNode; pose?: 'point' | 'ok' };
 const approvedNode = (
   <Stack direction="row" spacing={1} alignItems="center">
-    {/* the thumbs-up pose is reserved for a correct answer */}
-    <AlfiAvatar pose="ok" />
     <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
     <Typography>כל הכבוד! תשובה נכונה! 🎉</Typography>
   </Stack>
@@ -715,7 +713,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const kickoff = qIndex % KICKOFF.length;
   const intro = canAsk ? KICKOFF[kickoff] : QUIZ_INTRO;
   const [msgs, setMsgs] = useState<Msg[]>(() => {
-    if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }];
+    if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode, pose: 'ok' }];
     // a long question carries its whole history: every attempt and every correction
     if (q.priorTurns) {
       return q.priorTurns.flatMap((t): Msg[] => [
@@ -804,7 +802,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         ) }]);
         return;
       }
-      setMsgs((m) => [...m, { from: 'ai', node: approvedNode }]);
+      setMsgs((m) => [...m, { from: 'ai', node: approvedNode, pose: 'ok' }]);
       setConfetti(true);
       window.setTimeout(() => { setConfetti(false); onSolved(answer); }, 3200);
     }, 1400);
@@ -857,7 +855,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       )}
 
       <Stack spacing={1.5} sx={{ mb: msgs.length || thinking ? 2 : 0 }}>
-        {msgs.map((m, i) => <Bubble key={i} from={m.from}>{m.node}</Bubble>)}
+        {msgs.map((m, i) => <Bubble key={i} from={m.from} pose={m.pose}>{m.node}</Bubble>)}
         {thinking && (
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
             <Box sx={{ minWidth: 200 }}>

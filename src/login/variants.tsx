@@ -286,8 +286,8 @@ function LoginSigns() {
 function V5a() {
   return (
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
-      {/* Alfi placeholder — same oval as the dashboards, where the bot will stand */}
-      <Box sx={{ position: 'absolute', insetInlineEnd: { md: '16%' }, top: '50%', transform: 'translateY(-50%)', width: 340, height: 470, borderRadius: '50%', bgcolor: (t) => alpha(t.palette.primary.main, 0.08), display: { xs: 'none', md: 'block' } }} />
+      {/* Alfi greets from the same spot the placeholder oval used to hold */}
+      <AlfiImg src="alfi-hi.png" sx={{ position: 'absolute', zIndex: 1, insetInlineEnd: { md: '12%' }, top: '50%', transform: 'translateY(-50%)', width: { md: 440 }, height: 'auto', display: { xs: 'none', md: 'block' } }} />
       {SHOW_BOT && (
         <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, transform: 'translateX(-100px)' }} />
       )}
