@@ -811,10 +811,10 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   return (
     <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
       {confetti && <Confetti />}
-      <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 1.5 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.25 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
       {!locked && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" color="text.secondary">
           {/* secret: clicking the word "פתרון" drops the full solution into the box */}
           {canAsk ? (
             <>
@@ -831,6 +831,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
           )}
         </Typography>
       )}
+
+      <Divider sx={{ mt: 1.5, mb: 3 }} />
 
       {!locked && (
         /* every new question opens with Alfi kicking it off */
