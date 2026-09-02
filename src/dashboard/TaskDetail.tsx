@@ -806,6 +806,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -841,18 +842,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   // typing pushes the box down; follow it so the student always sees what they wrote
   useEffect(() => {
     if (!kbOpen) return;
-    // after the field has re-measured, not before: walk up to the page's own
-    // scroller and take it to the bottom, where the field now is
+    // The field grows downwards, so the page follows it: the box's bottom edge
+    // stays parked just above the keyboard and the writing rises up the screen.
     const id = window.setTimeout(() => {
-      let el: HTMLElement | null = inputRef.current;
-      while (el) {
-        const oy = window.getComputedStyle(el).overflowY;
-        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) {
-          el.scrollTop = el.scrollHeight;
-          return;
-        }
-        el = el.parentElement;
-      }
+      const box = boxRef.current;
+      if (!box) return;
+      const keyboardTop = window.innerHeight * 0.6;   // the keyboard owns the bottom 40%
+      const over = box.getBoundingClientRect().bottom - keyboardTop + 12;
+      if (over > 0) window.scrollBy(0, over);
     }, 0);
     return () => window.clearTimeout(id);
   }, [draft, kbOpen]);
@@ -918,6 +915,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         along the bottom. The keypad opens beside it. */}
     <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
       <Paper
+        ref={boxRef}
         variant="outlined"
         sx={{
           flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
