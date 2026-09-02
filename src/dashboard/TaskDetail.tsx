@@ -14,6 +14,7 @@ import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
+import Portal from '@mui/material/Portal';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -33,6 +34,8 @@ import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import KeyboardHideRoundedIcon from '@mui/icons-material/KeyboardHideRounded';
+import BackspaceRoundedIcon from '@mui/icons-material/BackspaceRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 // the dialog still shows a real QR to scan — only the button wears the camera
 import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
@@ -660,6 +663,56 @@ function Bubble({ from, children, pose = 'point' }: { from: 'student' | 'ai'; ch
   );
 }
 
+
+/* ---------- the phone's own keyboard ---------- */
+// A stand-in for the device keyboard so the prototype shows what the student
+// really sees: it takes the bottom 40% of the screen while the field has focus.
+const KB_ROWS = [
+  ['ק', 'ר', 'א', 'ט', 'ו', 'ן', 'ם', 'פ'],
+  ['ש', 'ד', 'ג', 'כ', 'ע', 'י', 'ח', 'ל', 'ך', 'ף'],
+  ['ז', 'ס', 'ב', 'ה', 'נ', 'מ', 'צ', 'ת', 'ץ'],
+];
+
+function PhoneKeyboard({ onKey, onBackspace, onClose }: { onKey: (ch: string) => void; onBackspace: () => void; onClose: () => void }) {
+  // mousedown is swallowed so the field never loses focus while typing
+  const hold = (e: React.MouseEvent) => e.preventDefault();
+  const keySx = {
+    flex: 1, minWidth: 0, height: '100%', px: 0, borderRadius: 1,
+    bgcolor: 'background.paper', color: 'text.primary',
+    boxShadow: 1, fontWeight: 500,
+  } as const;
+  return (
+    <Portal>
+    <Paper
+      square elevation={8}
+      sx={{
+        position: 'fixed', insetInline: 0, bottom: 0, height: '40vh',
+        zIndex: (t) => t.zIndex.modal, bgcolor: 'grey.200',
+        display: { xs: 'flex', md: 'none' }, flexDirection: 'column',
+        px: 0.5, py: 1, gap: 0.75,
+      }}
+    >
+      {KB_ROWS.map((row, i) => (
+        <Stack key={i} direction="row" spacing={0.5} sx={{ flex: 1, px: i === 1 ? 1.5 : 0 }}>
+          {row.map((ch) => (
+            <Button key={ch} onMouseDown={hold} onClick={() => onKey(ch)} sx={keySx}>{ch}</Button>
+          ))}
+        </Stack>
+      ))}
+      <Stack direction="row" spacing={0.5} sx={{ flex: 1 }}>
+        <Button onMouseDown={hold} onClick={onClose} aria-label="סגירת המקלדת" sx={{ ...keySx, flex: 1.4, bgcolor: 'grey.400' }}>
+          <KeyboardHideRoundedIcon />
+        </Button>
+        <Button onMouseDown={hold} onClick={() => onKey(' ')} sx={{ ...keySx, flex: 4 }}>רווח</Button>
+        <Button onMouseDown={hold} onClick={onBackspace} aria-label="מחיקה" sx={{ ...keySx, flex: 1.4, bgcolor: 'grey.400' }}>
+          <BackspaceRoundedIcon className="dir-icon" />
+        </Button>
+      </Stack>
+    </Paper>
+    </Portal>
+  );
+}
+
 /* ---------- the AI chat / answer panel ---------- */
 /** Alfi's opening line on a fresh question. No gendered forms — Ministry rule. */
 const KICKOFF: [string, string][] = [
@@ -707,9 +760,11 @@ const hintNode = (body: ReactNode) => (
   </Stack>
 );
 
-function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, started, canAsk }: { q: Question; qIndex: number; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean;
+function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, started, canAsk, onKeyboard }: { q: Question; qIndex: number; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean;
   // a בוחן is a test: there is nobody to ask, so the button never renders
-  canAsk?: boolean }) {
+  canAsk?: boolean;
+  // the page shrinks while the on-screen keyboard is up
+  onKeyboard?: (open: boolean) => void }) {
   // re-entering a solved question replays the conversation instead of an empty box.
   // questions that were already solved before this session have no saved text — show the solution itself.
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
@@ -744,11 +799,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [qrOpen, setQrOpen] = useState(false);
   const [asked, setAsked] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [kbOpen, setKbOpen] = useState(false);
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const showKeyboard = (open: boolean) => { setKbOpen(open); onKeyboard?.(open); };
 
   useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
   // walking back into a question that was already solved gets a celebration too
@@ -893,6 +951,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             inputRef={inputRef}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
+            onFocus={() => { if (phone) showKeyboard(true); }}
             placeholder="כתוב כאן את התשובה שלך…"
             inputProps={{ 'aria-label': 'הפתרון שלי' }}
             disabled={thinking}
@@ -967,6 +1026,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       </>}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
+      {kbOpen && (
+        <PhoneKeyboard
+          onKey={(ch) => insertAtCursor(ch)}
+          onBackspace={() => setDraft((d) => d.slice(0, -1))}
+          onClose={() => { showKeyboard(false); inputRef.current?.blur(); }}
+        />
+      )}
+
       {/* the plus: the two other ways to answer, from the bottom of the screen */}
       <Drawer
         anchor="bottom" open={moreOpen} onClose={() => setMoreOpen(false)}
@@ -1002,6 +1069,8 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
   // splits in two: the question on top, the answer under it, each scrolling on its
   // own. Unpinning gives the old single column back.
   const [pinned, setPinned] = useState(true);
+  // the on-screen keyboard eats the bottom 40% — the page lives above it
+  const [kbOpen, setKbOpen] = useState(false);
   useEffect(() => { setPinned(true); }, [index]);
 
   const header = (
@@ -1061,7 +1130,7 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
     </Stack>
   );
 
-  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} />;
+  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={setKbOpen} />;
 
   // unpinned: the old single column, the whole page scrolls as one
   if (!pinned) {
@@ -1079,7 +1148,7 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
 
   // pinned: the screen splits down the middle, each half scrolls on its own
   return (
-    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? '40vh' : 0 }}>
       {/* the question takes the height it needs, and never more than half the screen */}
       <Paper
         elevation={2}
