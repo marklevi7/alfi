@@ -23,6 +23,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Fab from '@mui/material/Fab';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import QuestionMarkRoundedIcon from '@mui/icons-material/QuestionMarkRounded';
@@ -367,6 +368,18 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
   const [confirmLogout, setConfirmLogout] = useState(false);
   // the header lifts off the page once content starts sliding under it
   const [scrolled, setScrolled] = useState(false);
+  // A phone scrolls the page itself: a scrolling box inside a fixed-height box
+  // fights the browser's own gesture and drops momentum. Desktop keeps the box,
+  // because the split view has to bound itself to the window.
+  const phone = useMediaQuery(theme.breakpoints.down('md'));
+  useEffect(() => {
+    if (!phone) return;
+    const onScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [phone]);
+  // every screen opens at its top
+  useEffect(() => { window.scrollTo(0, 0); }, [active, title]);
   return (
     <Box
       sx={{
@@ -379,7 +392,11 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
     >
       <Paper
         elevation={3}
-        sx={{ width: '100%', maxWidth: 1200, height: { xs: minH, md: `calc(${minH} - 64px)` }, borderRadius: { xs: 0, md: 4 }, overflow: 'hidden' }}
+        sx={{
+          width: '100%', maxWidth: 1200,
+          height: { xs: 'auto', md: `calc(${minH} - 64px)` }, minHeight: { xs: minH, md: 'auto' },
+          borderRadius: { xs: 0, md: 4 }, overflow: { xs: 'visible', md: 'hidden' },
+        }}
       >
         <Grid container sx={{ height: '100%' }}>
           {/* Sidebar — first in RTL = right */}
@@ -462,13 +479,13 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
           </Grid>
 
           {/* Main */}
-          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: '100%' }}>
+          <Grid item xs={12} md={9} lg={9} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, maxHeight: { xs: 'none', md: '100%' } }}>
             {/* Full-bleed background layer (covers header + content, no hard edges) */}
             {bgLayer}
             {/* Mobile top bar */}
             <Stack direction="row" justifyContent="space-between" alignItems="center"
               spacing={1.5}
-              sx={{ position: 'relative', zIndex: 2, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, ...liftSx(scrolled && !title) }}>
+              sx={{ position: { xs: 'sticky', md: 'relative' }, top: 0, zIndex: 2, display: { xs: 'flex', md: 'none' }, px: 2.5, py: 1.5, bgcolor: 'background.paper', ...liftSx(scrolled && !title) }}>
               {mobileBack ? (
                 <>
                   <IconButton aria-label="חזרה" onClick={mobileBack} sx={{ flexShrink: 0 }}>
@@ -519,8 +536,8 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
 
             {/* Scrollable content */}
             <Box
-              onScroll={(e) => setScrolled((e.target as HTMLElement).scrollTop > 0)}
-              sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}
+              onScroll={(e) => { if (!phone) setScrolled((e.target as HTMLElement).scrollTop > 0); }}
+              sx={{ position: 'relative', zIndex: 1, flex: 1, minHeight: 0, overflowY: { xs: 'visible', md: 'auto' }, display: 'flex', flexDirection: 'column' }}
             >
               {/* minHeight 0 lets a screen bound itself to the viewport instead of growing */}
               <Box sx={{ px: { xs: 2.5, md: 4 }, pb: { xs: 0, md: 3 }, pt: 0, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
