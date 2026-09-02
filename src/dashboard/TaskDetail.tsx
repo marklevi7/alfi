@@ -685,6 +685,7 @@ function PhoneKeyboard({ onKey, onBackspace, onClose }: { onKey: (ch: string) =>
     <Portal>
     <Paper
       square elevation={8}
+      data-keyboard
       sx={{
         position: 'fixed', insetInline: 0, bottom: 0, height: '40vh',
         zIndex: (t) => t.zIndex.modal, bgcolor: 'grey.200',
@@ -808,6 +809,19 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 
   const showKeyboard = (open: boolean) => { setKbOpen(open); onKeyboard?.(open); };
 
+  // a tap anywhere but the field or the keys puts the keyboard away
+  useEffect(() => {
+    if (!kbOpen) return;
+    const away = (e: PointerEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('[data-keyboard]') || t === inputRef.current) return;
+      showKeyboard(false);
+      inputRef.current?.blur();
+    };
+    document.addEventListener('pointerdown', away);
+    return () => document.removeEventListener('pointerdown', away);
+  });
+
   useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
   // walking back into a question that was already solved gets a celebration too
   useEffect(() => {
@@ -872,8 +886,102 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     }, 1400);
   };
 
+  // the answer box: the field on top, the tools and the two actions under it
+  const composer = (
+    <>
+    {/* One box holds everything: the answer on top, the tools and the two actions
+        along the bottom. The keypad opens beside it. */}
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
+      <Paper
+        variant="outlined"
+        sx={{
+          flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
+          borderColor: 'primary.main',
+          display: 'flex', flexDirection: 'column', gap: 1.5,
+        }}
+      >
+        <TextField
+          fullWidth multiline minRows={mathOpen ? 8 : 3} maxRows={phone ? 4 : undefined} value={draft}
+          inputRef={inputRef}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
+          onFocus={() => { if (phone) showKeyboard(true); }}
+          placeholder="כתוב כאן את התשובה שלך…"
+          inputProps={{ 'aria-label': 'הפתרון שלי' }}
+          disabled={thinking}
+          variant="standard"
+          InputProps={{ disableUnderline: true }}
+        />
+        <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
+          {/* a phone gets one line: the keypad and a plus on the start side */}
+          <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
+            {!phone && (
+              <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
+            )}
+            <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
+            {phone ? (
+              <IconButton
+                size="small" aria-label="עוד דרכים לענות"
+                onClick={() => setMoreOpen(true)}
+                sx={{ border: 1, borderColor: 'primary.main', color: 'primary.main', borderRadius: 1.5 }}
+              >
+                <AddRoundedIcon />
+              </IconButton>
+            ) : (
+              <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
+            )}
+          </Stack>
+          {/* and the two actions at the far end — icons only on a phone */}
+          <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
+            {canAsk && (
+              phone ? (
+                <IconButton
+                  aria-label="שאלה לאלפי" onClick={ask} disabled={thinking || !draft.trim()}
+                  sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', borderRadius: 1.5,
+                        '&:hover': { bgcolor: 'secondary.dark' },
+                        '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+                >
+                  <HelpRoundedIcon />
+                </IconButton>
+              ) : (
+                <Button
+                  size="small" variant="contained" color="secondary" disableElevation
+                  endIcon={<HelpRoundedIcon />}
+                  onClick={ask} disabled={thinking || !draft.trim()}
+                  sx={{ fontWeight: 800 }}
+                >
+                  שאלה לאלפי
+                </Button>
+              )
+            )}
+            {phone ? (
+              <IconButton
+                aria-label="שליחת התשובה" onClick={send} disabled={thinking || !draft.trim()}
+                sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1.5,
+                      '&:hover': { bgcolor: 'primary.dark' },
+                      '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+              >
+                <SendRoundedIcon className="dir-icon" />
+              </IconButton>
+            ) : (
+              <Button
+                size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
+                endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
+                sx={{ fontWeight: 800 }}
+              >
+                {thinking ? 'שולח…' : 'שלח תשובה'}
+              </Button>
+            )}
+          </Stack>
+        </Stack>
+      </Paper>
+      {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
+    </Stack>
+    </>
+  );
+
   return (
-    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
+    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
       {confetti && <Confetti />}
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.25 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
@@ -920,7 +1028,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         </Stack>
       )}
 
-      <Stack spacing={1.5} sx={{ mb: msgs.length || thinking ? 2 : 0 }}>
+      <Stack spacing={1.5} sx={{ flex: 1, minHeight: 0, mb: msgs.length || thinking ? 2 : 0 }}>
         {msgs.map((m, i) => <Bubble key={i} from={m.from} pose={m.pose}>{m.node}</Bubble>)}
         {thinking && (
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
@@ -934,96 +1042,24 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         <Box ref={endRef} />
       </Stack>
 
-      {!locked && <>
-      {/* One box holds everything: the answer on top, the tools and the two actions
-          along the bottom. The keypad opens beside it. */}
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
-        <Paper
-          variant="outlined"
-          sx={{
-            flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
-            borderColor: 'primary.main',
-            display: 'flex', flexDirection: 'column', gap: 1.5,
-          }}
-        >
-          <TextField
-            fullWidth multiline minRows={mathOpen ? 8 : 3} value={draft}
-            inputRef={inputRef}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
-            onFocus={() => { if (phone) showKeyboard(true); }}
-            placeholder="כתוב כאן את התשובה שלך…"
-            inputProps={{ 'aria-label': 'הפתרון שלי' }}
-            disabled={thinking}
-            variant="standard"
-            InputProps={{ disableUnderline: true }}
-          />
-          <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
-            {/* a phone gets one line: the keypad and a plus on the start side */}
-            <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
-              {!phone && (
-                <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
-              )}
-              <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
-              {phone ? (
-                <IconButton
-                  size="small" aria-label="עוד דרכים לענות"
-                  onClick={() => setMoreOpen(true)}
-                  sx={{ border: 1, borderColor: 'primary.main', color: 'primary.main', borderRadius: 1.5 }}
-                >
-                  <AddRoundedIcon />
-                </IconButton>
-              ) : (
-                <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
-              )}
-            </Stack>
-            {/* and the two actions at the far end — icons only on a phone */}
-            <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
-              {canAsk && (
-                phone ? (
-                  <IconButton
-                    aria-label="שאלה לאלפי" onClick={ask} disabled={thinking || !draft.trim()}
-                    sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', borderRadius: 1.5,
-                          '&:hover': { bgcolor: 'secondary.dark' },
-                          '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
-                  >
-                    <HelpRoundedIcon />
-                  </IconButton>
-                ) : (
-                  <Button
-                    size="small" variant="contained" color="secondary" disableElevation
-                    endIcon={<HelpRoundedIcon />}
-                    onClick={ask} disabled={thinking || !draft.trim()}
-                    sx={{ fontWeight: 800 }}
-                  >
-                    שאלה לאלפי
-                  </Button>
-                )
-              )}
-              {phone ? (
-                <IconButton
-                  aria-label="שליחת התשובה" onClick={send} disabled={thinking || !draft.trim()}
-                  sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1.5,
-                        '&:hover': { bgcolor: 'primary.dark' },
-                        '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
-                >
-                  <SendRoundedIcon className="dir-icon" />
-                </IconButton>
-              ) : (
-                <Button
-                  size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
-                  endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
-                  sx={{ fontWeight: 800 }}
-                >
-                  {thinking ? 'שולח…' : 'שלח תשובה'}
-                </Button>
-              )}
-            </Stack>
-          </Stack>
-        </Paper>
-        {mathOpen && <MathPad onClose={() => setMathOpen(false)} onPick={insertAtCursor} />}
-      </Stack>
-      </>}
+      {!locked && (
+        phone && kbOpen ? (
+          /* while the keyboard is up the box rides on top of it, buttons always in view */
+          <Portal>
+            <Box
+              data-keyboard
+              sx={{
+                position: 'fixed', insetInline: 0, bottom: '40vh',
+                zIndex: (t) => t.zIndex.modal,
+                bgcolor: 'background.default', px: 2.5, pt: 1.5, pb: 1.5,
+                boxShadow: 8,
+              }}
+            >
+              {composer}
+            </Box>
+          </Portal>
+        ) : composer
+      )}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
       {kbOpen && (
@@ -1059,18 +1095,19 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk }: {
+function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk, kbOpen, onKeyboard }: {
   q: Question; index: number; total: number; solved: boolean; started: boolean; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; savedAnswer?: string; canAsk?: boolean;
   // points are a בוחן thing — תרגול is never scored, anywhere
   showPoints?: boolean;
+  // the on-screen keyboard eats the bottom 40% — the page lives above it
+  kbOpen?: boolean; onKeyboard?: (open: boolean) => void;
 }) {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
   // Students asked to keep the question in sight while they answer, so the screen
   // splits in two: the question on top, the answer under it, each scrolling on its
   // own. Unpinning gives the old single column back.
   const [pinned, setPinned] = useState(true);
-  // the on-screen keyboard eats the bottom 40% — the page lives above it
-  const [kbOpen, setKbOpen] = useState(false);
+
   useEffect(() => { setPinned(true); }, [index]);
 
   const header = (
@@ -1130,7 +1167,7 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
     </Stack>
   );
 
-  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={setKbOpen} />;
+  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={onKeyboard} />;
 
   // unpinned: the old single column, the whole page scrolls as one
   if (!pinned) {
@@ -1148,13 +1185,13 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
 
   // pinned: the screen splits down the middle, each half scrolls on its own
   return (
-    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? '40vh' : 0 }}>
+    <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2, pb: kbOpen ? 'calc(40vh + 168px)' : 0 }}>
       {/* the question takes the height it needs, and never more than half the screen */}
       <Paper
         elevation={2}
         sx={{
           borderRadius: 3, px: { xs: 3, md: 4.5 }, py: { xs: 2.5, md: 3 },
-          flexShrink: 0, maxHeight: '50%', minHeight: 0, overflowY: 'auto',
+          flexShrink: 0, maxHeight: kbOpen ? '45%' : '50%', minHeight: 0, overflowY: 'auto',
         }}
       >
         {header}
@@ -1164,7 +1201,8 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
       {/* the answer takes whatever is left */}
       <Box sx={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 1 }}>
         {chat}
-        {nextButton}
+        {/* while the student is typing there is no room for it, and no reason */}
+        {!kbOpen && nextButton}
       </Box>
     </Box>
   );
@@ -1262,6 +1300,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const done = solved.size;
   // coming back into a fully finished task is a celebration too — confetti on entry
   const [entryConfetti, setEntryConfetti] = useState(done === questions.length);
+  const [kbOpen, setKbOpen] = useState(false);
   useEffect(() => {
     if (!entryConfetti) return;
     const id = window.setTimeout(() => setEntryConfetti(false), 1800);
@@ -1289,6 +1328,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       <Shell
         active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}
         mobileHeader={<QuestProgress total={questions.length} solved={solved} started={started} current={openQ} onPick={setOpenQ} hideCount />}
+        hideMobileNav={kbOpen}
         headerAction={
           /* the 50/50 split needs every pixel, so the question strip sits in the header */
           <Stack direction="row" alignItems="center" spacing={2} sx={{ minWidth: 0 }}>
@@ -1313,6 +1353,8 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           savedAnswer={answers[openQ]}
           showPoints={showPoints}
           canAsk={alfi}
+          kbOpen={kbOpen}
+          onKeyboard={setKbOpen}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
       </Shell>

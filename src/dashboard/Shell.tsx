@@ -346,13 +346,15 @@ function AlfiMobileButton() {
   );
 }
 
-export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100dvh', bgLayer, alfi = false, mobileBack, mobileHeader, headerAction }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
+export function Shell({ active, title, children, hideSidebarRobot = false, minH = '100dvh', bgLayer, alfi = false, mobileBack, mobileHeader, headerAction, hideMobileNav = false }: { active: Screen; title: string; children: ReactNode; hideSidebarRobot?: boolean; minH?: string; bgLayer?: ReactNode; alfi?: boolean;
   // inner screens (a task or a test) show a plain back arrow on a phone instead of the wordmark
   mobileBack?: () => void;
   // sits in the header strip on desktop, inline with the sign-out button
   // rides in the phone's top bar beside the back arrow, where there is room to spare
   mobileHeader?: ReactNode;
-  headerAction?: ReactNode }) {
+  headerAction?: ReactNode;
+  // the on-screen keyboard takes the bottom of the screen; the nav steps aside
+  hideMobileNav?: boolean }) {
   const navTo = useNav();
   const theme = useTheme();
   // green (v6) theme → use the green robot; purple (v5) → the purple one.
@@ -531,7 +533,7 @@ export function Shell({ active, title, children, hideSidebarRobot = false, minH 
         elevation={3}
         // pinned to the bottom of the screen and above everything the page can draw;
         // a dialog still covers it
-        sx={{ display: { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.drawer + 1, borderRadius: 3, overflow: 'hidden' }}
+        sx={{ display: hideMobileNav ? 'none' : { xs: 'block', md: 'none' }, position: 'fixed', insetInline: '8px', bottom: '8px', zIndex: (t) => t.zIndex.drawer + 1, borderRadius: 3, overflow: 'hidden' }}
       >
         <BottomNavigation showLabels value={NAV.findIndex((n) => n.screen === active)} sx={{
           borderRadius: 3,
