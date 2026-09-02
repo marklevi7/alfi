@@ -807,6 +807,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  // the box wakes up when the field has the caret
+  const [focused, setFocused] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -919,7 +921,9 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         variant="outlined"
         sx={{
           flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
-          borderColor: 'primary.main',
+          // resting: a thin dark grey rule. Writing: a thicker green one.
+          border: focused ? 2 : 1,
+          borderColor: focused ? 'primary.main' : 'grey.600',
           display: 'flex', flexDirection: 'column', gap: 1.5,
         }}
       >
@@ -931,7 +935,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
           inputRef={inputRef}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
-          onFocus={() => { if (phone) showKeyboard(true); }}
+          onFocus={() => { setFocused(true); if (phone) showKeyboard(true); }}
+          onBlur={() => setFocused(false)}
           placeholder="כתוב כאן את התשובה שלך…"
           inputProps={{ 'aria-label': 'הפתרון שלי' }}
           disabled={thinking}
