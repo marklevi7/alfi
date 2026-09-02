@@ -919,7 +919,10 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         }}
       >
         <TextField
-          fullWidth multiline minRows={mathOpen ? 8 : 3} value={draft}
+          fullWidth multiline
+          // a phone starts at one line and grows from there; a desktop has room for three
+          minRows={mathOpen ? 8 : phone ? 1 : 3}
+          value={draft}
           inputRef={inputRef}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } }}
