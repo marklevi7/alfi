@@ -799,6 +799,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [mathOpen, setMathOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [asked, setAsked] = useState(0);
+  // nothing written yet — the two actions read as hollow rather than merely grey
+  const idle = thinking || !draft.trim();
   const [moreOpen, setMoreOpen] = useState(false);
   const [kbOpen, setKbOpen] = useState(false);
   const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
@@ -962,18 +964,18 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             {canAsk && (
               phone ? (
                 <IconButton
-                  aria-label="שאלה לאלפי" onClick={ask} disabled={thinking || !draft.trim()}
+                  aria-label="שאלה לאלפי" onClick={ask} disabled={idle}
                   sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', borderRadius: 1.5,
                         '&:hover': { bgcolor: 'secondary.dark' },
-                        '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+                        '&.Mui-disabled': { bgcolor: 'transparent', color: 'text.disabled', border: 1, borderColor: 'action.disabled' } }}
                 >
                   <HelpRoundedIcon />
                 </IconButton>
               ) : (
                 <Button
-                  size="small" variant="contained" color="secondary" disableElevation
+                  size="small" variant={idle ? 'outlined' : 'contained'} color="secondary" disableElevation
                   endIcon={<HelpRoundedIcon />}
-                  onClick={ask} disabled={thinking || !draft.trim()}
+                  onClick={ask} disabled={idle}
                   sx={{ fontWeight: 800 }}
                 >
                   שאלה לאלפי
@@ -982,16 +984,16 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             )}
             {phone ? (
               <IconButton
-                aria-label="שליחת התשובה" onClick={send} disabled={thinking || !draft.trim()}
+                aria-label="שליחת התשובה" onClick={send} disabled={idle}
                 sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1.5,
                       '&:hover': { bgcolor: 'primary.dark' },
-                      '&.Mui-disabled': { bgcolor: 'action.disabledBackground', color: 'action.disabled' } }}
+                      '&.Mui-disabled': { bgcolor: 'transparent', color: 'text.disabled', border: 1, borderColor: 'action.disabled' } }}
               >
                 <SendRoundedIcon className="dir-icon" />
               </IconButton>
             ) : (
               <Button
-                size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
+                size="small" variant={idle ? 'outlined' : 'contained'} onClick={send} disabled={idle}
                 endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
                 sx={{ fontWeight: 800 }}
               >
