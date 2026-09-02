@@ -822,7 +822,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     return () => document.removeEventListener('pointerdown', away);
   });
 
-  useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
+  useEffect(() => { if (!phone) inputRef.current?.focus({ preventScroll: true }); }, [phone]);
   // walking back into a question that was already solved gets a celebration too
   useEffect(() => {
     if (!locked) return;
@@ -981,7 +981,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   );
 
   return (
-    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 }, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
       {confetti && <Confetti />}
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.25 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
@@ -1028,7 +1028,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         </Stack>
       )}
 
-      <Stack spacing={1.5} sx={{ flex: 1, minHeight: 0, mb: msgs.length || thinking ? 2 : 0 }}>
+      <Stack spacing={1.5} sx={{ mb: msgs.length || thinking ? 2 : 0 }}>
         {msgs.map((m, i) => <Bubble key={i} from={m.from} pose={m.pose}>{m.node}</Bubble>)}
         {thinking && (
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
@@ -1107,6 +1107,8 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
   // splits in two: the question on top, the answer under it, each scrolling on its
   // own. Unpinning gives the old single column back.
   const [pinned, setPinned] = useState(true);
+  // splitting the screen is a desktop idea; a phone is too short for it
+  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
 
   useEffect(() => { setPinned(true); }, [index]);
 
@@ -1123,15 +1125,18 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
         )}
         {showPoints && <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>{q.points} נק׳</Typography>}
         <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>שאלה {index + 1} מתוך {total}</Typography>
-        <Button
-          size="small"
-          color={pinned ? 'primary' : 'inherit'}
-          onClick={() => setPinned((v) => !v)}
-          startIcon={pinned ? <PushPinRoundedIcon /> : <PushPinOutlinedIcon />}
-          sx={{ fontWeight: 700, ...(pinned ? {} : { color: 'text.secondary' }) }}
-        >
-          הצמדת השאלה
-        </Button>
+        {/* pinning splits the screen — a desktop idea, so the control lives there */}
+        {!phone && (
+          <Button
+            size="small"
+            color={pinned ? 'primary' : 'inherit'}
+            onClick={() => setPinned((v) => !v)}
+            startIcon={pinned ? <PushPinRoundedIcon /> : <PushPinOutlinedIcon />}
+            sx={{ fontWeight: 700, ...(pinned ? {} : { color: 'text.secondary' }) }}
+          >
+            הצמדת השאלה
+          </Button>
+        )}
       </Stack>
     </Stack>
   );
@@ -1169,8 +1174,8 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
 
   const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={onKeyboard} />;
 
-  // unpinned: the old single column, the whole page scrolls as one
-  if (!pinned) {
+  // one column: the whole page scrolls as one. Always the case on a phone.
+  if (!pinned || phone) {
     return (
       <>
         <Paper elevation={2} sx={{ borderRadius: 3, p: { xs: 3, md: 4.5 } }}>
@@ -1178,7 +1183,9 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
           {questionBody}
         </Paper>
         {chat}
-        {nextButton}
+        {!kbOpen && nextButton}
+        {/* room for the answer box and the keyboard sitting on top of it */}
+        {kbOpen && <Box sx={{ height: 'calc(40vh + 168px)', flexShrink: 0 }} />}
       </>
     );
   }
