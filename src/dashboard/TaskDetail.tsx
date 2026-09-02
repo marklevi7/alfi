@@ -665,6 +665,8 @@ const KICKOFF: [string, string][] = [
   ['נפתור את זה יחד.', 'כל טעות בדרך היא חלק מהפתרון.'],
   ['אפשר להתחיל!', 'תמיד אפשר לשאול אותי באמצע.'],
 ];
+/** A בוחן has no chat, so Alfi says so up front. Placeholder until Nerit's copy arrives. */
+const QUIZ_INTRO: [string, string] = ['בהצלחה! 💪', 'בבוחן אני לא עונה על שאלות — כותבים את התשובה ושולחים.'];
 
 /** What Alfi says to a question. Nothing here judges the answer — that is the point. */
 const ALFI_ANSWERS = [
@@ -711,6 +713,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
   // one line per question, always the same one for the same question
   const kickoff = qIndex % KICKOFF.length;
+  const intro = canAsk ? KICKOFF[kickoff] : QUIZ_INTRO;
   const [msgs, setMsgs] = useState<Msg[]>(() => {
     if (shown) return [{ from: 'student', node: <NumberedAnswer text={shown} /> }, { from: 'ai', node: approvedNode }];
     // a long question carries its whole history: every attempt and every correction
@@ -843,8 +846,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               },
             }}
           >
-            <Typography>{KICKOFF[kickoff][0]}</Typography>
-            <Typography color="text.secondary">{KICKOFF[kickoff][1]}</Typography>
+            <Typography>{intro[0]}</Typography>
+            <Typography color="text.secondary">{intro[1]}</Typography>
           </Box>
         </Stack>
       )}
