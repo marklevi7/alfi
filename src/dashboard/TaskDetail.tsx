@@ -642,7 +642,7 @@ function NumberedAnswer({ text }: { text: string }) {
 }
 
 /* ---------- chat bubble ---------- */
-function Bubble({ from, children, pose = 'point' }: { from: 'student' | 'ai'; children: ReactNode; pose?: 'point' | 'ok' }) {
+function Bubble({ from, children, pose = 'smile' }: { from: 'student' | 'ai'; children: ReactNode; pose?: 'smile' | 'ok' }) {
   const isAi = from === 'ai';
   return (
     // RTL: the student's message sits on the RIGHT (inline start), Alfi answers from the LEFT.
@@ -734,7 +734,7 @@ const ALFI_ANSWERS = [
   'זה מקום נפוץ להיתקע בו. מה הדבר האחרון שהיה ברור?',
 ];
 
-type Msg = { from: 'student' | 'ai'; node: ReactNode; pose?: 'point' | 'ok' };
+type Msg = { from: 'student' | 'ai'; node: ReactNode; pose?: 'smile' | 'ok' };
 const approvedNode = (
   <Stack direction="row" spacing={1} alignItems="center">
     <CheckCircleTwoToneIcon sx={{ color: 'primary.main' }} />
@@ -1036,7 +1036,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         /* every new question opens with Alfi kicking it off */
         <Stack direction="row-reverse" spacing={1.5} alignItems="flex-start" justifyContent="flex-start" sx={{ mb: 2 }}>
           {/* a bigger circle, the art itself unchanged, on the logo's own gradient */}
-          <AlfiAvatar pose="point" />
+          <AlfiAvatar pose="smile" />
           <Box
             sx={{
               position: 'relative', bgcolor: 'grey.100', color: 'text.primary',
@@ -1062,7 +1062,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               <LinearProgress sx={{ borderRadius: 4, mb: 0.5 }} />
               <Typography variant="caption" color="text.secondary">מעבד תשובה… עוד כמה שניות</Typography>
             </Box>
-            <AlfiAvatar pose="point" />
+            <AlfiAvatar pose="smile" />
           </Stack>
         )}
         <Box ref={endRef} />

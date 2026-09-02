@@ -129,6 +129,8 @@ function AppMenu({ onLogout }: { onLogout: () => void }) {
 export const ALFI_POSE = {
   hi:    { src: 'alfi-hi.png',    scale: 1.2,  origin: '60% 50%' },
   point: { src: 'alfi-point.png', scale: 1.05, origin: '50% 42%' },
+  // head only, so the whole of it is shown rather than cropped to fill
+  smile: { src: 'alfi-smile.png', scale: 1.25, origin: '50% 50%', fit: 'contain' },
   ok:    { src: 'alfi-ok.png',    scale: 1.05, origin: '50% 42%' },
 } as const;
 
@@ -148,7 +150,10 @@ export function AlfiAvatar({ size = 40, pose }: { size?: number; pose?: keyof ty
           width: ALFI_SIZE, height: ALFI_SIZE, flexShrink: 0,
           // no stop percentages: the RTL plugin rewrites them and breaks the ramp
           background: `linear-gradient(to bottom, ${green[500]}, ${lightGreen[500]})`,
-          '& .MuiAvatar-img': { transform: `scale(${p.scale * ALFI_ART})`, transformOrigin: p.origin },
+          '& .MuiAvatar-img': {
+            transform: `scale(${p.scale * ALFI_ART})`, transformOrigin: p.origin,
+            ...('fit' in p ? { objectFit: p.fit } : {}),
+          },
         }}
       />
     );

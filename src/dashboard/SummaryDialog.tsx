@@ -110,7 +110,7 @@ function Turn({ turn }: { turn: SummaryTurn }) {
         )}
       </Box>
       {/* RTL: Alfi answers from the far left, after his bubble */}
-      {!mine && <AlfiAvatar pose="point" />}
+      {!mine && <AlfiAvatar pose="smile" />}
     </Stack>
   );
 }
