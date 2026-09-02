@@ -830,7 +830,12 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     const id = window.setTimeout(() => setConfetti(false), 1800);
     return () => window.clearTimeout(id);
   }, [locked]);
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' }); }, [msgs.length, thinking]);
+  // follow a new message, but never on the way in — the page opens at the top
+  const firstPaint = useRef(true);
+  useEffect(() => {
+    if (firstPaint.current) { firstPaint.current = false; return; }
+    endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' });
+  }, [msgs.length, thinking]);
   // typing pushes the box down; follow it so the student always sees what they wrote
   useEffect(() => {
     if (!kbOpen) return;

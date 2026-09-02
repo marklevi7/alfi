@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import LinearProgress from '@mui/material/LinearProgress';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { alpha, keyframes, useTheme } from '@mui/material/styles';
-import { green, amber, red, grey } from '@mui/material/colors';
+import { green, amber, red, grey, blue } from '@mui/material/colors';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
@@ -90,12 +90,12 @@ function Turn({ turn }: { turn: SummaryTurn }) {
   const mine = turn.from === 'student';
   return (
     <Stack direction="row" spacing={1.25} alignItems="flex-start" justifyContent={mine ? 'flex-start' : 'flex-end'}>
-      {!mine && <AlfiAvatar pose="point" />}
       <Box
         sx={{
           maxWidth: '85%', px: 2, py: 1.25, borderRadius: 3,
+          // the same two voices as the question page: the student in blue, Alfi on grey
           ...(mine
-            ? { bgcolor: 'primary.main', color: 'primary.contrastText', borderStartStartRadius: 4 }
+            ? { bgcolor: blue[700], color: 'common.white', borderStartStartRadius: 4 }
             : { bgcolor: 'grey.100', borderStartEndRadius: 4 }),
         }}
       >
@@ -109,6 +109,8 @@ function Turn({ turn }: { turn: SummaryTurn }) {
           </Stack>
         )}
       </Box>
+      {/* RTL: Alfi answers from the far left, after his bubble */}
+      {!mine && <AlfiAvatar pose="point" />}
     </Stack>
   );
 }
