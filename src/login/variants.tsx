@@ -287,7 +287,7 @@ function V5a() {
   return (
     <Box sx={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, p: { xs: 2, md: 8 }, bgcolor: indigo[50] }}>
       {/* Alfi greets from the same spot the placeholder oval used to hold */}
-      <AlfiImg src="alfi-hi.png" sx={{ position: 'absolute', zIndex: 1, insetInlineEnd: { md: '12%' }, top: '50%', transform: 'translateY(-50%)', width: { md: 440 }, height: 'auto', display: { xs: 'none', md: 'block' } }} />
+      <AlfiImg src="alfi-point.png" sx={{ position: 'absolute', zIndex: 1, insetInlineEnd: { md: '12%' }, top: '50%', transform: 'translateY(-50%)', width: { md: 440 }, height: 'auto', display: { xs: 'none', md: 'block' } }} />
       {SHOW_BOT && (
         <AlfiImg src="alfi-green-head.png" sx={{ position: 'absolute', insetInlineEnd: { md: '4%' }, bottom: 0, height: { md: '82%' }, width: 'auto', maxWidth: 'none', display: { xs: 'none', md: 'block' }, transform: 'translateX(-100px)' }} />
       )}
