@@ -703,7 +703,9 @@ const hintNode = (body: ReactNode) => (
   </Stack>
 );
 
-function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, started }: { q: Question; qIndex: number; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean }) {
+function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, started, canAsk }: { q: Question; qIndex: number; onSolved: (answer: string) => void; onStarted?: () => void; savedAnswer?: string; locked?: boolean; started?: boolean;
+  // a בוחן is a test: there is nobody to ask, so the button never renders
+  canAsk?: boolean }) {
   // re-entering a solved question replays the conversation instead of an empty box.
   // questions that were already solved before this session have no saved text — show the solution itself.
   const shown = savedAnswer ?? (locked ? q.solutionText : undefined);
@@ -893,6 +895,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
             </Stack>
             {/* and the two actions at the far end */}
             <Stack direction="row" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
+              {canAsk && (
               <Button
                 size="small" variant="contained" color="secondary" disableElevation
                 endIcon={<HelpRoundedIcon />}
@@ -901,6 +904,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               >
                 שאלה לאלפי
               </Button>
+              )}
               <Button
                 size="small" variant="contained" onClick={send} disabled={thinking || !draft.trim()}
                 endIcon={!thinking && <SendRoundedIcon className="dir-icon" />}
@@ -922,8 +926,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer, showPoints }: {
-  q: Question; index: number; total: number; solved: boolean; started: boolean; solvedSet: Set<number>; startedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string;
+function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet, onBack, onSolved, onStarted, onNext, onPick, savedAnswer, showPoints, canAsk }: {
+  q: Question; index: number; total: number; solved: boolean; started: boolean; solvedSet: Set<number>; startedSet: Set<number>; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; onPick: (i: number) => void; savedAnswer?: string; canAsk?: boolean;
   // points are a בוחן thing — תרגול is never scored, anywhere
   showPoints?: boolean;
 }) {
@@ -991,7 +995,7 @@ function QuestionPage({ q, index, total, solved, started, solvedSet, startedSet,
     </Stack>
   );
 
-  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} />;
+  const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} />;
 
   // unpinned: the old single column, the whole page scrolls as one
   if (!pinned) {
@@ -1182,6 +1186,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           onStarted={() => setStarted((s) => new Set(s).add(openQ))}
           savedAnswer={answers[openQ]}
           showPoints={showPoints}
+          canAsk={alfi}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
       </Shell>
