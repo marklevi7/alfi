@@ -1,0 +1,18 @@
+'Log files:
+/Users/marklevinson/My Drive (marklevi7@gmail.com)/Active Projects/Alfi AI/Claude Alfi/app/.npmcache/_logs/2026-06-21T08_20_26_661Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: alfi@0.0.0
+Found: @mui/material@5.14.0
+node_modules/@mui/material
+  @mui/material@"5.14.0" from the root project
+
+Could not resolve dependency:
+peer @mui/material@"^7.3.0 || ^9.0.0" from @mui/x-charts-pro@9.6.0
+node_modules/@mui/x-charts-pro
+  @mui/x-charts-pro@"*" from the root project
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.
