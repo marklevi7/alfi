@@ -916,6 +916,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 1 }}>
       <Paper
         ref={boxRef}
+        // taps inside the box belong to the box — they must not put the keyboard away
+        data-keyboard
         variant="outlined"
         sx={{
           flex: 1, minWidth: 0, borderRadius: 3, p: 1.5,
@@ -927,8 +929,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       >
         <TextField
           fullWidth multiline
-          // a phone starts at one line and grows from there; a desktop has room for three
-          minRows={mathOpen ? 8 : phone ? 1 : 3}
+          // one line to start with, growing as the answer does
+          minRows={mathOpen ? 8 : 1}
           value={draft}
           inputRef={inputRef}
           onChange={(e) => setDraft(e.target.value)}
