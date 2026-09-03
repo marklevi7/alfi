@@ -805,12 +805,32 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  // a callback ref, so the measurement runs the moment the footer mounts
+  const [footerEl, setFooterEl] = useState<HTMLDivElement | null>(null);
+  const [footerH, setFooterH] = useState(0);
   // the box wakes up when the field has the caret
   const [focused, setFocused] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const showKeyboard = (open: boolean) => { setKbOpen(open); onKeyboard?.(open); };
+
+  // the footer rises by the height of the keyboard, so the page rides up with it
+  // and whatever was at the bottom of the thread stays at the bottom of the thread
+  useEffect(() => {
+    if (!kbOpen) return;
+    const id = window.setTimeout(() => window.scrollBy(0, window.innerHeight * 0.4), 0);
+    return () => window.clearTimeout(id);
+  }, [kbOpen]);
+
+  // the footer floats, so the page reserves exactly its height and nothing more
+  useEffect(() => {
+    if (!footerEl) { setFooterH(0); return; }
+    const ro = new ResizeObserver(() => setFooterH(footerEl.offsetHeight));
+    ro.observe(footerEl);
+    setFooterH(footerEl.offsetHeight);
+    return () => ro.disconnect();
+  }, [footerEl]);
 
   // a tap anywhere but the field or the keys puts the keyboard away
   useEffect(() => {
@@ -840,19 +860,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' });
   }, [msgs.length, thinking]);
   // typing pushes the box down; follow it so the student always sees what they wrote
-  useEffect(() => {
-    if (!kbOpen) return;
-    // The field grows downwards, so the page follows it: the box's bottom edge
-    // stays parked just above the keyboard and the writing rises up the screen.
-    const id = window.setTimeout(() => {
-      const box = boxRef.current;
-      if (!box) return;
-      const keyboardTop = window.innerHeight * 0.6;   // the keyboard owns the bottom 40%
-      const over = box.getBoundingClientRect().bottom - keyboardTop + 12;
-      if (over > 0) window.scrollBy(0, over);
-    }, 0);
-    return () => window.clearTimeout(id);
-  }, [draft, kbOpen]);
+
 
   // symbols land where the cursor is, and the caret stays put so typing continues naturally
   const insertAtCursor = (sym: string) => {
@@ -1012,7 +1020,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   );
 
   return (
-    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 } }}>
+    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 }, pb: { xs: 0, md: 2.5 } }}>
       {confetti && <Confetti />}
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.25 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
@@ -1073,7 +1081,28 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         <Box ref={endRef} />
       </Stack>
 
-      {!locked && composer}
+      {!locked && (
+        phone ? (
+          <>
+            {/* the footer is out of the flow, so leave its height behind */}
+            <Box sx={{ height: kbOpen ? `calc(${footerH}px + 40vh)` : footerH, flexShrink: 0 }} />
+            <Portal>
+              <Box
+                data-keyboard
+                ref={setFooterEl}
+                sx={{
+                  position: 'fixed', insetInline: 0, bottom: kbOpen ? '40vh' : 0,
+                  zIndex: (t) => t.zIndex.modal,
+                  bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider',
+                  px: 1.5, py: 1,
+                }}
+              >
+                {composer}
+              </Box>
+            </Portal>
+          </>
+        ) : composer
+      )}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
       {kbOpen && (
@@ -1109,13 +1138,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk, kbOpen, onKeyboard }: {
+function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk, onKeyboard }: {
   q: Question; index: number; total: number; solved: boolean; started: boolean; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; savedAnswer?: string; canAsk?: boolean;
   // points are a בוחן thing — תרגול is never scored, anywhere
   showPoints?: boolean;
   // the on-screen keyboard eats the bottom 40% — the page lives above it
-  kbOpen?: boolean; onKeyboard?: (open: boolean) => void;
+  onKeyboard?: (open: boolean) => void;
 }) {
+  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
 
   const header = (
@@ -1177,9 +1207,8 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
         {questionBody}
       </Paper>
       {chat}
-      {!kbOpen && nextButton}
-      {/* room to scroll the answer box clear of the keyboard */}
-      {kbOpen && <Box sx={{ height: '40vh', flexShrink: 0 }} />}
+      {/* a phone reads as a chat: no next-question button under the thread */}
+      {!phone && nextButton}
     </>
   );
 }
@@ -1276,7 +1305,6 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const done = solved.size;
   // coming back into a fully finished task is a celebration too — confetti on entry
   const [entryConfetti, setEntryConfetti] = useState(done === questions.length);
-  const [kbOpen, setKbOpen] = useState(false);
   useEffect(() => {
     if (!entryConfetti) return;
     const id = window.setTimeout(() => setEntryConfetti(false), 1800);
@@ -1304,7 +1332,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
       <Shell
         active="practice" title="" alfi={alfi} mobileBack={() => setOpenQ(null)}
         mobileHeader={<QuestProgress total={questions.length} solved={solved} started={started} current={openQ} onPick={setOpenQ} hideCount />}
-        hideMobileNav={kbOpen}
+        hideMobileNav
         headerAction={
           /* the 50/50 split needs every pixel, so the question strip sits in the header */
           <Stack direction="row" alignItems="center" spacing={2} sx={{ minWidth: 0 }}>
@@ -1329,8 +1357,6 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
           savedAnswer={answers[openQ]}
           showPoints={showPoints}
           canAsk={alfi}
-          kbOpen={kbOpen}
-          onKeyboard={setKbOpen}
           onNext={nx === null ? null : () => setOpenQ(nx)}
         />
       </Shell>
