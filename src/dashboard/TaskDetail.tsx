@@ -15,6 +15,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Portal from '@mui/material/Portal';
+import Fab from '@mui/material/Fab';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -34,6 +35,8 @@ import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import KeyboardHideRoundedIcon from '@mui/icons-material/KeyboardHideRounded';
 import BackspaceRoundedIcon from '@mui/icons-material/BackspaceRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
@@ -815,6 +818,16 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 
   const showKeyboard = (open: boolean) => { setKbOpen(open); onKeyboard?.(open); };
 
+  // near the end of the thread the pill sends you back to the question, and vice versa
+  const [atEnd, setAtEnd] = useState(false);
+  useEffect(() => {
+    if (!phone) return;
+    const check = () => setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - footerH - 48);
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    return () => window.removeEventListener('scroll', check);
+  }, [phone, footerH]);
+
   // the footer rises by the height of the keyboard, so the page rides up with it
   // and whatever was at the bottom of the thread stays at the bottom of the thread
   useEffect(() => {
@@ -857,7 +870,20 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const firstPaint = useRef(true);
   useEffect(() => {
     if (firstPaint.current) { firstPaint.current = false; return; }
-    endRef.current?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' });
+    // let the new bubble lay out first
+    const id = window.setTimeout(() => {
+      const el = endRef.current;
+      if (!el) return;
+      if (phone) {
+        // the box sits over the bottom of the screen — stop just above it
+        const covered = footerH + (kbOpen ? window.innerHeight * 0.4 : 0) + 12;
+        const below = el.getBoundingClientRect().bottom - (window.innerHeight - covered);
+        if (below > 0) window.scrollBy({ top: below, behavior: reduced() ? 'auto' : 'smooth' });
+      } else {
+        el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    }, 60);
+    return () => window.clearTimeout(id);
   }, [msgs.length, thinking]);
   // typing pushes the box down; follow it so the student always sees what they wrote
 
@@ -1097,6 +1123,15 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
                   px: 1.5, py: 1,
                 }}
               >
+                {/* one tap to the start of the question, or back to the last thing said */}
+                <Fab
+                  size="small" variant="extended" color="default"
+                  aria-label={atEnd ? 'לתחילת השאלה' : 'לסוף השיחה'}
+                  onClick={() => window.scrollTo({ top: atEnd ? 0 : document.documentElement.scrollHeight, behavior: 'smooth' })}
+                  sx={{ position: 'absolute', top: -22, insetInlineEnd: 16, minHeight: 0, height: 36, px: 1.5, bgcolor: 'background.paper' }}
+                >
+                  {atEnd ? <KeyboardArrowUpRoundedIcon /> : <KeyboardArrowDownRoundedIcon />}
+                </Fab>
                 {composer}
               </Box>
             </Portal>
