@@ -514,11 +514,6 @@ const cheer = keyframes`
   50%      { transform: scale(1.14); }
 `;
 // solved + more questions ahead → the next-question button nudges the student on
-const nudge = keyframes`
-  0%, 70%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-  78%           { transform: scale(1.07); }
-  85%           { transform: scale(1.02); }
-`;
 const railFill = keyframes`
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
@@ -835,18 +830,36 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     else window.scrollTo({ top: end ? document.documentElement.scrollHeight : 0, behavior: 'smooth' });
   };
 
+  // the desktop footer lines up with the column the panel lives in
+  const [col, setCol] = useState({ left: 0, width: 0 });
+  useEffect(() => {
+    if (phone) return;
+    const measure = () => {
+      const r = panelRef.current?.getBoundingClientRect();
+      if (r) setCol({ left: Math.round(r.left), width: Math.round(r.width) });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [phone]);
+
   // near the end of the thread the pill sends you back to the question, and vice versa
   const [atEnd, setAtEnd] = useState(false);
   useEffect(() => {
-    const el = scroller();
-    const target: HTMLElement | Window = el ?? window;
+    // the scroller is resolved on every check: on a desktop the panel mounts
+    // after this runs, and the page itself never scrolls
     const check = () => {
+      const el = scroller();
       if (el) setAtEnd(el.scrollTop + el.clientHeight >= el.scrollHeight - 48);
-      else setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - footerH - 48);
+      else if (document.documentElement.scrollHeight > window.innerHeight + 8) {
+        setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - footerH - 48);
+      } else setAtEnd(false);
     };
     check();
-    target.addEventListener('scroll', check, { passive: true });
-    return () => target.removeEventListener('scroll', check);
+    const id = window.setTimeout(check, 200);   // once the panel is on the page
+    // capture catches the scroll of whichever box is doing the scrolling
+    document.addEventListener('scroll', check, { capture: true, passive: true });
+    return () => { window.clearTimeout(id); document.removeEventListener('scroll', check, true); };
   }, [phone, footerH]);
 
   // one tap to the start of the question, or back to the last thing said
@@ -1140,12 +1153,6 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         <Box ref={endRef} />
       </Stack>
 
-      {!locked && !phone && (
-        <Portal>
-          <Box sx={{ position: 'fixed', bottom: 96, insetInlineEnd: 32, zIndex: (t) => t.zIndex.appBar }}>{jumpPill}</Box>
-        </Portal>
-      )}
-
       {!locked && (
         phone ? (
           <>
@@ -1167,7 +1174,28 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
               </Box>
             </Portal>
           </>
-        ) : composer
+        ) : (
+          <>
+            <Box sx={{ height: footerH, flexShrink: 0 }} />
+            <Portal>
+              <Box
+                ref={setFooterEl}
+                // raw style, not sx: these are measured pixels, not logical sides
+                style={{ left: col.left, width: col.width }}
+                sx={{
+                  // sits on the floor of the app card, not the browser window
+                  position: 'fixed', bottom: 32, zIndex: (t) => t.zIndex.appBar,
+                  bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider',
+                  borderEndStartRadius: 16, borderEndEndRadius: 16,
+                  px: 2.5, pt: 1.5, pb: 2,
+                }}
+              >
+                <Box sx={{ position: 'absolute', top: -14, insetInlineEnd: 36 }}>{jumpPill}</Box>
+                {composer}
+              </Box>
+            </Portal>
+          </>
+        )
       )}
 
       <QrDialog open={qrOpen} onClose={() => setQrOpen(false)} />
@@ -1204,14 +1232,13 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 }
 
 /* ---------- full question page ---------- */
-function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onStarted, onNext, savedAnswer, showPoints, canAsk, onKeyboard }: {
+function QuestionPage({ q, index, total, solved, started, onSolved, onStarted, savedAnswer, showPoints, canAsk, onKeyboard }: {
   q: Question; index: number; total: number; solved: boolean; started: boolean; onBack: () => void; onSolved: (answer: string) => void; onStarted: () => void; onNext: (() => void) | null; savedAnswer?: string; canAsk?: boolean;
   // points are a בוחן thing — תרגול is never scored, anywhere
   showPoints?: boolean;
   // the on-screen keyboard eats the bottom 40% — the page lives above it
   onKeyboard?: (open: boolean) => void;
 }) {
-  const phone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'));
   useEffect(() => { window.scrollTo({ top: 0 }); }, [index]);
 
   const header = (
@@ -1241,27 +1268,6 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
     </>
   );
 
-  const nextButton = (onNext || solved) && (
-    <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
-      {onNext
-        ? <Button
-            variant="contained"
-            onClick={onNext}
-            endIcon={<ArrowForwardRoundedIcon className="dir-icon" />}
-            sx={{
-              fontWeight: 800,
-              ...(solved && {
-                animation: `${nudge} 2.2s ease-in-out infinite`,
-                '&:hover': { animationPlayState: 'paused' },
-                '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
-              }),
-            }}
-          >
-            לשאלה הבאה
-          </Button>
-        : <Button variant="contained" onClick={onBack} sx={{ fontWeight: 800 }}>סיימת! חזרה לשאלות</Button>}
-    </Stack>
-  );
 
   const chat = <ChatPanel q={q} qIndex={index} onSolved={onSolved} onStarted={onStarted} savedAnswer={savedAnswer} locked={solved} started={started} canAsk={canAsk} onKeyboard={onKeyboard} />;
 
@@ -1273,8 +1279,7 @@ function QuestionPage({ q, index, total, solved, started, onBack, onSolved, onSt
         {questionBody}
       </Paper>
       {chat}
-      {/* a phone reads as a chat: no next-question button under the thread */}
-      {!phone && nextButton}
+      {/* the answer box is the last thing on the page — nothing sits under it */}
     </>
   );
 }
