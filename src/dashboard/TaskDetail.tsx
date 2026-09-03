@@ -808,6 +808,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   const [fileOpen, setFileOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   // a callback ref, so the measurement runs the moment the footer mounts
   const [footerEl, setFooterEl] = useState<HTMLDivElement | null>(null);
   const [footerH, setFooterH] = useState(0);
@@ -818,15 +819,47 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
 
   const showKeyboard = (open: boolean) => { setKbOpen(open); onKeyboard?.(open); };
 
+  // a phone scrolls the page; a desktop scrolls the box the page sits in
+  const scroller = () => {
+    let el: HTMLElement | null = panelRef.current;
+    while (el) {
+      const oy = window.getComputedStyle(el).overflowY;
+      if (oy === 'auto' || oy === 'scroll') return el;
+      el = el.parentElement;
+    }
+    return null;
+  };
+  const jumpTo = (end: boolean) => {
+    const el = scroller();
+    if (el) el.scrollTo({ top: end ? el.scrollHeight : 0, behavior: 'smooth' });
+    else window.scrollTo({ top: end ? document.documentElement.scrollHeight : 0, behavior: 'smooth' });
+  };
+
   // near the end of the thread the pill sends you back to the question, and vice versa
   const [atEnd, setAtEnd] = useState(false);
   useEffect(() => {
-    if (!phone) return;
-    const check = () => setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - footerH - 48);
+    const el = scroller();
+    const target: HTMLElement | Window = el ?? window;
+    const check = () => {
+      if (el) setAtEnd(el.scrollTop + el.clientHeight >= el.scrollHeight - 48);
+      else setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - footerH - 48);
+    };
     check();
-    window.addEventListener('scroll', check, { passive: true });
-    return () => window.removeEventListener('scroll', check);
+    target.addEventListener('scroll', check, { passive: true });
+    return () => target.removeEventListener('scroll', check);
   }, [phone, footerH]);
+
+  // one tap to the start of the question, or back to the last thing said
+  const jumpPill = (
+    <Fab
+      size="small" variant="extended" color="default"
+      aria-label={atEnd ? 'לתחילת השאלה' : 'לסוף השיחה'}
+      onClick={() => jumpTo(!atEnd)}
+      sx={{ minHeight: 0, height: 36, px: 1.5, bgcolor: 'background.paper' }}
+    >
+      {atEnd ? <KeyboardArrowUpRoundedIcon /> : <KeyboardArrowDownRoundedIcon />}
+    </Fab>
+  );
 
   // the footer rises by the height of the keyboard, so the page rides up with it
   // and whatever was at the bottom of the thread stays at the bottom of the thread
@@ -1046,7 +1079,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   );
 
   return (
-    <Paper variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 }, pb: { xs: 0, md: 2.5 } }}>
+    <Paper ref={panelRef} variant="outlined" sx={{ position: 'relative', borderRadius: 3, p: { xs: 2, md: 2.5 }, pb: { xs: 0, md: 2.5 } }}>
       {confetti && <Confetti />}
       <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', mb: 0.25 }}>{canAsk ? 'התרגול שלי' : 'הפתרון שלי'}</Typography>
 
@@ -1107,6 +1140,12 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
         <Box ref={endRef} />
       </Stack>
 
+      {!locked && !phone && (
+        <Portal>
+          <Box sx={{ position: 'fixed', bottom: 96, insetInlineEnd: 32, zIndex: (t) => t.zIndex.appBar }}>{jumpPill}</Box>
+        </Portal>
+      )}
+
       {!locked && (
         phone ? (
           <>
@@ -1123,15 +1162,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
                   px: 1.5, py: 1,
                 }}
               >
-                {/* one tap to the start of the question, or back to the last thing said */}
-                <Fab
-                  size="small" variant="extended" color="default"
-                  aria-label={atEnd ? 'לתחילת השאלה' : 'לסוף השיחה'}
-                  onClick={() => window.scrollTo({ top: atEnd ? 0 : document.documentElement.scrollHeight, behavior: 'smooth' })}
-                  sx={{ position: 'absolute', top: -22, insetInlineEnd: 16, minHeight: 0, height: 36, px: 1.5, bgcolor: 'background.paper' }}
-                >
-                  {atEnd ? <KeyboardArrowUpRoundedIcon /> : <KeyboardArrowDownRoundedIcon />}
-                </Fab>
+                <Box sx={{ position: 'absolute', top: -22, insetInlineEnd: 16 }}>{jumpPill}</Box>
                 {composer}
               </Box>
             </Portal>
