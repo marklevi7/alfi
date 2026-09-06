@@ -626,7 +626,7 @@ function NumberedAnswer({ text }: { text: string }) {
           <Typography
             component="span"
             variant="caption"
-            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: 'grey.700', fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
+            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: blue[800], fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
           >
             {i + 1}
           </Typography>
@@ -920,14 +920,14 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
     const id = window.setTimeout(() => {
       const el = endRef.current;
       if (!el) return;
-      if (phone) {
-        // the box sits over the bottom of the screen — stop just above it
-        const covered = footerH + (kbOpen ? window.innerHeight * 0.4 : 0) + 12;
-        const below = el.getBoundingClientRect().bottom - (window.innerHeight - covered);
-        if (below > 0) window.scrollBy({ top: below, behavior: reduced() ? 'auto' : 'smooth' });
-      } else {
-        el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'nearest' });
-      }
+      const sc = scroller();
+      // the answer box covers the floor on both sizes — stop just above it
+      const covered = footerH + (phone && kbOpen ? window.innerHeight * 0.4 : 0) + 12;
+      const viewBottom = (sc ? sc.getBoundingClientRect().bottom : window.innerHeight) - covered;
+      const below = el.getBoundingClientRect().bottom - viewBottom;
+      if (below <= 0) return;
+      const opts: ScrollToOptions = { top: below, behavior: reduced() ? 'auto' : 'smooth' };
+      if (sc) sc.scrollBy(opts); else window.scrollBy(opts);
     }, 60);
     return () => window.clearTimeout(id);
   }, [msgs.length, thinking]);
@@ -1024,20 +1024,23 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
           InputProps={{ disableUnderline: true }}
         />
         <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" sx={{ rowGap: 1, columnGap: 1 }}>
-          {/* a phone gets one line: the keypad and a plus on the start side */}
-          <Stack direction="row" flexWrap="wrap" alignItems="center" sx={{ rowGap: 1, columnGap: 1 }}>
+          {/* a phone gets one line: the keypad and a plus on the start side.
+              stretch keeps the two the same height whatever is inside them. */}
+          <Stack direction="row" flexWrap="wrap" alignItems="stretch" sx={{ rowGap: 1, columnGap: 1 }}>
             {!phone && (
               <Button size="small" variant="outlined" startIcon={<AttachFileRoundedIcon />} onClick={() => setFileOpen(true)} sx={{ fontWeight: 700 }}>צרף קובץ</Button>
             )}
-            <Button size="small" variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
+            {/* on a phone it stands beside the plus, so it takes the same MUI size */}
+            <Button size={phone ? 'medium' : 'small'} variant={mathOpen ? 'contained' : 'outlined'} disableElevation startIcon={<CalculateRoundedIcon />} onClick={() => setMathOpen((v) => !v)} sx={{ fontWeight: 700 }}>MATH</Button>
+            {/* the plus is the same component and size as MATH, so the two line up */}
             {phone ? (
-              <IconButton
-                size="small" aria-label="עוד דרכים לענות"
+              <Button
+                size="medium" variant="outlined" aria-label="עוד דרכים לענות"
                 onClick={() => setMoreOpen(true)}
-                sx={{ border: 1, borderColor: 'primary.main', color: 'primary.main', borderRadius: 1.5 }}
+                sx={{ minWidth: 0, px: 1.5 }}
               >
                 <AddRoundedIcon />
-              </IconButton>
+              </Button>
             ) : (
               <Button size="small" variant="outlined" startIcon={<PhotoCameraRoundedIcon />} onClick={() => setQrOpen(true)} sx={{ fontWeight: 700 }}>צלם תשובה</Button>
             )}
