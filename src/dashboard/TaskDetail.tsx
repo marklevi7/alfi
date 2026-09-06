@@ -626,7 +626,7 @@ function NumberedAnswer({ text }: { text: string }) {
           <Typography
             component="span"
             variant="caption"
-            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: (t) => alpha(t.palette.common.white, 0.7), fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
+            sx={{ minWidth: 16, textAlign: 'center', flexShrink: 0, color: 'grey.700', fontWeight: 700, fontFeatureSettings: '"tnum","lnum"' }}
           >
             {i + 1}
           </Typography>
@@ -648,8 +648,8 @@ function Bubble({ from, children, pose = 'smile' }: { from: 'student' | 'ai'; ch
       <Box sx={{
         maxWidth: '80%', px: 2, py: 1.25, borderRadius: 3,
         // Alfi speaks on a neutral grey surface — colour is reserved for real states
-        bgcolor: isAi ? 'grey.100' : blue[700],
-        color: isAi ? 'text.primary' : 'common.white',
+        bgcolor: isAi ? 'grey.100' : blue[50],
+        color: 'text.primary',
         borderStartStartRadius: isAi ? 24 : 4, borderStartEndRadius: isAi ? 4 : 24,
       }}>
         {children}
