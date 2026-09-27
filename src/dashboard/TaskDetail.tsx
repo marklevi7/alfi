@@ -325,6 +325,9 @@ const rain = keyframes`
 /** Big game-style confetti: two bursts from the bottom corners plus a rain of pieces
  *  from above. Portal'd to the body so it always covers the full viewport; harmless
  *  when reduced-motion is on. */
+// the longest any single piece takes to finish (its worst-case delay + duration),
+// with a small safety margin — callers use this instead of guessing a hide-timer
+export const CONFETTI_LIFETIME = 5600;
 export function Confetti({ pieces = 130 }: { pieces?: number }) {
   const cannonCount = Math.round(pieces * 0.65);
   const rainCount = pieces - cannonCount;
@@ -968,7 +971,7 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
   useEffect(() => {
     if (!locked) return;
     setConfetti(true);
-    const id = window.setTimeout(() => setConfetti(false), 1800);
+    const id = window.setTimeout(() => setConfetti(false), CONFETTI_LIFETIME);
     return () => window.clearTimeout(id);
   }, [locked]);
   // follow a new message, but never on the way in — the page opens at the top
@@ -1043,7 +1046,8 @@ function ChatPanel({ q, qIndex, onSolved, onStarted, savedAnswer, locked, starte
       }
       setMsgs((m) => [...m, { from: 'ai', node: approvedNode, pose: 'ok' }]);
       setConfetti(true);
-      window.setTimeout(() => { setConfetti(false); onSolved(answer); }, 3200);
+      window.setTimeout(() => onSolved(answer), 1600); // record the win without waiting on the confetti
+      window.setTimeout(() => setConfetti(false), CONFETTI_LIFETIME);
     }, 1400);
   };
 
@@ -1440,7 +1444,7 @@ export function TaskDetail({ task, onBack }: { task: SolveTask; onBack: () => vo
   const [entryConfetti, setEntryConfetti] = useState(done === questions.length);
   useEffect(() => {
     if (!entryConfetti) return;
-    const id = window.setTimeout(() => setEntryConfetti(false), 1800);
+    const id = window.setTimeout(() => setEntryConfetti(false), CONFETTI_LIFETIME);
     return () => window.clearTimeout(id);
   }, [entryConfetti]);
 
