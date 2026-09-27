@@ -322,6 +322,16 @@ const rain = keyframes`
   0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(var(--land)) rotate(var(--rot)); opacity: 0; }
 `;
+// the smaller, lighter pieces catch more air on the way down — same straight fall,
+// but swaying side to side as they go, like real paper confetti does
+const rainWiggle = keyframes`
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  20%  { transform: translate(var(--sway), calc(var(--land) * 0.2)) rotate(calc(var(--rot) * 0.2)); opacity: 1; }
+  40%  { transform: translate(calc(var(--sway) * -1), calc(var(--land) * 0.4)) rotate(calc(var(--rot) * 0.4)); opacity: 1; }
+  60%  { transform: translate(var(--sway), calc(var(--land) * 0.6)) rotate(calc(var(--rot) * 0.6)); opacity: 1; }
+  80%  { transform: translate(calc(var(--sway) * -1), calc(var(--land) * 0.8)) rotate(calc(var(--rot) * 0.8)); opacity: 0.4; }
+  100% { transform: translate(0, var(--land)) rotate(var(--rot)); opacity: 0; }
+`;
 /** Big game-style confetti: two bursts from the bottom corners plus a rain of pieces
  *  from above. Portal'd to the body so it always covers the full viewport; harmless
  *  when reduced-motion is on. */
@@ -380,6 +390,9 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
           const round = i % 4 === 1;
           const duration = 2600 + (i % 7) * 240;
           const delay = Math.round((i / rainCount) * 1500); // spread evenly over 1.5s, not bunched in waves
+          // only some of the smallest pieces wiggle — the rest fall straight
+          const wiggles = w === 9 && i % 2 === 0;
+          const sway = 14 + (i * 31) % 22;
           return (
             <Box
               key={`r${i}`}
@@ -387,10 +400,11 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
                 position: 'absolute', top: -40, left: `${left}%`,
                 width: w, height: h,
                 ['--land' as string]: land, ['--rot' as string]: `${rot}deg`,
+                ...(wiggles ? { ['--sway' as string]: `${sway}px` } : null),
               }}
               sx={{
                 borderRadius: round ? '50%' : 0.75, bgcolor: c,
-                animation: `${rain} ${duration}ms linear ${delay}ms forwards`,
+                animation: `${wiggles ? rainWiggle : rain} ${duration}ms linear ${delay}ms forwards`,
                 '@media (prefers-reduced-motion: reduce)': { display: 'none' },
               }}
             />
