@@ -308,50 +308,86 @@ const QUESTIONS: Question[] = [
 
 /* ---------- confetti: ONE shared component for every celebration in the app ---------- */
 const CONFETTI = [red[500], orange[500], amber[500], green[500], blue[500], indigo[500], pink[400]];
-// two cannons at the bottom corners, firing up and inward, then gravity pulls
-// them back down and off screen — the "party popper" pattern, not a straight rain
+// two cannons at the bottom corners: launch up and inward (ease-out, like leaving a
+// spring), then gravity takes over (ease-in) and it falls straight down from wherever
+// the launch left it — no sideways drift during the fall itself.
 const cannon = keyframes`
-  0%   { transform: translate(0, 0) rotate(0deg) scale(0.6); opacity: 1; }
-  20%  { transform: translate(calc(var(--dx) * 0.35), calc(var(--dy) * 0.7)) rotate(calc(var(--rot) * 0.35)) scale(1.15); opacity: 1; }
-  100% { transform: translate(var(--dx), calc(var(--dy) * -0.55)) rotate(var(--rot)) scale(1); opacity: 0; }
+  0%   { transform: translate(0, 0) rotate(0deg) scale(0.5); opacity: 1; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+  30%  { transform: translate(var(--dx), var(--peak)) rotate(calc(var(--rot) * 0.4)) scale(1.2); opacity: 1; animation-timing-function: cubic-bezier(0.55, 0.06, 0.68, 0.19); }
+  100% { transform: translate(var(--dx), var(--land)) rotate(var(--rot)) scale(0.85); opacity: 0; }
 `;
-/** Big game-style confetti: two bursts from the bottom corners, arcing up and inward
- *  before falling away. Portal'd to the body so it always covers the full viewport;
- *  harmless when reduced-motion is on. */
-export function Confetti({ pieces = 70 }: { pieces?: number }) {
+// a second, gentler layer raining straight down from above the screen, the way it
+// looked before the cannons were added
+const rain = keyframes`
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(var(--land)) rotate(var(--rot)); opacity: 0.85; }
+`;
+/** Big game-style confetti: two bursts from the bottom corners plus a rain of pieces
+ *  from above. Portal'd to the body so it always covers the full viewport; harmless
+ *  when reduced-motion is on. */
+export function Confetti({ pieces = 130 }: { pieces?: number }) {
+  const cannonCount = Math.round(pieces * 0.65);
+  const rainCount = pieces - cannonCount;
   return (
     <Portal>
       <Box
         aria-hidden data-keep-motion
         sx={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: (t) => t.zIndex.tooltip }}
       >
-        {Array.from({ length: pieces }).map((_, i) => {
+        {Array.from({ length: cannonCount }).map((_, i) => {
           // even pieces fire from the left corner toward the right, odd from the right toward the left
           const fromLeft = i % 2 === 0;
           const spread = ((i * 53) % 100) / 100; // 0..1 across the cannon's cone
-          const dx = (fromLeft ? 1 : -1) * (240 + spread * 480);
-          const dy = -(260 + ((i * 71) % 420));
+          const dx = (fromLeft ? 1 : -1) * (200 + spread * 420);
+          const peak = -(300 + ((i * 71) % 460)); // how high the launch reaches
+          const land = 900 + ((i * 43) % 300); // straight down from the peak, past the bottom
           const rot = 360 + (i * 97) % 900;
           const c = CONFETTI[i % CONFETTI.length];
-          const w = 10 + (i % 4) * 5;
+          const w = 11 + (i % 4) * 6;
           const h = i % 3 === 0 ? w : Math.round(w * 0.5);
           const round = i % 4 === 1;
-          const duration = 1500 + (i % 6) * 200;
-          const delay = (i % 14) * 45;
+          const duration = 2200 + (i % 6) * 260;
+          const delay = (i % 18) * 40;
           return (
             <Box
-              key={i}
+              key={`c${i}`}
               // plain style, not sx: this is a screen-physical effect, not text flow —
               // the RTL plugin mirrors left/right on emotion-generated CSS, which would
               // send half the pieces off in the wrong direction
               style={{
                 position: 'absolute', bottom: -20, [fromLeft ? 'left' : 'right']: -20,
                 width: w, height: h,
-                ['--dx' as string]: `${dx}px`, ['--dy' as string]: `${dy}px`, ['--rot' as string]: `${rot}deg`,
+                ['--dx' as string]: `${dx}px`, ['--peak' as string]: `${peak}px`, ['--land' as string]: `${land}px`, ['--rot' as string]: `${rot}deg`,
               }}
               sx={{
                 borderRadius: round ? '50%' : 0.75, bgcolor: c,
-                animation: `${cannon} ${duration}ms cubic-bezier(0.2, 0.7, 0.3, 1) ${delay}ms forwards`,
+                animation: `${cannon} ${duration}ms linear ${delay}ms forwards`,
+                '@media (prefers-reduced-motion: reduce)': { display: 'none' },
+              }}
+            />
+          );
+        })}
+        {Array.from({ length: rainCount }).map((_, i) => {
+          const left = (i * 173) % 100;
+          const land = 900 + ((i * 59) % 260);
+          const rot = 240 + (i * 83) % 640;
+          const c = CONFETTI[(i + 3) % CONFETTI.length];
+          const w = 9 + (i % 4) * 5;
+          const h = i % 3 === 0 ? w : Math.round(w * 0.5);
+          const round = i % 4 === 1;
+          const duration = 2600 + (i % 7) * 240;
+          const delay = (i % 16) * 90;
+          return (
+            <Box
+              key={`r${i}`}
+              style={{
+                position: 'absolute', top: -40, left: `${left}%`,
+                width: w, height: h,
+                ['--land' as string]: `${land}px`, ['--rot' as string]: `${rot}deg`,
+              }}
+              sx={{
+                borderRadius: round ? '50%' : 0.75, bgcolor: c,
+                animation: `${rain} ${duration}ms linear ${delay}ms forwards`,
                 '@media (prefers-reduced-motion: reduce)': { display: 'none' },
               }}
             />
