@@ -320,7 +320,7 @@ const cannon = keyframes`
 // looked before the cannons were added
 const rain = keyframes`
   0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(var(--land)) rotate(var(--rot)); opacity: 0.85; }
+  100% { transform: translateY(var(--land)) rotate(var(--rot)); opacity: 0; }
 `;
 /** Big game-style confetti: two bursts from the bottom corners plus a rain of pieces
  *  from above. Portal'd to the body so it always covers the full viewport; harmless
@@ -343,7 +343,7 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
           const spread = ((i * 53) % 100) / 100; // 0..1 across the cannon's cone
           const dx = (fromLeft ? 1 : -1) * (200 + spread * 420);
           const peak = -(300 + ((i * 71) % 460)); // how high the launch reaches
-          const land = 900 + ((i * 43) % 300); // straight down from the peak, past the bottom
+          const land = `calc(100vh + ${140 + (i * 43) % 300}px)`; // straight down from the peak, clear of any screen height
           const rot = 360 + (i * 97) % 900;
           const c = CONFETTI[i % CONFETTI.length];
           const w = 11 + (i % 4) * 6;
@@ -360,7 +360,7 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
               style={{
                 position: 'absolute', bottom: -20, [fromLeft ? 'left' : 'right']: -20,
                 width: w, height: h,
-                ['--dx' as string]: `${dx}px`, ['--peak' as string]: `${peak}px`, ['--land' as string]: `${land}px`, ['--rot' as string]: `${rot}deg`,
+                ['--dx' as string]: `${dx}px`, ['--peak' as string]: `${peak}px`, ['--land' as string]: land, ['--rot' as string]: `${rot}deg`,
               }}
               sx={{
                 borderRadius: round ? '50%' : 0.75, bgcolor: c,
@@ -372,7 +372,7 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
         })}
         {Array.from({ length: rainCount }).map((_, i) => {
           const left = (i * 173) % 100;
-          const land = 900 + ((i * 59) % 260);
+          const land = `calc(100vh + ${140 + (i * 59) % 260}px)`;
           const rot = 240 + (i * 83) % 640;
           const c = CONFETTI[(i + 3) % CONFETTI.length];
           const w = 9 + (i % 4) * 5;
@@ -386,7 +386,7 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
               style={{
                 position: 'absolute', top: -40, left: `${left}%`,
                 width: w, height: h,
-                ['--land' as string]: `${land}px`, ['--rot' as string]: `${rot}deg`,
+                ['--land' as string]: land, ['--rot' as string]: `${rot}deg`,
               }}
               sx={{
                 borderRadius: round ? '50%' : 0.75, bgcolor: c,
