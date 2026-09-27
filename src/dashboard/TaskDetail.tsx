@@ -330,7 +330,7 @@ const rain = keyframes`
 export const CONFETTI_LIFETIME = 5600;
 export function Confetti({ pieces = 130 }: { pieces?: number }) {
   const cannonCount = Math.round(pieces * 0.65);
-  const rainCount = pieces - cannonCount;
+  const rainCount = Math.round(pieces * 0.35) * 2; // twice as much rain as before
   return (
     <Portal>
       <Box
@@ -379,7 +379,7 @@ export function Confetti({ pieces = 130 }: { pieces?: number }) {
           const h = i % 3 === 0 ? w : Math.round(w * 0.5);
           const round = i % 4 === 1;
           const duration = 2600 + (i % 7) * 240;
-          const delay = (i % 16) * 90;
+          const delay = Math.round((i / rainCount) * 1500); // spread evenly over 1.5s, not bunched in waves
           return (
             <Box
               key={`r${i}`}
