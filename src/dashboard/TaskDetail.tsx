@@ -339,13 +339,22 @@ export function Confetti({ pieces = 70 }: { pieces?: number }) {
           const duration = 1500 + (i % 6) * 200;
           const delay = (i % 14) * 45;
           return (
-            <Box key={i} sx={{
-              position: 'absolute', bottom: -20, ...(fromLeft ? { left: -20 } : { right: -20 }),
-              width: w, height: h, borderRadius: round ? '50%' : 0.75, bgcolor: c,
-              ['--dx' as string]: `${dx}px`, ['--dy' as string]: `${dy}px`, ['--rot' as string]: `${rot}deg`,
-              animation: `${cannon} ${duration}ms cubic-bezier(0.2, 0.7, 0.3, 1) ${delay}ms forwards`,
-              '@media (prefers-reduced-motion: reduce)': { display: 'none' },
-            }} />
+            <Box
+              key={i}
+              // plain style, not sx: this is a screen-physical effect, not text flow —
+              // the RTL plugin mirrors left/right on emotion-generated CSS, which would
+              // send half the pieces off in the wrong direction
+              style={{
+                position: 'absolute', bottom: -20, [fromLeft ? 'left' : 'right']: -20,
+                width: w, height: h,
+                ['--dx' as string]: `${dx}px`, ['--dy' as string]: `${dy}px`, ['--rot' as string]: `${rot}deg`,
+              }}
+              sx={{
+                borderRadius: round ? '50%' : 0.75, bgcolor: c,
+                animation: `${cannon} ${duration}ms cubic-bezier(0.2, 0.7, 0.3, 1) ${delay}ms forwards`,
+                '@media (prefers-reduced-motion: reduce)': { display: 'none' },
+              }}
+            />
           );
         })}
       </Box>
