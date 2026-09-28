@@ -21,69 +21,6 @@ await p.goto(URL, { waitUntil: 'networkidle' });
 await wait(1200);
 await goBuild();
 
-/* ================= select preset task ================= */
-await shot('b1-split-view');
-
-await p.locator('.MuiCard-root', { hasText: 'תרגול' }).nth(2).click().catch(() => {});
-await wait(900);
-await shot('b2-another-task-selected');
-
-await p.getByRole('button', { name: 'למה אי אפשר לערוך את השאלות' }).first().hover();
-await wait(900);
-await shot('b3-locked-explained');
-await p.mouse.move(700, 700);
-await wait(500);
-
-await p.getByRole('button', { name: 'נושא', exact: true }).click();
-await wait(500);
-await p.getByRole('option').nth(1).click();
-await wait(900);
-await shot('b4-filters-applied');
-
-await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('זזזזז');
-await wait(900);
-await shot('b5-no-results');
-await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('');
-await wait(600);
-await p.getByRole('button', { name: /^נושא/ }).first().click();
-await wait(500);
-await p.getByRole('option', { name: 'כל הנושאים' }).click();
-await wait(800);
-
-await p.getByRole('button', { name: 'המשך' }).first().click();
-await wait(1000);
-await shot('b6-ready-task-preview');
-
-await p.getByLabel('שם התרגול').fill('תרגול חזרה · כיתה י-1');
-await wait(400);
-await p.getByRole('button', { name: /שעת פתיחה/ }).first().click().catch(() => {});
-await wait(700);
-await shot('b7-preview-details-edited');
-await p.keyboard.press('Escape');
-await wait(500);
-
-await p.locator('button.MuiCard-root, .MuiCard-root button').first().click();
-await wait(900);
-await shot('b8-locked-question-view');
-await p.keyboard.press('Escape');
-await wait(600);
-
-await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
-await wait(900);
-await shot('b9-send-confirm');
-await p.getByRole('button', { name: 'ביטול' }).click();
-await wait(600);
-
-await p.getByRole('textbox', { name: 'תאריך', exact: true }).fill('');
-await wait(500);
-await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
-await wait(800);
-await shot('b10-missing-info-to-send');
-await p.getByRole('button', { name: 'הבנתי' }).click();
-await wait(600);
-await p.getByRole('button', { name: 'חזרה לעריכה' }).first().click();
-await wait(800);
-
 /* ================= build task from questions ================= */
 await p.getByRole('tab', { name: 'בחירת שאלות' }).click();
 await wait(900);
@@ -155,6 +92,75 @@ await wait(500);
 await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
 await wait(800);
 await shot('a9-missing-info-to-send');
+
+
+// back out to the shelf for the other route
+await p.getByRole('button', { name: 'הבנתי' }).click();
+await wait(600);
+await p.getByRole('button', { name: 'חזרה לעריכה' }).first().click();
+await wait(800);
+await p.getByRole('tab', { name: 'בחירה מהערכות קיימות' }).click();
+await wait(900);
+
+/* ================= select preset task ================= */
+await shot('b1-split-view');
+
+await p.locator('.MuiCard-root', { hasText: 'תרגול' }).nth(2).click().catch(() => {});
+await wait(900);
+await shot('b2-another-task-selected');
+
+await p.getByRole('button', { name: 'למה אי אפשר לערוך את השאלות' }).first().hover();
+await wait(900);
+await shot('b3-locked-explained');
+await p.mouse.move(700, 700);
+await wait(500);
+
+await p.getByRole('button', { name: 'נושא', exact: true }).click();
+await wait(500);
+await p.getByRole('option').nth(1).click();
+await wait(900);
+await shot('b4-filters-applied');
+
+await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('זזזזז');
+await wait(900);
+await shot('b5-no-results');
+await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('');
+await wait(600);
+await p.getByRole('button', { name: /^נושא/ }).first().click();
+await wait(500);
+await p.getByRole('option', { name: 'כל הנושאים' }).click();
+await wait(800);
+
+await p.getByRole('button', { name: 'המשך' }).first().click();
+await wait(1000);
+await shot('b6-ready-task-preview');
+
+await p.getByLabel('שם התרגול').fill('תרגול חזרה · כיתה י-1');
+await wait(400);
+await p.getByRole('button', { name: /שעת פתיחה/ }).first().click().catch(() => {});
+await wait(700);
+await shot('b7-preview-details-edited');
+await p.keyboard.press('Escape');
+await wait(500);
+
+await p.locator('button.MuiCard-root, .MuiCard-root button').first().click();
+await wait(900);
+await shot('b8-locked-question-view');
+await p.keyboard.press('Escape');
+await wait(600);
+
+await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
+await wait(900);
+await shot('b9-send-confirm');
+await p.getByRole('button', { name: 'ביטול' }).click();
+await wait(600);
+
+await p.getByRole('textbox', { name: 'תאריך', exact: true }).fill('');
+await wait(500);
+await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
+await wait(800);
+await shot('b10-missing-info-to-send');
+
 
 await b.close();
 console.log('done');
