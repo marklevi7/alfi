@@ -22,7 +22,7 @@ const setVariant = async (label) => {
   await wait(500);
   await p.getByRole('button', { name: label, exact: true }).first().click();
   await wait(700);
-  await p.getByRole('button', { name: 'סגירה' }).first().click();
+  await p.getByRole('button', { name: 'סגירת בקרות' }).click();
   await wait(600);
 };
 
@@ -62,11 +62,11 @@ await shot('1-empty');
 await tall(900);
 
 // the filter box, narrowed down the cascade
-await p.getByLabel('נושא').click();
+await p.getByRole('button', { name: 'נושא', exact: true }).click();
 await wait(500);
 await p.getByRole('option', { name: 'אנליזה' }).click();
 await wait(700);
-await p.getByLabel('יחידה').click();
+await p.getByRole('button', { name: 'יחידה', exact: true }).click();
 await wait(500);
 await p.getByRole('option').first().click();
 await wait(700);
@@ -77,10 +77,6 @@ await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('זזזזז');
 await wait(900);
 await shot('3-no-results');
 await p.getByPlaceholder('חיפוש בטקסט השאלה').fill('');
-await p.mouse.click(8, 8); await wait(400);
-await p.getByRole('button', { name: 'pick questions', exact: true }).first().click();
-await wait(600);
-await p.getByRole('button', { name: 'סגירה' }).first().click();
 await wait(700);
 
 // one question read in full, with the way to take it
@@ -112,25 +108,25 @@ await wait(1000);
 await shot('6-assembled-test-preview');
 
 // dropping a question from inside it
-await p.getByRole('button', { name: 'הסרת שאלה 2' }).click();
+await p.getByRole('button', { name: 'הסרת שאלה 2', exact: true }).click();
 await wait(800);
 await shot('7-remove-question-confirm');
 await p.getByRole('button', { name: 'ביטול' }).click();
 await wait(600);
 
-// what is missing before it can go out
-await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
-await wait(800);
-await shot('9-missing-info-to-send');
-await p.getByRole('button', { name: 'הבנתי' }).click();
-await wait(600);
-
-// named, so it can go
-await p.getByLabel('שם המבחן').fill('מבחן באנליזה - נגזרות');
-await wait(500);
+// the test as it will go out, confirmed before it leaves
 await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
 await wait(900);
 await shot('8-send-confirm');
+await p.getByRole('button', { name: 'ביטול' }).click();
+await wait(600);
+
+// and what it says when something it needs is missing
+await p.getByLabel('שם המבחן').fill('');
+await wait(500);
+await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
+await wait(800);
+await shot('9-missing-info-to-send');
 
 await b.close();
 console.log('done');
