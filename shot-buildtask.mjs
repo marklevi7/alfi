@@ -74,7 +74,7 @@ await shot('b9-send-confirm');
 await p.getByRole('button', { name: 'ביטול' }).click();
 await wait(600);
 
-await p.getByLabel('שם התרגול').fill('');
+await p.getByRole('textbox', { name: 'תאריך', exact: true }).fill('');
 await wait(500);
 await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
 await wait(800);
@@ -90,6 +90,8 @@ await wait(900);
 await tall(2400);
 await shot('a1-empty');
 await tall(900);
+await p.evaluate(() => { const m = document.querySelector('main'); if (m) m.scrollTop = 0; window.scrollTo(0, 0); });
+await wait(600);
 
 await p.getByRole('button', { name: 'נושא', exact: true }).click();
 await wait(500);

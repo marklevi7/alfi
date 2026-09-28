@@ -86,8 +86,9 @@ await shot('j-send-confirm');
 await p.getByRole('button', { name: 'ביטול' }).click();
 await wait(600);
 
-// and what it says when something it needs is missing
-await p.getByLabel('שם המבחן').fill('');
+// and what it says when something it needs is missing. A preset test keeps its own name, so
+// the thing a teacher can actually leave empty here is the day it opens
+await p.getByRole('textbox', { name: 'תאריך', exact: true }).fill('');
 await wait(500);
 await p.getByRole('button', { name: 'שליחה לתלמידים' }).click();
 await wait(800);
