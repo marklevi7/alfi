@@ -30,30 +30,6 @@ await p.goto(URL, { waitUntil: 'networkidle' });
 await wait(1200);
 await goBuild();
 
-/* ---------- split view (the default) ---------- */
-await shot('13-split-view');
-
-/* ---------- select preset test ---------- */
-// the whole test, read on its own screen
-await p.getByRole('button', { name: 'המשך' }).first().click();
-await wait(1000);
-await shot('11-ready-test-preview');
-// one question of it, locked
-await p.locator('button.MuiCard-root, .MuiCard-root button').first().click();
-await wait(900);
-await shot('12-locked-question-view');
-await p.keyboard.press('Escape');
-await wait(700);
-console.log('buttons here:', (await p.getByRole('button').allInnerTexts()).map(t => t.trim()).filter(Boolean).slice(0, 25).join(' | '));
-await p.getByRole('button', { name: 'חזרה לעריכה' }).first().click();
-await wait(800);
-
-// the plain shelf, without the split
-await setVariant('ready tests');
-await tall(2400);
-await shot('10-ready-tests');
-await tall(900);
-
 /* ---------- build test from questions ---------- */
 await p.getByRole('tab', { name: 'בחירת שאלות' }).click();
 await wait(900);

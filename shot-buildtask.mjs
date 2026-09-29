@@ -105,7 +105,7 @@ await wait(900);
 /* ================= select preset task ================= */
 await shot('b1-split-view');
 
-await p.locator('.MuiCard-root', { hasText: 'תרגול' }).nth(2).click().catch(() => {});
+await p.locator('.MuiCard-root', { hasText: 'תרגול אסימפטוטות' }).last().click();
 await wait(900);
 await shot('b2-another-task-selected');
 
